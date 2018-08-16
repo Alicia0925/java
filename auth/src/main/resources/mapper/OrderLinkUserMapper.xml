@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.auth.dao.OrderLinkUserMapper">
+  <resultMap id="BaseResultMap" type="cn.auth.entity.OrderLinkUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="orderId" jdbcType="BIGINT" property="orderId" />
+    <result column="linkUserId" jdbcType="BIGINT" property="linkUserId" />
+    <result column="linkUserName" jdbcType="VARCHAR" property="linkUserName" />
+    <result column="creationDate" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="createdBy" jdbcType="BIGINT" property="createdBy" />
+    <result column="modifyDate" jdbcType="TIMESTAMP" property="modifyDate" />
+    <result column="modifiedBy" jdbcType="BIGINT" property="modifiedBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, orderId, linkUserId, linkUserName, creationDate, createdBy, modifyDate, modifiedBy
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from itrip_order_link_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from itrip_order_link_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="cn.auth.entity.OrderLinkUser">
+    insert into itrip_order_link_user (id, orderId, linkUserId, 
+      linkUserName, creationDate, createdBy, 
+      modifyDate, modifiedBy)
+    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{linkUserId,jdbcType=BIGINT}, 
+      #{linkUserName,jdbcType=VARCHAR}, #{creationDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, 
+      #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.auth.entity.OrderLinkUser">
+    insert into itrip_order_link_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        orderId,
+      </if>
+      <if test="linkUserId != null">
+        linkUserId,
+      </if>
+      <if test="linkUserName != null">
+        linkUserName,
+      </if>
+      <if test="creationDate != null">
+        creationDate,
+      </if>
+      <if test="createdBy != null">
+        createdBy,
+      </if>
+      <if test="modifyDate != null">
+        modifyDate,
+      </if>
+      <if test="modifiedBy != null">
+        modifiedBy,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="linkUserId != null">
+        #{linkUserId,jdbcType=BIGINT},
+      </if>
+      <if test="linkUserName != null">
+        #{linkUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="creationDate != null">
+        #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="modifyDate != null">
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedBy != null">
+        #{modifiedBy,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.auth.entity.OrderLinkUser">
+    update itrip_order_link_user
+    <set>
+      <if test="orderId != null">
+        orderId = #{orderId,jdbcType=BIGINT},
+      </if>
+      <if test="linkUserId != null">
+        linkUserId = #{linkUserId,jdbcType=BIGINT},
+      </if>
+      <if test="linkUserName != null">
+        linkUserName = #{linkUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="creationDate != null">
+        creationDate = #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        createdBy = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="modifyDate != null">
+        modifyDate = #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifiedBy != null">
+        modifiedBy = #{modifiedBy,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.auth.entity.OrderLinkUser">
+    update itrip_order_link_user
+    set orderId = #{orderId,jdbcType=BIGINT},
+      linkUserId = #{linkUserId,jdbcType=BIGINT},
+      linkUserName = #{linkUserName,jdbcType=VARCHAR},
+      creationDate = #{creationDate,jdbcType=TIMESTAMP},
+      createdBy = #{createdBy,jdbcType=BIGINT},
+      modifyDate = #{modifyDate,jdbcType=TIMESTAMP},
+      modifiedBy = #{modifiedBy,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
