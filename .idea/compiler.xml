@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="auth" />
+        <module name="beans" />
+        <module name="biz" />
+        <module name="mapper" />
+        <module name="search" />
+        <module name="trade" />
+        <module name="utils" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auth" target="1.7" />
+      <module name="beans" target="1.7" />
+      <module name="biz" target="1.7" />
+      <module name="util" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
