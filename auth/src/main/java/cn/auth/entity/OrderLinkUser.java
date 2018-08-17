@@ -2,14 +2,13 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//订单联系人表
 public class OrderLinkUser {
-    private Long id;
+    private Long id;//主键
+    private Long orderId;//订单id
+    private Long linkUserId;//联系人id
 
-    private Long orderId;
-
-    private Long linkUserId;
-
-    private String linkUserName;
+    private String linkUserName;//入住人姓名逗号分隔
 
     private Date creationDate;
 

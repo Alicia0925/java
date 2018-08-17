@@ -2,18 +2,19 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//标签字典表
 public class LabelDic {
-    private Long id;
+    private Long id;//主键
 
-    private String name;
+    private String name;//key值
 
-    private String value;
+    private String value;//value值
 
-    private String description;
+    private String description;//描述
 
-    private Long parentId;
+    private Long parentId;//父级标签id(1级标签则为0)
 
-    private String pic;
+    private String pic;//标签图片地址
 
     private Date creationDate;
 

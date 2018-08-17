@@ -2,14 +2,15 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//原始库存表
 public class ProductStore {
     private Long id;
 
-    private Integer productType;
+    private Integer productType;//商品类型(0:旅游产品 1:酒店产品 2:机票产品)
 
-    private Long productId;
+    private Long productId;//商品id
 
-    private Integer store;
+    private Integer store;//商品库存
 
     private Date creationDate;
 

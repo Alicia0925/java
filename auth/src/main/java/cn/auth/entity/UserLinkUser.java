@@ -2,16 +2,14 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//常用旅客表
 public class UserLinkUser {
-    private Long id;
-
-    private String linkUserName;
-
-    private String linkIdCard;
-
-    private String linkPhone;
-
-    private Integer userId;
+    private Long id;//主键
+    private String linkUserName;//常用联系人姓名
+    private String linkIdCard;//证件号码
+    private String linkPhone;//常用联系人电话
+    private Integer userId;//用户id
+    private Integer linkIdCardType;//证件类型：(0-身份证，1-护照，2-学生证，3-军人证，4-驾驶证，5-旅行证)
 
     private Date creationDate;
 
@@ -21,7 +19,6 @@ public class UserLinkUser {
 
     private Long modifiedBy;
 
-    private Integer linkIdCardType;
 
     public Long getId() {
         return id;

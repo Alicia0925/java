@@ -2,34 +2,37 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//评论表
 public class Comment {
-    private Long id;
+    private Long id;//主键
 
-    private Long hotelId;
+    private Long hotelId;//如果产品是酒店的话 改字段保存酒店id
 
-    private Long productId;
+    private Long productId;//商品id
 
-    private Long orderId;
+    private Long orderId;//订单id
 
-    private Integer productType;
+    private Integer productType;//商品类型(0:旅游产品 1:酒店产品 2:机票产品)
 
-    private Long userId;
+    private Long userId;//用户编号
 
-    private Integer isHavingImg;
+    private String content;//评论内容
 
-    private Integer positionScore;
+    private Integer isHavingImg;//是否包含图片(当用户上传评论时检测)0:无图片 1:有图片
 
-    private Integer facilitiesScore;
+    private Integer positionScore;//位置评分
 
-    private Integer serviceScore;
+    private Integer facilitiesScore;//设施评分
 
-    private Integer hygieneScore;
+    private Integer serviceScore;//服务评分
 
-    private Integer score;
+    private Integer hygieneScore;//卫生评分
 
-    private Long tripMode;
+    private Integer score;//综合评分
 
-    private Integer isOk;
+    private Long tripMode;//出游类型
+
+    private Integer isOk;//是否满意（0：有待改善 1：值得推荐）
 
     private Date creationDate;
 
@@ -38,8 +41,6 @@ public class Comment {
     private Date modifyDate;
 
     private Long modifiedBy;
-
-    private String content;
 
     public Long getId() {
         return id;

@@ -2,16 +2,17 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//图片表
 public class Image {
-    private Long id;
+    private Long id;//主键
 
-    private String type;
+    private String type;//图片类型(0:酒店图片1:房间图片2:评论图片)
 
-    private Long targetId;
+    private Long targetId;//关联id
 
-    private Integer position;
+    private Integer position;//图片s上传顺序位置
 
-    private String imgUrl;
+    private String imgUrl;//图片地址
 
     private Date creationDate;
 

@@ -33,6 +33,11 @@
   <sql id="Blob_Column_List">
     details, facilities, hotelPolicy
   </sql>
+
+
+
+
+  <!--以下是自动生成CURD-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />

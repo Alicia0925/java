@@ -2,16 +2,14 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//实时库存表
 public class HotelTempStore {
-    private Long id;
+    private Long id;//
+    private Integer hotelId;//
+    private Long roomId;//
+    private Date recordDate;//记录时间
 
-    private Integer hotelId;
-
-    private Long roomId;
-
-    private Date recordDate;
-
-    private Integer store;
+    private Integer store;//库存
 
     private Date creationDate;
 

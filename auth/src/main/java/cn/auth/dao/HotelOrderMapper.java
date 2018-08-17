@@ -3,6 +3,12 @@ package cn.auth.dao;
 import cn.auth.entity.HotelOrder;
 
 public interface HotelOrderMapper {
+
+
+
+
+
+    //以下是自动生成CURD
     int deleteByPrimaryKey(Long id);
 
     int insert(HotelOrder record);

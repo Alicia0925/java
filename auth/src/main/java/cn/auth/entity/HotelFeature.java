@@ -2,6 +2,7 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//酒店特征表
 public class HotelFeature {
     private Long id;
 

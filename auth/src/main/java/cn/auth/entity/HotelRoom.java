@@ -3,28 +3,19 @@ package cn.auth.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+//酒店房间表
 public class HotelRoom {
-    private Long id;
-
-    private Long hotelId;
-
-    private String roomTitle;
-
-    private BigDecimal roomPrice;
-
-    private Long roomBedTypeId;
-
-    private Integer isHavingBreakfast;
-
-    private Integer payType;
-
-    private Long satisfaction;
-
-    private Integer isBook;
-
-    private Integer isCancel;
-
-    private Integer isTimelyResponse;
+    private Long id;//主键
+    private Long hotelId;//酒店ID
+    private String roomTitle;//房间名称
+    private BigDecimal roomPrice;//房间价格
+    private Long roomBedTypeId;//酒店床型
+    private Integer isHavingBreakfast;//是否包含早餐
+    private Integer payType;//1:在线付 2:到店付 3:不限
+    private Long satisfaction;//满意度（冗余字段，在用户评论后更新
+    private Integer isBook;//是否可预订(0:不可以 1:可以)
+    private Integer isCancel;//是否可取消(0:不可 1:可以)
+    private Integer isTimelyResponse;//是否及时响应(0:不及时 1:及时)
 
     private Date creationDate;
 

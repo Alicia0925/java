@@ -22,6 +22,11 @@
     id, hotelId, roomTitle, roomPrice, roomBedTypeId, isHavingBreakfast, payType, satisfaction, 
     isBook, isCancel, isTimelyResponse, creationDate, createdBy, modifyDate, modifiedBy
   </sql>
+
+
+
+
+  <!--以下是自动生成CURD-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

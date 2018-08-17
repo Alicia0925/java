@@ -22,6 +22,11 @@
     id, userCode, userPassword, userType, flatID, userName, weChat, QQ, weibo, baidu, 
     creationDate, createdBy, modifyDate, modifiedBy, activated
   </sql>
+
+
+
+
+  <!--以下是自动生成CURD-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

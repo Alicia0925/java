@@ -1,11 +1,12 @@
 package cn.auth.entity;
 
+//酒店字段拓展表
 public class HotelWithBLOBs extends Hotel {
-    private String details;
+    private String details;//酒店介绍（保存附文本）
 
-    private String facilities;
+    private String facilities;//酒店设施
 
-    private String hotelPolicy;
+    private String hotelPolicy;//酒店政策
 
     public String getDetails() {
         return details;

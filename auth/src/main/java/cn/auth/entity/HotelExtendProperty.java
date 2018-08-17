@@ -2,12 +2,13 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//酒店拓展属性表
 public class HotelExtendProperty {
-    private Long id;
+    private Long id;//
 
-    private Long hotelId;
+    private Long hotelId;//酒店id
 
-    private Long extendPropertyId;
+    private Long extendPropertyId;//推广属性
 
     private Date creationDate;
 

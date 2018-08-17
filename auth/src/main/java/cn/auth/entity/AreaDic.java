@@ -2,26 +2,27 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//区域字典表
 public class AreaDic {
-    private Long id;
+    private Long id;//主键
 
-    private String name;
+    private String name;//区域名称
 
-    private String areaNo;
+    private String areaNo;//区域编号
 
-    private Long parent;
+    private Long parent;//父级区域
 
-    private Integer isActivated;
+    private Integer isActivated;//0:未激活 1:已激活
 
-    private Integer isTradingArea;
+    private Integer isTradingArea;//是否是商圈(0:不是 1:是)
 
-    private Integer isHot;
+    private Integer isHot;//是否是热区（0:不是 1：是）
 
-    private Integer level;
+    private Integer level;//区域级别(0:国家级 1:省级 2:市级 3:县/区)
 
-    private Integer isChina;
+    private Integer isChina;//1:国内 2：国外
 
-    private String pinyin;
+    private String pinyin;//
 
     private Date creationDate;
 

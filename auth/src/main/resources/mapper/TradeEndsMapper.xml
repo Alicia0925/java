@@ -9,6 +9,11 @@
   <sql id="Base_Column_List">
     id, orderNo, flag
   </sql>
+
+
+
+
+  <!--以下是自动生成CURD-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

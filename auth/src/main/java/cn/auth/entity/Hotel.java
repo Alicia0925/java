@@ -2,32 +2,33 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//酒店表
 public class Hotel {
-    private Long id;
+    private Long id;//主键
 
-    private String hotelName;
+    private String hotelName;//酒店名称
 
-    private Long countryId;
+    private Long countryId;//所在国家id
 
-    private Long provinceId;
+    private Long provinceId;//所在省份id
 
-    private Long cityId;
+    private Long cityId;//所在城市id
 
-    private String address;
+    private String address;//酒店所在地址
 
-    private Integer hotelType;
+    private Integer hotelType;//酒店类型(1:国内酒店 2:国际酒店)
 
-    private Integer hotelLevel;
+    private Integer hotelLevel;//(1:经济酒店  2:二星级酒店  3:三星级 4:四星酒店 5星酒店
 
-    private Integer isGroupPurchase;
+    private Integer isGroupPurchase;//是否是团购酒店
 
-    private String redundantCityName;
+    private String redundantCityName;//城市名称 冗余字段
 
-    private String redundantProvinceName;
+    private String redundantProvinceName;//省名称 冗余字段
 
-    private String redundantCountryName;
+    private String redundantCountryName;//国家名称 冗余字段
 
-    private Integer redundantHotelStore;
+    private Integer redundantHotelStore;//酒店库存（冗余，每天开定时任务的时候更新）
 
     private Date creationDate;
 

@@ -2,12 +2,13 @@ package cn.auth.entity;
 
 import java.util.Date;
 
+//酒店交易区域表
 public class HotelTradingArea {
     private Long id;
 
-    private Long hotelId;
+    private Long hotelId;//酒店id
 
-    private Long areaId;
+    private Long areaId;//商圈id
 
     private Date creationDate;
 
