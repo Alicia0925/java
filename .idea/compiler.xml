@@ -15,11 +15,5 @@
         <module name="utils" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="auth" target="1.7" />
-      <module name="beans" target="1.7" />
-      <module name="biz" target="1.7" />
-      <module name="util" target="1.7" />
-    </bytecodeTargetLevel>
   </component>
 </project>

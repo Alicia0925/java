@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mapper</artifactId>
+    <packaging>jar</packaging>
 
     <!--依赖util,bean-->
     <dependencies>
