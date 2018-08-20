@@ -19,7 +19,7 @@
     <result column="activated" jdbcType="INTEGER" property="activated" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, userCode, userPassword, userType, flatID, userName, weChat, QQ, weibo, baidu, 
+    id, userCode, userPassword, userType, flatID, userName, weChat, QQ, weibo, baidu,
     creationDate, createdBy, modifyDate, modifiedBy, activated
   </sql>
 
@@ -27,7 +27,7 @@
 
   <!--OID-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from itrip_user
     where id = #{id}
@@ -40,15 +40,15 @@
   <!--增-->
   <insert id="insert" parameterType="cn.itrip.beans.pojo.User" useGeneratedKeys="true" keyProperty="id">
     insert into itrip_user ( userCode, userPassword,
-      userType, flatID, userName, 
-      weChat, QQ, weibo, 
-      baidu, creationDate, createdBy, 
+      userType, flatID, userName,
+      weChat, QQ, weibo,
+      baidu, creationDate, createdBy,
       modifyDate, modifiedBy, activated
       )
     values  ( #{userCode,jdbcType=VARCHAR}, #{userPassword,jdbcType=VARCHAR},
-      #{userType,jdbcType=INTEGER}, #{flatID,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, 
-      #{weChat,jdbcType=VARCHAR}, #{QQ,jdbcType=VARCHAR}, #{weibo,jdbcType=VARCHAR}, 
-      #{baidu,jdbcType=VARCHAR}, #{creationDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, 
+      #{userType,jdbcType=INTEGER}, #{flatID,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR},
+      #{weChat,jdbcType=VARCHAR}, #{QQ,jdbcType=VARCHAR}, #{weibo,jdbcType=VARCHAR},
+      #{baidu,jdbcType=VARCHAR}, #{creationDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT},
       #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT}, #{activated,jdbcType=INTEGER}
       )
   </insert>

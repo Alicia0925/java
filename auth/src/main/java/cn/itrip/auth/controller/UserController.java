@@ -22,35 +22,35 @@ public class UserController {
     @Resource
     private UserService userService;
 
-/**
- * 跳转到注册页面
- * */
- @RequestMapping("/register")
-public String toRegister(){
-    return "register";
-}
-/**
- * 使用邮箱注册
- * @param userVO
- * @return
- *
- * */
-@ApiOperation(value="使用邮箱注册",httpMethod = "POST",protocols = "HTTP", produces = "application/json",
-        response = Dto.class)
-@RequestMapping(value = "/doRegister",method = RequestMethod.POST,produces = "application/json")
+    /**
+     * 跳转到注册页面
+     * */
+    @RequestMapping("/register")
+    public String toRegister(){
+        return "register";
+    }
+    /**
+     * 使用邮箱注册
+     * @param userVO
+     * @return
+     *
+     * */
+    @ApiOperation(value="使用邮箱注册",httpMethod = "POST",protocols = "HTTP", produces = "application/json",
+            response = Dto.class)
+    @RequestMapping(value = "/doRegister",method = RequestMethod.POST,produces = "application/json")
     public @ResponseBody Dto doRegister(@ApiParam(name="userVO",value="用户实体",required=true)
                                         @RequestBody ItripUserVo userVO){
 
-    if(userVO!=null){
-      Dto  dto=  new Dto();
+        if(userVO!=null){
+            Dto  dto=  new Dto();
 
-return dto;
+            return dto;
+        }
+
+
+        return null;
+
     }
-
-
-return null;
-
-}
 
 
 }
