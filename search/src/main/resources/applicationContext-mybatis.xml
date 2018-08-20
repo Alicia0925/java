@@ -14,6 +14,6 @@
 	<!-- 使用 Swagger Restful API文档时，添加此注解 -->
 	<mvc:default-servlet-handler />
     <context:component-scan base-package="cn.itrip.service"/>
-    <context:component-scan base-package="cn.itrip.dao"/>
+    <context:component-scan base-package="cn.itrip.cn.itrip.dao"/>
     <context:annotation-config />
 </beans>
