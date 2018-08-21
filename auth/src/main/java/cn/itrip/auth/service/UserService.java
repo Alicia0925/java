@@ -1,50 +1,19 @@
 package cn.itrip.auth.service;
 
-import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.User;
-import cn.itrip.beans.vo.ItripUserVo;
-
-import java.util.List;
 
 public interface UserService {
-    /**
-     * 查by UserCode
-     */
-    User findByUserCode(String userCode) throws Exception;
+    boolean deleteByPrimaryKey(Long id);
 
-    /**
-     * 查all
-     */
-    List<User> findAll() throws Exception;
+    boolean insert(User record);
 
-    /**
-     * 增 （有事务）
-     */
-    void itriptxCreateUser(User user) throws Exception;
+    boolean insertSelective(User record);
 
+    User selectByPrimaryKey(Long id);
 
-    /**
-     * 删
-     */
-    void deleteUser(Long userId) throws Exception;
+    boolean updateByPrimaryKeySelective(User record);
 
-    /**
-     * 登录
-     *
-     */
+    boolean updateByPrimaryKey(User record);
 
-     User login(String userCode, String password) throws Exception;
-
-     /**
-      * 注册
-      *
-      */
-     Dto doRegister(ItripUserVo user)throws Exception;
-
-
-     /**
-      *邮箱激活
-      */
-    Dto active(String userCode,String activeCode)throws Exception;
-
+    User selectByUserCode(String userCode);
 }
