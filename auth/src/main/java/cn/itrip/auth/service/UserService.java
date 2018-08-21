@@ -1,6 +1,8 @@
 package cn.itrip.auth.service;
 
+import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.User;
+import cn.itrip.beans.vo.ItripUserVo;
 
 import java.util.List;
 
@@ -28,9 +30,21 @@ public interface UserService {
 
     /**
      * 登录
-     * */
+     *
+     */
 
      User login(String userCode, String password) throws Exception;
 
+     /**
+      * 注册
+      *
+      */
+     Dto doRegister(ItripUserVo user)throws Exception;
+
+
+     /**
+      *邮箱激活
+      */
+    Dto active(String userCode,String activeCode)throws Exception;
 
 }

@@ -29,6 +29,13 @@
             <artifactId>mapper</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!--短信依赖-->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>cloopen</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,6 +1,8 @@
 package cn.itrip.beans.dto;
 
-public class Dto<T> {
+import java.io.Serializable;
+
+public class Dto<T> implements Serializable {
     //判断系统是否出错做出相应的true或者false的返回，与业务无关，出现的各种异常
     private String success;
     //该错误码为自定义，一般0表示无错
