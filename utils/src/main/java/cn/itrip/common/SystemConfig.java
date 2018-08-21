@@ -6,6 +6,11 @@ public class SystemConfig {
     private String smsAppID;
     private String smsServerIP;
     private String smsServerPort;
+    private String fileUploadPathString;
+    private String visitImgUrlString;
+    private String machineCode;
+    private String orderProcessOK;
+    private String orderProcessCancel;
 
     public void setSmsAccountSid(String smsAccountSid) {
         this.smsAccountSid = smsAccountSid;
@@ -45,5 +50,45 @@ public class SystemConfig {
 
     public String getSmsServerPort() {
         return smsServerPort;
+    }
+
+    public void setFileUploadPathString(String fileUploadPathString) {
+        this.fileUploadPathString = fileUploadPathString;
+    }
+
+    public String getFileUploadPathString() {
+        return fileUploadPathString;
+    }
+
+    public void setVisitImgUrlString(String visitImgUrlString) {
+        this.visitImgUrlString = visitImgUrlString;
+    }
+
+    public String getVisitImgUrlString() {
+        return visitImgUrlString;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setOrderProcessOK(String orderProcessOK) {
+        this.orderProcessOK = orderProcessOK;
+    }
+
+    public String getOrderProcessOK() {
+        return orderProcessOK;
+    }
+
+    public void setOrderProcessCancel(String orderProcessCancel) {
+        this.orderProcessCancel = orderProcessCancel;
+    }
+
+    public String getOrderProcessCancel() {
+        return orderProcessCancel;
     }
 }
