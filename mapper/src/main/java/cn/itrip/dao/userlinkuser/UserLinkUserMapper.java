@@ -4,10 +4,6 @@ import cn.itrip.beans.pojo.UserLinkUser;
 
 public interface UserLinkUserMapper {
 
-
-
-
-
     //以下是自动生成CURD
     int deleteByPrimaryKey(Long id);
 

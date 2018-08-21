@@ -3,11 +3,6 @@ package cn.itrip.dao.orderlinkuser;
 import cn.itrip.beans.pojo.OrderLinkUser;
 
 public interface OrderLinkUserMapper {
-
-
-
-
-
     //以下是自动生成CURD
     int deleteByPrimaryKey(Long id);
 

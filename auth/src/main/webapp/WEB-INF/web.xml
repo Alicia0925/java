@@ -42,6 +42,11 @@
   </filter-mapping>
   <!-- spring字符编码过滤器end-->
 
+  <!-- Spring配置 -->
+  <!-- 当系统启动的时候，spring需要进行一些资源加载或者配置，都需要使用此监听去做 -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
   <!-- Spring MVC配置 -->
   <servlet>
     <servlet-name>spring</servlet-name>
@@ -57,11 +62,6 @@
     <url-pattern>/</url-pattern>
   </servlet-mapping>
 
-  <!-- Spring配置 -->
-  <!-- 当系统启动的时候，spring需要进行一些资源加载或者配置，都需要使用此监听去做 -->
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
 
   <!-- log4j配置start -->
   <context-param>
