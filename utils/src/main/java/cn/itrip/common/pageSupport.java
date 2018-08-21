@@ -1,3 +1,4 @@
+
 package cn.itrip.common;
 
 import java.util.List;

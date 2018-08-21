@@ -1,3 +1,4 @@
+
 package cn.itrip.common;
 /**
  * 常量类

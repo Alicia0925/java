@@ -1,3 +1,4 @@
+
 package cn.itrip.controller;
 
 import cn.itrip.beans.dto.Dto;
@@ -26,23 +27,23 @@ public class UserLinkUserController {
 
     /**查旅客list
      * */
-@RequestMapping(value="list",method = RequestMethod.POST)
-@ApiOperation(value = "获取常用旅客信息",httpMethod = "post" )
-   public @ResponseBody Dto getList(@ApiParam(value = "页面输入") @RequestBody UserLinkUserVo linkUserVo){
-    Long userId=linkUserVo.getUserId()!=null? Long.parseLong(linkUserVo.getUserId()): null;
-    List<UserLinkUser> linkUsers=null;
-    Dto dto= new Dto();
-    if(userId==null){
-        dto.setErrorCode("100055");
-        dto.setMsg("请登录后查看！");
+    @RequestMapping(value="list",method = RequestMethod.POST)
+    @ApiOperation(value = "获取常用旅客信息",httpMethod = "post" )
+    public @ResponseBody Dto getList(@ApiParam(value = "页面输入") @RequestBody UserLinkUserVo linkUserVo){
+        Long userId=linkUserVo.getUserId()!=null? Long.parseLong(linkUserVo.getUserId()): null;
+        List<UserLinkUser> linkUsers=null;
+        Dto dto= new Dto();
+        if(userId==null){
+            dto.setErrorCode("100055");
+            dto.setMsg("请登录后查看！");
+        }
+        try {
+            linkUsers= userLinkUserService.getUserLinkUser(userId,linkUserVo.getLinkUserName());
+            dto.setData(linkUsers);
+            dto.setErrorCode("100056");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  dto;
     }
-    try {
-        linkUsers= userLinkUserService.getUserLinkUser(userId,linkUserVo.getLinkUserName());
-        dto.setData(linkUsers);
-        dto.setErrorCode("100056");
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-return  dto;
-}
 }
