@@ -16,4 +16,6 @@ public interface UserService {
     boolean updateByPrimaryKey(User record);
 
     User selectByUserCode(String userCode);
+
+    String sendActivationMail(String email);
 }
