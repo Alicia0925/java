@@ -3,19 +3,31 @@ package cn.itrip.auth.service;
 import cn.itrip.beans.pojo.User;
 
 public interface UserService {
-    boolean deleteByPrimaryKey(Long id);
 
-    boolean insert(User record);
+     boolean deleteByPrimaryKey(Long id)throws Exception ;
 
-    boolean insertSelective(User record);
 
-    User selectByPrimaryKey(Long id);
+     boolean add(User record)throws Exception ;
 
-    boolean updateByPrimaryKeySelective(User record);
 
-    boolean updateByPrimaryKey(User record);
+     boolean addSelective(User record) throws Exception;
 
-    User selectByUserCode(String userCode);
 
-    String sendActivationMail(String email);
+     User findtByPrimaryKey(Long id) throws Exception;
+
+
+     boolean modifyByPrimaryKeySelective(User record)throws Exception;
+
+
+     boolean modifyByPrimaryKey(User record)throws Exception ;
+
+
+
+     User findByUserCode(String userCode)throws Exception ;
+
+    /**
+     * login
+     */
+
+    public User login(String userCode, String userPassword) throws Exception;
 }
