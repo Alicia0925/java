@@ -1,19 +1,20 @@
 package cn.itrip.auth.controller;
 
+import cn.itrip.auth.service.TokenService;
 import cn.itrip.auth.service.UserService;
 import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.User;
 import cn.itrip.common.MD5;
+import cn.itrip.common.RedisAPI;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import utils.DtoUtil;
+import cn.itrip.common.DtoUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * 用户管理控制器
@@ -23,7 +24,10 @@ import java.util.Set;
 public class UserController {
     @Resource
     private UserService userService;
-
+    @Resource
+    private RedisAPI redisAPI;
+    @Resource
+    private TokenService tokenService;
     //邮箱验证
     private static String emailReg = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";
     //手机号码验证
@@ -33,13 +37,23 @@ public class UserController {
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public @ResponseBody Dto login(@RequestParam("userCode")String userCode,
                                    @RequestParam("password")String password,
-                                   HttpServletRequest httpServletRequest){
-        User user = new User();
-        user = userService.selectByUserCode(userCode);
+                                   HttpServletRequest request){
+        User user = null;
+        String token = null;
+        try {
+            user = userService.findByUserCode(userCode.trim());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (user!=null){
-            if (password.equals(user.getUserPassword())){
-                httpServletRequest.getSession().setAttribute("user",user);
-                return DtoUtil.returnSuccess();
+            if ((MD5.getMd5(password.trim(),32)).equals(user.getUserPassword())){
+                try {
+                    token = tokenService.generateToken(request.getHeader("user-agent"),user);
+                    tokenService.saveToken(token,user);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return DtoUtil.returnSuccess("登录成功");
             }else{
                 return DtoUtil.returnFail("用户密码错误","1201");
             }
@@ -51,43 +65,32 @@ public class UserController {
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public @ResponseBody Dto register(@RequestParam("userCode")String userCode,
                                       @RequestParam("password")String password,
-                                      @RequestParam(value = "activationCode",required = false)String activationCode,
                                       @RequestParam(value = "checkActivationCode",required = false)String checkActivationCode){
         User user = new User();
         if (userCode.contains("@")){//包含@ 判断是否是邮箱
             if (!userCode.matches(emailReg)){//如果不符合邮箱格式
-                return DtoUtil.returnFail("邮箱不符合规格","1205");
+                return DtoUtil.returnFail("邮箱地址不符合规格","1205");
             }else{
-                if (activationCode==null){//验证码为空，发送激活码
-                    DtoUtil.returnSuccess("activationCode","userService.sendActivationMail(userCode)");
+                user.setUserCode(userCode);
+                user.setUserPassword(MD5.getMd5(password,32));
+                user.setUserName(userCode);
+                if (redisAPI.get("activationCode")==null){//验证码为空，发送激活码
+//                    userService.sendActivationMail(userCode);
+                    redisAPI.set("activationCode",userService.sendActivationMail(userCode));
+                    return DtoUtil.returnSuccess("邮件已发送，请输入验证码");
                 }else{
-                    if (activationCode.equals(checkActivationCode)){//判断验证码是否正确
-                        user.setUserCode(userCode);
-                        user.setUserPassword(password);
-                        user.setUserType(0);
-                        user.setActivated(1);
-                        userService.insert(user);
+                    if (isActivationCodeTrue(checkActivationCode,user)){
                         return DtoUtil.returnSuccess("注册成功，请返回首页登录");
-                    }else{
-                        return DtoUtil.returnFail("验证码输入错误","1206");
                     }
+                    return DtoUtil.returnFail("注册失败，请重试","1204");
                 }
             }
         }else{
             if (!userCode.matches(phoneReg)){
                 return DtoUtil.returnFail("号码不符合规格","1206");
             }else{
-                if (activationCode!=null){
-                    if (activationCode.equals(checkActivationCode)){//判断验证码是否正确
-                        user.setUserCode(userCode);
-                        user.setUserPassword(password);
-                        user.setUserType(0);
-                        user.setActivated(1);
-                        userService.insert(user);
-                        return DtoUtil.returnSuccess("注册成功，请返回首页登录");
-                    }else{
-                        return DtoUtil.returnFail("验证码输入错误","1206");
-                    }
+                if (redisAPI.get("activationCode")!=null){
+                    isActivationCodeTrue(checkActivationCode,user);
                 }else{
                     HashMap<String, Object> result = null;
                     CCPRestSmsSDK restAPI = new CCPRestSmsSDK();
@@ -97,28 +100,33 @@ public class UserController {
                     // 初始化主账号名称和主账号令牌，登陆云通讯网站后，可在控制首页中看到开发者主账号ACCOUNT SID和主账号令牌AUTH TOKEN。
                     restAPI.setAppId("AppId");
                     // 请使用管理控制台中已创建应用的APPID。
-                    result = restAPI.sendTemplateSMS(userCode,"1",new String[]{"您的验证码为"+MD5.getMd5(new Date().toString(),6)});
-                    System.out.println("SDKTestGetSubAccounts result=" + result);
-                    if("000000".equals(result.get("statusCode"))){
-                        //正常返回输出data包体信息（map）
-                        HashMap<String,Object> data = (HashMap<String, Object>) result.get("data");
-                        Set<String> keySet = data.keySet();
-                        for(String key:keySet){
-                            Object object = data.get(key);
-                            System.out.println(key +" = "+object);
-                        }
-                    }
-                    return DtoUtil.returnSuccess("注册成功，请返回首页登录");
+                    String activationCode2 = MD5.getMd5(new Date().toString(),5);
+                    result = restAPI.sendTemplateSMS(userCode,"1",new String[]{"您的验证码为"+activationCode2});
+                    return DtoUtil.returnSuccess("验证码已发送，请输入验证码");
                 }
             }
         }
         return DtoUtil.returnFail("注册失败","1203");
     }
     //注销的方法
-    // @RequestMapping(value = "/logOut",method = RequestMethod.POST)
-    public @ResponseBody Dto logOut(HttpServletRequest httpServletRequest){
-        httpServletRequest.removeAttribute("user");
+    @RequestMapping(value = "/logOut",method = RequestMethod.POST)
+    public @ResponseBody Dto logOut(@RequestParam("id")String userId){
+        redisAPI.delete(userId);
         return DtoUtil.returnSuccess();
     }
-
+    //判断验证码是否正确的方法
+    private boolean isActivationCodeTrue(String checkActivationCode,User user){
+        if (redisAPI.get("activationCode").equals(checkActivationCode)){//判断验证码是否正确
+            user.setUserType(0);
+            user.setActivated(1);
+            try {
+                userService.add(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

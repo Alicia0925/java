@@ -15,7 +15,7 @@ public class RedisAPI {
         this.jedisPool = jedisPool;
     }
     /**
-     * set key and value to redis
+     * 往redis里放入数据
      * @param key
      * @param value
      * @return

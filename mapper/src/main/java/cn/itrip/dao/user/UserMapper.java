@@ -5,10 +5,6 @@ import org.apache.ibatis.annotations.Param;
 
 public interface UserMapper {
 
-
-
-
-
     //以下是自动生成CURD
     int deleteByPrimaryKey(Long id);
 
@@ -24,6 +20,5 @@ public interface UserMapper {
     /**
      * 查byUserCode
      * */
-
     User selectByUserCode(@Param("userCode") String userCode);
 }

@@ -223,7 +223,7 @@
   </update>
 
   <!--查byUserCode-->
-  <select id="selectByUserCode" resultMap="BaseResultMap" parameterType="string">
+  <select id="selectByUserCode" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
     from  `itrip_user` where userCode=#{userCode};

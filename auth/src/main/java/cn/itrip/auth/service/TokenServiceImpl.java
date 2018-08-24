@@ -35,6 +35,7 @@ public class TokenServiceImpl implements TokenService {
         sb.append(MD5.getMd5(user.getUserCode(), 32) + "-");
         //userId
         sb.append(user.getId().toString()+"-");
+        //
         //生成时间
         sb.append(new SimpleDateFormat("yyyyMMddHHmm").format(new Date())+"-");
         //6位随机
@@ -42,9 +43,10 @@ public class TokenServiceImpl implements TokenService {
 
         return sb.toString();
     }
-/**
- * 保存token
- * */
+
+    /**
+     * 保存token
+     * */
     @Override
     public void saveToken(String token, User user) throws Exception {
         //判断
@@ -53,22 +55,34 @@ public class TokenServiceImpl implements TokenService {
         }else{
             redisAPI.set(token, JSON.toJSONString(user));
         }
-
     }
-/**验证token*/
+    /**验证token*/
     @Override
     public boolean validate(String userAgent, String token) throws Exception {
 
         if(!redisAPI.exist(token))
-        return false;
+            return false;
         String agentMD5 =token.split("-")[4];
         if(MD5.getMd5(userAgent,6).equals(agentMD5))
             return false;
         return true;
     }
-/**删除token*/
+
     @Override
-    public void delete(String token) {
+    public User load(String token) throws Exception{
+        if (!redisAPI.exist(token))
+            return null;
+        return JSON.parseObject(redisAPI.get(token),User.class);
+    }
+
+    /**删除token*/
+    @Override
+    public void delete(String token) throws Exception{
         redisAPI.delete(token);
+    }
+
+    @Override
+    public String replaceToken(String agent, String token) throws Exception {
+        return null;
     }
 }

@@ -30,4 +30,6 @@ public interface UserService {
      */
 
     public User login(String userCode, String userPassword) throws Exception;
+
+    String sendActivationMail(String email);
 }

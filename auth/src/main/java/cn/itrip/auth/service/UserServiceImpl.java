@@ -1,16 +1,23 @@
 package cn.itrip.auth.service;
 
 import cn.itrip.beans.pojo.User;
+import cn.itrip.common.MD5;
 import cn.itrip.dao.user.UserMapper;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService  {
     @Resource
     private UserMapper userMapper;
-
+    @Resource
+    private MailSender mailSender;
+    @Resource
+    private SimpleMailMessage simpleMailMessage;
     @Override
     public boolean deleteByPrimaryKey(Long id)throws Exception {
         if (userMapper.deleteByPrimaryKey(id) > 0) {
@@ -68,4 +75,18 @@ public class UserServiceImpl implements UserService  {
         }
         return null;
     }
+    /**
+     * 发送验证邮件
+     * @param email
+     */
+    @Override
+    public String sendActivationMail(String email){
+        String activationCode = MD5.getMd5(new Date().toString(),12);
+        simpleMailMessage.setTo(email);
+        simpleMailMessage.setText("注册邮箱"+email+"激活码"+activationCode);
+        mailSender.send(simpleMailMessage);
+        return activationCode;
+    }
+
+
 }

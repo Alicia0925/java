@@ -5,13 +5,13 @@ import cn.itrip.auth.service.UserService;
 import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.User;
 import cn.itrip.beans.vo.TokenVo;
+import cn.itrip.common.DtoUtil;
 import cn.itrip.common.MD5;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import utils.DtoUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
