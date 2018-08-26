@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * 用户管理控制器
@@ -82,15 +83,18 @@ public class UserController {
                     if (isActivationCodeTrue(checkActivationCode,user)){
                         return DtoUtil.returnSuccess("注册成功，请返回首页登录");
                     }
-                    return DtoUtil.returnFail("注册失败，请重试","1204");
+                    return DtoUtil.returnFail("验证码错误，请重试","1204");
                 }
             }
         }else{
-            if (!userCode.matches(phoneReg)){
+            if (!(userCode.trim()).matches(phoneReg)){
                 return DtoUtil.returnFail("号码不符合规格","1206");
             }else{
                 if (redisAPI.get("activationCode")!=null){
-                    isActivationCodeTrue(checkActivationCode,user);
+                    if (isActivationCodeTrue(checkActivationCode,user)){
+                        return DtoUtil.returnSuccess("注册成功，请返回首页登录");
+                    }
+                    return DtoUtil.returnFail("验证码输入错误，请重试","1204");
                 }else{
                     HashMap<String, Object> result = null;
                     CCPRestSmsSDK restAPI = new CCPRestSmsSDK();
@@ -98,15 +102,27 @@ public class UserController {
                     // 初始化服务器地址和端口，生产环境配置成app.cloopen.com，端口是8883.
                     restAPI.setAccount("8aaf07086541761801655a28e4eb0edc", "f8809f8794b2400197a54abdcae0d8dd");
                     // 初始化主账号名称和主账号令牌，登陆云通讯网站后，可在控制首页中看到开发者主账号ACCOUNT SID和主账号令牌AUTH TOKEN。
-                    restAPI.setAppId("AppId");
+                    restAPI.setAppId("8aaf07086541761801655a28e5450ee3");
+                    String activationCode = MD5.getMd5(new Date().toString(),4);
+                    redisAPI.set("activationCode",120,activationCode);
                     // 请使用管理控制台中已创建应用的APPID。
-                    String activationCode2 = MD5.getMd5(new Date().toString(),5);
-                    result = restAPI.sendTemplateSMS(userCode,"1",new String[]{"您的验证码为"+activationCode2});
-                    return DtoUtil.returnSuccess("验证码已发送，请输入验证码");
+                    result = restAPI.sendTemplateSMS(userCode,"1" ,new String[]{activationCode,"2"});
+                    if("000000".equals(result.get("statusCode"))){
+                        //正常返回输出data包体信息（map）
+                        HashMap<String,Object> data = (HashMap<String, Object>) result.get("data");
+                        Set<String> keySet = data.keySet();
+                        for(String key:keySet){
+                            Object object = data.get(key);
+                            System.out.println(key +" = "+object);
+                        }
+                    }else{
+                        //异常返回输出错误码和错误信息
+                        System.out.println("错误码=" + result.get("statusCode") +" 错误信息= "+result.get("statusMsg"));
+                    }
+                    return DtoUtil.returnSuccess("短信已发送，请输入验证码");
                 }
             }
         }
-        return DtoUtil.returnFail("注册失败","1203");
     }
     //注销的方法
     @RequestMapping(value = "/logOut",method = RequestMethod.POST)

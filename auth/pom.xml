@@ -33,7 +33,7 @@
         <!--短信依赖-->
         <dependency>
             <groupId>com.oracle</groupId>
-            <artifactId>cloopen</artifactId>
+            <artifactId>yuntongxun</artifactId>
             <version>1.0</version>
         </dependency>
         <!--UserAgentUtils-->
