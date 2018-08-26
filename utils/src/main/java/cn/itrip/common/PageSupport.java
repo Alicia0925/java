@@ -3,7 +3,7 @@ package cn.itrip.common;
 
 import java.util.List;
 
-public class pageSupport<T> {
+public class PageSupport<T> {
     private Integer pageSize=Constants.PAGE_SIZE;
     private Integer totalCount;
     private Integer totalPage;

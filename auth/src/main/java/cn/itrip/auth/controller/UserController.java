@@ -80,7 +80,7 @@ public class UserController {
                     redisAPI.set("activationCode",userService.sendActivationMail(userCode));
                     return DtoUtil.returnSuccess("邮件已发送，请输入验证码");
                 }else{
-                    if (isActivationCodeTrue(checkActivationCode,user)){
+                    if (userService.isActivationCodeTrue(checkActivationCode,user)){
                         return DtoUtil.returnSuccess("注册成功，请返回首页登录");
                     }
                     return DtoUtil.returnFail("验证码错误，请重试","1204");
@@ -91,7 +91,7 @@ public class UserController {
                 return DtoUtil.returnFail("号码不符合规格","1206");
             }else{
                 if (redisAPI.get("activationCode")!=null){
-                    if (isActivationCodeTrue(checkActivationCode,user)){
+                    if (userService.isActivationCodeTrue(checkActivationCode,user)){
                         return DtoUtil.returnSuccess("注册成功，请返回首页登录");
                     }
                     return DtoUtil.returnFail("验证码输入错误，请重试","1204");
@@ -130,19 +130,5 @@ public class UserController {
         redisAPI.delete(userId);
         return DtoUtil.returnSuccess();
     }
-    //判断验证码是否正确的方法
-    private boolean isActivationCodeTrue(String checkActivationCode,User user){
-        if (redisAPI.get("activationCode").equals(checkActivationCode)){//判断验证码是否正确
-            user.setUserType(0);
-            user.setActivated(1);
-            try {
-                userService.add(user);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return true;
-        }else{
-            return false;
-        }
-    }
+
 }

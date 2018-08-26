@@ -2,6 +2,7 @@ package cn.itrip.auth.service;
 
 import cn.itrip.beans.pojo.User;
 import cn.itrip.common.MD5;
+import cn.itrip.common.RedisAPI;
 import cn.itrip.dao.user.UserMapper;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,6 +19,8 @@ public class UserServiceImpl implements UserService  {
     private MailSender mailSender;
     @Resource
     private SimpleMailMessage simpleMailMessage;
+    @Resource
+    private RedisAPI redisAPI;
     @Override
     public boolean deleteByPrimaryKey(Long id)throws Exception {
         if (userMapper.deleteByPrimaryKey(id) > 0) {
@@ -88,5 +91,19 @@ public class UserServiceImpl implements UserService  {
         return activationCode;
     }
 
-
+    //判断验证码是否正确的方法
+    public boolean isActivationCodeTrue(String checkActivationCode,User user){
+        if (redisAPI.get("activationCode").equals(checkActivationCode)){//判断验证码是否正确
+            user.setUserType(0);
+            user.setActivated(1);
+            try {
+                add(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

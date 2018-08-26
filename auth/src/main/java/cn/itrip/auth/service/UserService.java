@@ -4,26 +4,26 @@ import cn.itrip.beans.pojo.User;
 
 public interface UserService {
 
-     boolean deleteByPrimaryKey(Long id)throws Exception ;
+    boolean deleteByPrimaryKey(Long id)throws Exception ;
 
 
-     boolean add(User record)throws Exception ;
+    boolean add(User record)throws Exception ;
 
 
-     boolean addSelective(User record) throws Exception;
+    boolean addSelective(User record) throws Exception;
 
 
-     User findtByPrimaryKey(Long id) throws Exception;
+    User findtByPrimaryKey(Long id) throws Exception;
 
 
-     boolean modifyByPrimaryKeySelective(User record)throws Exception;
+    boolean modifyByPrimaryKeySelective(User record)throws Exception;
 
 
-     boolean modifyByPrimaryKey(User record)throws Exception ;
+    boolean modifyByPrimaryKey(User record)throws Exception ;
 
 
 
-     User findByUserCode(String userCode)throws Exception ;
+    User findByUserCode(String userCode)throws Exception ;
 
     /**
      * login
@@ -32,4 +32,6 @@ public interface UserService {
     public User login(String userCode, String userPassword) throws Exception;
 
     String sendActivationMail(String email);
+
+    boolean isActivationCodeTrue(String checkActivationCode,User user);
 }
