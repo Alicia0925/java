@@ -34,4 +34,5 @@ public interface UserService {
     String sendActivationMail(String email);
 
     boolean isActivationCodeTrue(String checkActivationCode,User user);
+    void addNewUser(User user,int isEmail) throws Exception;
 }

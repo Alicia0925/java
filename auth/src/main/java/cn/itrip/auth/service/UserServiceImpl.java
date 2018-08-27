@@ -1,8 +1,10 @@
 package cn.itrip.auth.service;
 
 import cn.itrip.beans.pojo.User;
+import cn.itrip.common.DtoUtil;
 import cn.itrip.common.MD5;
 import cn.itrip.common.RedisAPI;
+import cn.itrip.common.SendMessage;
 import cn.itrip.dao.user.UserMapper;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService  {
     private SimpleMailMessage simpleMailMessage;
     @Resource
     private RedisAPI redisAPI;
+
     @Override
     public boolean deleteByPrimaryKey(Long id)throws Exception {
         if (userMapper.deleteByPrimaryKey(id) > 0) {
@@ -104,6 +107,21 @@ public class UserServiceImpl implements UserService  {
             return true;
         }else{
             return false;
+        }
+    }
+
+    public void addNewUser(User user,int isEmail) throws Exception {
+        user.setUserCode(user.getUserCode());
+        user.setUserPassword(MD5.getMd5(user.getUserPassword(),32));
+        user.setUserName(user.getUserName());
+        add(user);
+        if (isEmail==0){
+            redisAPI.set("activationCode",sendActivationMail(user.getUserCode()));
+        }else{
+            String activationCode = MD5.getMd5(new Date().toString(),4);
+            redisAPI.set("activationCode",120,activationCode);
+            SendMessage sendMessage = new SendMessage();
+            sendMessage.sendMessage(user.getUserCode(),activationCode);
         }
     }
 }

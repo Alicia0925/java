@@ -6,7 +6,9 @@ import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.User;
 import cn.itrip.common.MD5;
 import cn.itrip.common.RedisAPI;
+import cn.itrip.common.SendMessage;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import cn.itrip.common.DtoUtil;
@@ -34,10 +36,12 @@ public class UserController {
     //手机号码验证
     private static String phoneReg = "1[358]\\d{9}";
 
+    private SendMessage sendMessage = new SendMessage();
+
     //登录的方法
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public @ResponseBody Dto login(@RequestParam("userCode")String userCode,
-                                   @RequestParam("password")String password,
+    @RequestMapping(value = "/dologin",method = RequestMethod.POST)
+    public @ResponseBody Dto login(@RequestParam("name")String userCode,
+                                   @RequestParam(value = "password",required = false)String password,
                                    HttpServletRequest request){
         User user = null;
         String token = null;
@@ -54,7 +58,8 @@ public class UserController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return DtoUtil.returnSuccess("登录成功");
+
+                return DtoUtil.returnSuccess("登录成功",token);
             }else{
                 return DtoUtil.returnFail("用户密码错误","1201");
             }
@@ -62,66 +67,50 @@ public class UserController {
         return DtoUtil.returnFail("该邮箱或手机号尚未注册，请注册后继续登录","1202");
     }
 
+    //判断该userCode是否已被注册
+    @RequestMapping("/ckusr")
+    public @ResponseBody Dto ckusr(@RequestParam("name")String userCode){
+        try {
+            if (userService.findByUserCode(userCode)!=null){
+                return DtoUtil.returnFail("已被注册","");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return DtoUtil.returnSuccess();
+    }
+
     //注册的方法
-    @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public @ResponseBody Dto register(@RequestParam("userCode")String userCode,
-                                      @RequestParam("password")String password,
-                                      @RequestParam(value = "checkActivationCode",required = false)String checkActivationCode){
-        User user = new User();
-        if (userCode.contains("@")){//包含@ 判断是否是邮箱
-            if (!userCode.matches(emailReg)){//如果不符合邮箱格式
-                return DtoUtil.returnFail("邮箱地址不符合规格","1205");
-            }else{
-                user.setUserCode(userCode);
-                user.setUserPassword(MD5.getMd5(password,32));
-                user.setUserName(userCode);
-                if (redisAPI.get("activationCode")==null){//验证码为空，发送激活码
-//                    userService.sendActivationMail(userCode);
-                    redisAPI.set("activationCode",userService.sendActivationMail(userCode));
-                    return DtoUtil.returnSuccess("邮件已发送，请输入验证码");
-                }else{
-                    if (userService.isActivationCodeTrue(checkActivationCode,user)){
-                        return DtoUtil.returnSuccess("注册成功，请返回首页登录");
-                    }
-                    return DtoUtil.returnFail("验证码错误，请重试","1204");
-                }
-            }
+    @RequestMapping(value = "/doregister",method = RequestMethod.POST)
+    public @ResponseBody Dto doregister(@RequestBody User user){
+        int isEmail = 0;
+        if (!user.getUserCode().matches(emailReg)){//如果不符合邮箱格式
+            return DtoUtil.returnFail("邮箱地址不符合规格","1205");
         }else{
-            if (!(userCode.trim()).matches(phoneReg)){
-                return DtoUtil.returnFail("号码不符合规格","1206");
-            }else{
-                if (redisAPI.get("activationCode")!=null){
-                    if (userService.isActivationCodeTrue(checkActivationCode,user)){
-                        return DtoUtil.returnSuccess("注册成功，请返回首页登录");
-                    }
-                    return DtoUtil.returnFail("验证码输入错误，请重试","1204");
-                }else{
-                    HashMap<String, Object> result = null;
-                    CCPRestSmsSDK restAPI = new CCPRestSmsSDK();
-                    restAPI.init("app.cloopen.com", "8883");
-                    // 初始化服务器地址和端口，生产环境配置成app.cloopen.com，端口是8883.
-                    restAPI.setAccount("8aaf07086541761801655a28e4eb0edc", "f8809f8794b2400197a54abdcae0d8dd");
-                    // 初始化主账号名称和主账号令牌，登陆云通讯网站后，可在控制首页中看到开发者主账号ACCOUNT SID和主账号令牌AUTH TOKEN。
-                    restAPI.setAppId("8aaf07086541761801655a28e5450ee3");
-                    String activationCode = MD5.getMd5(new Date().toString(),4);
-                    redisAPI.set("activationCode",120,activationCode);
-                    // 请使用管理控制台中已创建应用的APPID。
-                    result = restAPI.sendTemplateSMS(userCode,"1" ,new String[]{activationCode,"2"});
-                    if("000000".equals(result.get("statusCode"))){
-                        //正常返回输出data包体信息（map）
-                        HashMap<String,Object> data = (HashMap<String, Object>) result.get("data");
-                        Set<String> keySet = data.keySet();
-                        for(String key:keySet){
-                            Object object = data.get(key);
-                            System.out.println(key +" = "+object);
-                        }
-                    }else{
-                        //异常返回输出错误码和错误信息
-                        System.out.println("错误码=" + result.get("statusCode") +" 错误信息= "+result.get("statusMsg"));
-                    }
-                    return DtoUtil.returnSuccess("短信已发送，请输入验证码");
-                }
+            try {
+                userService.addNewUser(user,isEmail);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("","");
             }
+            return DtoUtil.returnSuccess("注册成功");
+        }
+    }
+
+    //通过手机号码注册
+    @RequestMapping("/registerbyphone")
+    public @ResponseBody Dto registerbyphone(@RequestBody User user){
+        int isEmail=1;
+        if (!(user.getUserCode().trim()).matches(phoneReg)){
+            return DtoUtil.returnFail("号码不符合规格","1206");
+        }else{
+            try {
+                userService.addNewUser(user,isEmail);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("","");
+            }
+            return DtoUtil.returnSuccess("注册成功");
         }
     }
     //注销的方法
@@ -131,4 +120,33 @@ public class UserController {
         return DtoUtil.returnSuccess();
     }
 
+    //判断验证码是否匹配的方法（邮箱）
+    @RequestMapping("/activate")
+    public @ResponseBody Dto activate(@RequestParam("code")String code,
+                                      @RequestParam("user")String userCode){
+        return ckAcCode(code,userCode);
+    }
+    //判断验证码是否匹配的方法(手机)
+    @RequestMapping("/validatephone")
+    public @ResponseBody Dto validatephone(@RequestParam("code")String code,
+                                      @RequestParam("user")String userCode){
+        return ckAcCode(code,userCode);
+    }
+
+    public Dto ckAcCode(String code,
+                        String userCode){
+        User user = null;
+        if (code.equals(redisAPI.get("activationCode"))){
+            try {
+                user = userService.findByUserCode(userCode);
+                user.setActivated(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("","");
+            }
+            redisAPI.delete("activationCode");
+            return DtoUtil.returnSuccess();
+        }
+        return DtoUtil.returnFail("","");
+    }
 }

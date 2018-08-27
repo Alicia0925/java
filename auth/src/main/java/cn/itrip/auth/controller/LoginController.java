@@ -38,8 +38,9 @@ public class LoginController {
                 String token = tokenService.generateToken(userAgent, user);
                 tokenService.saveToken(token, user);
                 TokenVo vo = new TokenVo(token, Calendar.getInstance().getTimeInMillis() + 2 * 60 * 60 * 1000, Calendar.getInstance().getTimeInMillis());
-                return DtoUtil.returnDataSuccess(vo);
-
+                Dto dto= DtoUtil.returnDataSuccess(vo);
+                dto.setData(user);
+                return dto;
             } else {
                 return DtoUtil.returnFail("用户密码错误", "10034");
             }

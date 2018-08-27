@@ -12,6 +12,7 @@ public class RedisAPI {
     }
 
     public void setJedisPool(JedisPool jedisPool) {
+
         this.jedisPool = jedisPool;
     }
     /**
