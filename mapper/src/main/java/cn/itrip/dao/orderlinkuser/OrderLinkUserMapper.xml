@@ -25,7 +25,15 @@
     from itrip_order_link_user
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+
+  <!--根据订单号查询旅客-->
+    <select id="selectByOrderId" resultType="cn.itrip.beans.pojo.OrderLinkUser">
+      select
+      <include refid="Base_Column_List" />
+      from itrip_order_link_user
+      where orderId=#{orderId}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_order_link_user
     where id = #{id,jdbcType=BIGINT}
   </delete>

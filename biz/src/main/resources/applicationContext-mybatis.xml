@@ -80,7 +80,9 @@
 		<constructor-arg value="${redis.host}"/>
 		<constructor-arg value="${redis.port}"/>
 		<constructor-arg value="${redis.timeout}"/>
-		<constructor-arg value="${redis.pass}"/>
+		<constructor-arg>
+			<null></null>
+		</constructor-arg>
 		<constructor-arg value="${redis.default.db}"/>
 	</bean>
 	<bean id="redisAPI" class="cn.itrip.common.RedisAPI">

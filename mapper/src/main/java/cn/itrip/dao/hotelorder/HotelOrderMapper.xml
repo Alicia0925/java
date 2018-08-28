@@ -42,10 +42,6 @@
     specialRequirement
   </sql>
 
-
-
-
-  <!--以下是自动生成CURD-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
@@ -54,6 +50,120 @@
     from itrip_hotel_order
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <!--查询个人订单列表
+  itrip_hotel_order  itrip_oder_link_user
+
+  参数：
+  订单编号模糊查询
+  旅客姓名模糊查询
+  预订时间
+  结束时间
+  订单状态
+  订单类型
+  分页
+  近一年内的订单
+  默认降序排列
+
+  返回：
+  订单号，酒店名，预订时间，结束时间，订单状态
+  订单类型，旅客名称
+  -->
+  <select id="selectByMap" resultType="cn.itrip.beans.vo.order.HotelOrderVO">
+    select
+    id,orderType,orderNo,hotelId,hotelName,orderStatus,
+    count,checkInDate,payAmount,payType,linkUserName,creationDate
+    from itrip_hotel_order
+    <trim prefix="where" prefixOverrides="and | or">
+      <if test="id != null and id!=''">
+        and id=#{id}
+      </if>
+      <if test="userId != null and userId!=''">
+        and userId=#{userId}
+      </if>
+      <if test="orderType != null">
+        and orderType=#{orderType}
+      </if>
+      <if test="orderNo != null and orderNo!=''">
+        and orderNo like CONCAT ('%',#{orderNo},'%')
+      </if>
+      <if test="hotelId != null and hotelId!=''">
+        and hotelId=#{hotelId}
+      </if>
+      <if test="hotelName != null and hotelName!=''">
+        and hotelName=#{hotelName}
+      </if>
+      <if test="checkInDate != null and checkInDate!=''">
+        and checkInDate=#{checkInDate}
+      </if>
+      <if test="orderStatus != null">
+        and orderStatus=#{orderStatus}
+      </if>
+      <if test="payAmount != null and payAmount!=''">
+        and payAmount=#{payAmount}
+      </if>
+      <if test="linkUserName != null and linkUserName != ''">
+        and linkUserName like CONCAT ('%',#{linkUserName},'%')
+      </if>
+      <if test="startDate != null and startDate!=''">
+        and creationDate &gt;= #{startDate}
+      </if>
+      <if test="endDate != null and endDate!=''">
+        and creationDate &lt;= #{endDate}
+      </if>
+      and creationDate between date_sub(now(),interval 1 year) and now()
+    </trim>
+    order by creationDate desc
+    <if test="offset != null and pageSize != null ">
+    limit #{offset},#{pageSize}
+    </if>
+ </select>
+
+  <!--count 查询个人订单总数-->
+
+  <select id="CountOrderByMap" resultType="Integer"  parameterType="java.util.Map">
+    select count(*) from itrip_hotel_order
+    <trim prefix="where" prefixOverrides="and | or">
+      <if test="id != null and id!=''">
+        and id=#{id}
+      </if>
+      <if test="userId != null and userId!=''">
+        and userId=#{userId}
+      </if>
+      <if test="orderType != null">
+        and orderType=#{orderType}
+      </if>
+      <if test="orderNo != null and orderNo!=''">
+        and orderNo like CONCAT ('%',#{orderNo},'%')
+      </if>
+      <if test="hotelId != null and hotelId!=''">
+        and hotelId=#{hotelId}
+      </if>
+      <if test="hotelName != null and hotelName!=''">
+        and hotelName=#{hotelName}
+      </if>
+      <if test="checkInDate != null and checkInDate!=''">
+        and checkInDate=#{checkInDate}
+      </if>
+      <if test="orderStatus != null">
+        and orderStatus=#{orderStatus}
+      </if>
+      <if test="payAmount != null and payAmount!=''">
+        and payAmount=#{payAmount}
+      </if>
+      <if test="linkUserName != null and linkUserName != ''">
+        and linkUserName like CONCAT ('%',#{linkUserName},'%')
+      </if>
+      <if test="startDate != null and startDate!=''">
+        and creationDate &gt;= #{startDate}
+      </if>
+      <if test="endDate != null and endDate!=''">
+        and creationDate &lt;= #{endDate}
+      </if>
+    </trim>
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_hotel_order
     where id = #{id,jdbcType=BIGINT}

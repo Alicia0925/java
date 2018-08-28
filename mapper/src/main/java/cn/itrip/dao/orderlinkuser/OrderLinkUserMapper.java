@@ -2,17 +2,27 @@ package cn.itrip.dao.orderlinkuser;
 
 import cn.itrip.beans.pojo.OrderLinkUser;
 
+import java.util.List;
+
 public interface OrderLinkUserMapper {
     //以下是自动生成CURD
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(Long id)throws Exception;
 
-    int insert(OrderLinkUser record);
+    int insert(OrderLinkUser record)throws Exception;
 
-    int insertSelective(OrderLinkUser record);
+    int insertSelective(OrderLinkUser record)throws Exception;
 
-    OrderLinkUser selectByPrimaryKey(Long id);
+    OrderLinkUser selectByPrimaryKey(Long id)throws Exception;
 
-    int updateByPrimaryKeySelective(OrderLinkUser record);
+    int updateByPrimaryKeySelective(OrderLinkUser record)throws Exception;
 
-    int updateByPrimaryKey(OrderLinkUser record);
+    int updateByPrimaryKey(OrderLinkUser record)throws Exception;
+
+   /**
+    *
+    * @param orderId
+    * @return
+    * */
+   List<OrderLinkUser> selectByOrderId(Long orderId)throws Exception;
+
 }
