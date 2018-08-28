@@ -63,7 +63,7 @@ public class TokenServiceImpl implements TokenService {
         if(!redisAPI.exist(token))
             return false;
         String agentMD5 =token.split("-")[4];
-        if(MD5.getMd5(userAgent,6).equals(agentMD5))
+        if(!MD5.getMd5(userAgent,6).equals(agentMD5))
             return false;
         return true;
     }

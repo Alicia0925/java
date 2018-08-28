@@ -4,20 +4,14 @@ import cn.itrip.auth.service.TokenService;
 import cn.itrip.auth.service.UserService;
 import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.User;
-import cn.itrip.common.MD5;
-import cn.itrip.common.RedisAPI;
-import cn.itrip.common.SendMessage;
-import com.cloopen.rest.sdk.CCPRestSmsSDK;
-import org.springframework.scheduling.annotation.Scheduled;
+import cn.itrip.beans.vo.TokenVo;
+import cn.itrip.common.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import cn.itrip.common.DtoUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.Calendar;
 
 /**
  * 用户管理控制器
@@ -58,8 +52,12 @@ public class UserController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+//返回ItripTokenVO
+                TokenVo tokenVo=new TokenVo(token,
+                        Calendar.getInstance().getTimeInMillis()+TokenService.SESSION_TIMEOUT*1000,//2h有效期
+                        Calendar.getInstance().getTimeInMillis());
 
-                return DtoUtil.returnSuccess("登录成功",token);
+                return DtoUtil.returnDataSuccess(tokenVo);
             }else{
                 return DtoUtil.returnFail("用户密码错误","1201");
             }
@@ -68,7 +66,7 @@ public class UserController {
     }
 
     //判断该userCode是否已被注册
-    @RequestMapping("/ckusr")
+    @RequestMapping(value = "/ckusr",method=RequestMethod.GET)
     public @ResponseBody Dto ckusr(@RequestParam("name")String userCode){
         try {
             if (userService.findByUserCode(userCode)!=null){
@@ -97,8 +95,8 @@ public class UserController {
         }
     }
 
-    //通过手机号码注册
-    @RequestMapping("/registerbyphone")
+   // 通过手机号码注册
+    @RequestMapping(value = "/registerbyphone",method=RequestMethod.POST)
     public @ResponseBody Dto registerbyphone(@RequestBody User user){
         int isEmail=1;
         if (!(user.getUserCode().trim()).matches(phoneReg)){
@@ -113,26 +111,36 @@ public class UserController {
             return DtoUtil.returnSuccess("注册成功");
         }
     }
-    //注销的方法
-    @RequestMapping(value = "/logOut",method = RequestMethod.POST)
-    public @ResponseBody Dto logOut(@RequestParam("id")String userId){
-        redisAPI.delete(userId);
-        return DtoUtil.returnSuccess();
-    }
 
     //判断验证码是否匹配的方法（邮箱）
-    @RequestMapping("/activate")
+    @RequestMapping(value="/activate",method = RequestMethod.PUT)
     public @ResponseBody Dto activate(@RequestParam("code")String code,
                                       @RequestParam("user")String userCode){
         return ckAcCode(code,userCode);
     }
     //判断验证码是否匹配的方法(手机)
-    @RequestMapping("/validatephone")
+    @RequestMapping(value = "/validatephone",method = RequestMethod.PUT)
     public @ResponseBody Dto validatephone(@RequestParam("code")String code,
                                       @RequestParam("user")String userCode){
         return ckAcCode(code,userCode);
     }
+    //注销的方法
+    @RequestMapping(value = "/logout",method = RequestMethod.GET)
+    public @ResponseBody Dto logout(HttpServletRequest request){
 
+        String token = request.getHeader("token");
+        try {
+            if(!tokenService.validate(request.getHeader("user-agent"), token))
+                return DtoUtil.returnFail("token无效", ErrorCode.AUTH_TOKEN_INVALID);
+            //删除token和信息
+            tokenService.delete(token);
+            return DtoUtil.returnSuccess("注销成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("注销失败", ErrorCode.AUTH_UNKNOWN);
+        }
+       // return null;
+    }
     public Dto ckAcCode(String code,
                         String userCode){
         User user = null;
@@ -149,4 +157,5 @@ public class UserController {
         }
         return DtoUtil.returnFail("","");
     }
+
 }
