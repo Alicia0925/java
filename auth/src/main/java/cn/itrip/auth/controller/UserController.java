@@ -30,7 +30,7 @@ public class UserController {
     //手机号码验证
     private static String phoneReg = "1[358]\\d{9}";
 
-    private SendMessage sendMessage = new SendMessage();
+
 
     //登录的方法
     @RequestMapping(value = "/dologin",method = RequestMethod.POST)
