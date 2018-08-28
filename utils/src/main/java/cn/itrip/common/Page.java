@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @version v1.0
  * @author XX
- *
+ * @date Sep 21, 2011
  *
  */
 public class Page<T> {
@@ -28,14 +28,13 @@ public class Page<T> {
     /**
      * 结果集中数据的起始位置  .
      */
-    private Integer offset;
+    private Integer beginPos;
     /**
      * List 集合.
      */
     private List<T> rows;
 
     public Page() {
-
     }
     /**
      * 当前页面 .
@@ -48,19 +47,18 @@ public class Page<T> {
         this.pageSize = pageSize;
     }
     /**
-     * @param curPage .
+     * @param curpage .
      * @param total .
-     * @param pageSize .
+     * @param pagesize .
      */
-    public Page(int curPage, Integer pageSize, Integer total) {
-        super();
-        this.curPage = curPage;//当前页码
+    public Page(int curpage, Integer pagesize, Integer total) {
+        this.curPage = curpage;//当前页码
         this.total = total;//总记录数
-        this.pageSize = pageSize;//页码容量
+        this.pageSize = pagesize;//页码容量
         //总页数=总记录数total/pageSize（+1）
         this.pageCount = (total + this.pageSize - 1) /this.pageSize;
         //下标起始位置：(curPage-1)*pageSize
-        this.offset = (curPage-1)*pageSize;
+        this.beginPos = (curPage-1)*pageSize;
     }
     /**
      * 总页面数 .
@@ -73,8 +71,8 @@ public class Page<T> {
      *  得到页面的当前位置 .
      * @return Integer .
      */
-    public Integer getOffset() {
-        return offset;
+    public Integer getBeginPos() {
+        return beginPos;
     }
     /**
      * @param curPage
@@ -108,11 +106,11 @@ public class Page<T> {
     }
 
     /**
-     * @param offset
-     *            the offset to set
+     * @param beginPos
+     *            the beginPos to set
      */
-    public void setOffset(Integer offset) {
-        this.offset = offset;
+    public void setBeginPos(Integer beginPos) {
+        this.beginPos = beginPos;
     }
     public Integer getTotal() {
         return total;

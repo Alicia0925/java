@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!DOCTYPE project [
+        <!ELEMENT project (modelVersion|groupId|artifactId|version|modules|packaging|name|url|properties|dependencies|build)*>
+        <!ATTLIST project
+                xmlns CDATA #REQUIRED
+                xmlns:xsi CDATA #REQUIRED
+                xsi:schemaLocation CDATA #REQUIRED>
+        <!ELEMENT modelVersion (#PCDATA)>
+        <!ELEMENT groupId (#PCDATA)>
+        <!ELEMENT artifactId (#PCDATA)>
+        <!ELEMENT version (#PCDATA)>
+        <!ELEMENT modules (module)*>
+        <!ELEMENT module (#PCDATA)>
+        <!ELEMENT packaging (#PCDATA)>
+        <!ELEMENT name (#PCDATA)>
+        <!ELEMENT url (#PCDATA)>
+        <!ELEMENT properties (project.build.sourceEncoding|maven.compiler.source|maven.compiler.target)*>
+        <!ELEMENT project.build.sourceEncoding (#PCDATA)>
+        <!ELEMENT maven.compiler.source (#PCDATA)>
+        <!ELEMENT maven.compiler.target (#PCDATA)>
+        <!ELEMENT dependencies (dependency)*>
+        <!ELEMENT dependency (groupId|artifactId|version|scope)*>
+        <!ELEMENT scope (#PCDATA)>
+        <!ELEMENT build (finalName|pluginManagement|resources)*>
+        <!ELEMENT finalName (#PCDATA)>
+        <!ELEMENT pluginManagement (plugins)*>
+        <!ELEMENT plugins (plugin)*>
+        <!ELEMENT plugin (artifactId|version)*>
+        <!ELEMENT resources (resource)*>
+        <!ELEMENT resource (directory|includes)*>
+        <!ELEMENT directory (#PCDATA)>
+        <!ELEMENT includes (include)*>
+        <!ELEMENT include (#PCDATA)>
+        ]>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -269,6 +302,14 @@
             <artifactId>quartz</artifactId>
             <version>2.3.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.solr/solr-solrj -->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>5.3.1</version>
+        </dependency>
+
 
     </dependencies>
 

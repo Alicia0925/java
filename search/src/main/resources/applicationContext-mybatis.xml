@@ -13,7 +13,15 @@
                 http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 	<!-- 使用 Swagger Restful API文档时，添加此注解 -->
 	<mvc:default-servlet-handler />
+	<context:annotation-config />
     <context:component-scan base-package="cn.itrip.service"/>
-    <context:component-scan base-package="cn.itrip.cn.itrip.dao"/>
-    <context:annotation-config />
+
+
+	<bean id="httpSolrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
+		<constructor-arg index="0" value="http://127.0.0.1:8180/solr/hotel"/>
+		<property name="parser">
+			<bean class="org.apache.solr.client.solrj.impl.XMLResponseParser"/>
+		</property>
+	</bean>
+
 </beans>

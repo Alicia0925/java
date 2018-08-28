@@ -27,4 +27,13 @@ public class ErrorCode {
 	
 	
 	/*认证模块错误码-end*/
+
+
+	/*search模块错误码-start*/
+	public final static String SEARCH_SYSTEM_ERROR="20001";//系统异常，获取失败
+	public final static String SEARCH_UNKNOWN_DESTINATION="20002";//目的地不能为空
+	public final static String SEARCH_UNKNOWN_CITYID="20002";//城市id不能为空
+
+	/*search模块错误码-end*/
+
 }
