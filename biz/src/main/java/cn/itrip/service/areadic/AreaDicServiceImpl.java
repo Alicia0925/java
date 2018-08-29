@@ -14,7 +14,13 @@ public class AreaDicServiceImpl implements AreaDicService {
 
     //查询国内外的热门城市
     @Override
-    public List<AreaDicVO> selectAreaDicList(Integer isChina) throws Exception {
+    public List<AreaDicVO> getAreaDicList(Integer isChina) throws Exception {
         return areaDicMapper.selectAreaDicList(isChina);
+    }
+
+    //根据城市id查询商圈
+    @Override
+    public List<AreaDicVO> getAreaDicListByCityId(Long cityId) throws Exception {
+        return areaDicMapper.selectAreaDicListByCityId(cityId);
     }
 }

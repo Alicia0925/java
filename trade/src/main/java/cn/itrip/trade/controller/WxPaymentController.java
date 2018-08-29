@@ -1,7 +1,7 @@
 package cn.itrip.trade.controller;
 
 import cn.itrip.beans.dto.Dto;
-import cn.itrip.beans.pojo.ItripHotelOrder;
+import cn.itrip.beans.pojo.HotelOrder;
 import cn.itrip.common.DtoUtil;
 import cn.itrip.trade.config.WXPayConfig;
 import cn.itrip.trade.service.OrderService;
@@ -49,12 +49,12 @@ public class WxPaymentController {
     @RequestMapping(value = "/createqccode/{orderNo}", method = RequestMethod.GET)
     @ResponseBody
     public Dto createQcCode(@PathVariable String orderNo, HttpServletResponse response) {
-        ItripHotelOrder order = null;
+        HotelOrder order = null;
         HashMap<String, String> data = new HashMap<String, String>();
         HashMap<String, Object> result = new HashMap<String, Object>();
         WXPayRequest wxPayRequest = new WXPayRequest(this.wxPayConfig);
         try {
-            order = orderService.loadItripHotelOrder(orderNo);
+//            order = orderService.loadItripHotelOrder(orderNo);
             if (order == null || order.getOrderStatus() != 0) {
                 return DtoUtil.returnFail("订单状态异常", "110001");
             }
@@ -95,10 +95,10 @@ public class WxPaymentController {
             notes = "前端用户检测订单是否成功的接口<br>如果订单状态为2则代表订单支付成功<b></b>")
     @RequestMapping(value = "/queryorderstatus/{orderNo}", method = RequestMethod.GET)
     @ResponseBody
-    public Dto<ItripHotelOrder> queryOrderIsSuccess(@PathVariable String orderNo) {
-        ItripHotelOrder order = null;
+    public Dto<HotelOrder> queryOrderIsSuccess(@PathVariable String orderNo) {
+        HotelOrder order = null;
         try {
-            order = orderService.loadItripHotelOrder(orderNo);
+//            order = orderService.loadItripHotelOrder(orderNo);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -31,6 +31,20 @@
     AND `isChina`= #{isChina,jdbcType=INTEGER}
   </select>
 
+  <!--根据城市id查询商圈-->
+  <select id="selectAreaDicListByCityId" resultType="cn.itrip.beans.vo.AreaDicVO">
+    SELECT `id`,`name`
+    FROM `itrip_area_dic`
+    WHERE `isTradingArea`=1
+    AND `parent`= #{cityId,jdbcType=BIGINT}
+  </select>
+
+
+
+
+
+
+
 
   <!--以下是自动生成CURD-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
