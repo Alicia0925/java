@@ -2,7 +2,6 @@ package cn.itrip.dao.hotelorder;
 
 import cn.itrip.beans.pojo.HotelOrder;
 import cn.itrip.beans.vo.order.HotelOrderVO;
-import cn.itrip.beans.vo.order.PersonalHotelOrderVo;
 import cn.itrip.beans.vo.order.PersonalOrderRoomVo;
 import cn.itrip.beans.vo.order.SearchOrderVO;
 import org.apache.ibatis.annotations.Param;
@@ -26,6 +25,11 @@ public interface HotelOrderMapper {
      * 个人订单详情
      * */
 
+    HotelOrder selectByPrimaryKey(Long id) throws Exception;
+
+
+
+
 
 
 
@@ -36,7 +40,6 @@ public interface HotelOrderMapper {
 
     int insertSelective(HotelOrder record) throws Exception;
 
-    HotelOrder selectByPrimaryKey(Long id) throws Exception;
 
     int updateByPrimaryKeySelective(HotelOrder record) throws Exception;
 

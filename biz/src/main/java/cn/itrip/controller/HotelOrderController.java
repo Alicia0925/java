@@ -12,23 +12,19 @@ import cn.itrip.service.order.HotelTempStoreService;
 import cn.itrip.service.order.OrderLinkUserService;
 import cn.itrip.service.order.TradeEndsService;
 import com.alibaba.fastjson.JSONArray;
-import io.swagger.annotations.Api;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 错误码：
  * 100501-100600
  */
 @Controller
-@Api(value = "API", basePath = "/http://api.itrap.com/api")
 @RequestMapping(value = "/api/hotelorder")
 public class HotelOrderController {
     @Resource
@@ -41,12 +37,12 @@ public class HotelOrderController {
     @Resource
     private SystemConfig systemConfig;
 
-    @Resource
-    private HotelTempStoreService hotelTempStoreService;
-
-
-    @Resource
-    private TradeEndsService itripTradeEndsService;
+//    @Resource
+//    private HotelTempStoreService hotelTempStoreService;
+//
+//
+//    @Resource
+//    private TradeEndsService itripTradeEndsService;
 
     @Resource
     private OrderLinkUserService orderLinkUserService;
@@ -547,9 +543,7 @@ public class HotelOrderController {
             }
              modifyHotelOrderVO = new  ModifyHotelOrderVO();
             BeanUtils.copyProperties(order, modifyHotelOrderVO);
-            Map<String, Object> param = new HashMap<String, Object>();
-            param.put("orderId", order.getId());
-            List<OrderLinkUserVo> orderLinkUserList =  orderLinkUserService.getOrderLinkUserListByMap(param);
+            List<OrderLinkUserVo> orderLinkUserList =  orderLinkUserService.getOrderLinkUserListByOrderId(order.getId());
             modifyHotelOrderVO.setOrderLinkUserList(orderLinkUserList);
             return DtoUtil.returnSuccess("获取订单成功", modifyHotelOrderVO);
         } catch (Exception e) {

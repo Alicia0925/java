@@ -133,6 +133,8 @@
       and creationDate between date_sub(now(),interval 1 year) and now()
     </trim>
   </select>
+
+  <!--房间信息-->
   <select id="getItripHotelOrderRoomInfoById" resultType="cn.itrip.beans.vo.order.PersonalOrderRoomVo">
     select
     o.id AS id,

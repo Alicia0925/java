@@ -3,15 +3,14 @@ package cn.itrip.service.order;
 import cn.itrip.beans.vo.order.OrderLinkUserVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- *
  * 订单旅客Service
- *
- * */
+ */
 public interface OrderLinkUserService {
 
-
-    List<OrderLinkUserVo> getOrderLinkUserListByMap(Map<String,Object> param);
+    /**
+     * 根据orderId查旅客信息
+     */
+    List<OrderLinkUserVo> getOrderLinkUserListByOrderId(Long id) throws Exception;
 }

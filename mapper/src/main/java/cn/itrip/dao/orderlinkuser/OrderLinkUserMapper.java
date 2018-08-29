@@ -1,6 +1,7 @@
 package cn.itrip.dao.orderlinkuser;
 
 import cn.itrip.beans.pojo.OrderLinkUser;
+import cn.itrip.beans.vo.order.OrderLinkUserVo;
 
 import java.util.List;
 
@@ -24,5 +25,7 @@ public interface OrderLinkUserMapper {
     * @return
     * */
    List<OrderLinkUser> selectByOrderId(Long orderId)throws Exception;
+
+   List<OrderLinkUserVo> selectVoByOrderId(Long orderId) throws Exception;
 
 }
