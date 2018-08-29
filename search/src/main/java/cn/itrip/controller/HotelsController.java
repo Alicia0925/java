@@ -11,17 +11,14 @@ import cn.itrip.common.Page;
 import cn.itrip.service.SearchSolrHotelService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 @Controller
+@RequestMapping("/api/hotellist")
 public class HotelsController {
     @Resource
     private SearchSolrHotelService searchSolrHotelService;
@@ -39,7 +36,7 @@ public class HotelsController {
             "<p>错误码: </p>" +
             "<p>20001: 系统异常,获取失败</p>" +
             "<p>20002: 目的地不能为空</p>")
-    @RequestMapping(value = "/api/hotellist/searchItripHotelPage", produces = "application/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/searchItripHotelPage", produces = "application/json", method = RequestMethod.POST)
     @ResponseBody
     public Dto<Page<HotelVO>> searchHotelsPage(@RequestBody SearchHotelVO vo) {
         Page page = null;
@@ -72,6 +69,6 @@ public class HotelsController {
         List list = searchSolrHotelService.searchHotelsByHotCity(vo.getCityId(), vo.getCount());
         return DtoUtil.returnDataSuccess(list);
     }
-    
-    
+
+
 }

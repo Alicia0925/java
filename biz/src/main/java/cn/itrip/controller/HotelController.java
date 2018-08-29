@@ -11,6 +11,7 @@ import cn.itrip.service.areadic.AreaDicService;
 import cn.itrip.service.labeldic.LabelDicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -68,7 +72,7 @@ public class HotelController {
         List<AreaDicVO> areaDicVOs = null;
         try {
             if (EmptyUtils.isNotEmpty(type)) {
-                areaDicVOs = areaDicService.selectAreaDicList(type);
+                areaDicVOs = areaDicService.getAreaDicList(type);
             } else {
                 DtoUtil.returnFail("type不能为空", ErrorCode.BIZ_UNKNOWN_TYPE);
             }
@@ -94,12 +98,42 @@ public class HotelController {
     public Dto<LabelDic> queryHotelFeature() {
         List<LabelDic> labelDicVOList = null;
         try {
-            labelDicVOList = labelDicService.selectLabelDicS();
+            labelDicVOList = labelDicService.getLabelDicS();
         } catch (Exception e) {
             DtoUtil.returnFail("系统异常", ErrorCode.BIZ_SYSTEM_ERROR);
             e.printStackTrace();
         }
         return DtoUtil.returnDataSuccess(labelDicVOList);
+    }
+
+    /**
+     * 查询商圈
+     * @param cityId 根据城市查询商圈
+     * @return
+     */
+    @ApiOperation(value = "查询商圈", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "根据城市查询商圈" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>错误码：</p>" +
+            "<p>10203 : cityId不能为空 </p>" +
+            "<p>10202 : 系统异常,获取失败</p>")
+    @RequestMapping(value = "/querytradearea/{cityId}" +
+            "", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<AreaDicVO> queryTradeArea(@PathVariable Long cityId) {
+        List<AreaDicVO> areaDicVOList = null;
+        try {
+            if (EmptyUtils.isNotEmpty(cityId)) {
+                areaDicVOList = areaDicService.getAreaDicListByCityId(cityId);
+            } else {
+                DtoUtil.returnFail("cityId不能为空", ErrorCode.BIZ_UNKNOWN_PARENT);
+            }
+        } catch (Exception e) {
+            DtoUtil.returnFail("系统异常", ErrorCode.BIZ_SYSTEM_ERROR);
+            e.printStackTrace();
+        }
+        return DtoUtil.returnDataSuccess(areaDicVOList);
     }
 
 

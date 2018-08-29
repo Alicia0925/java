@@ -18,6 +18,17 @@ public interface AreaDicMapper {
      */
     List<AreaDicVO> selectAreaDicList(@Param(value = "isChina")Integer isChina) throws Exception;
 
+    /**
+     * 查询商圈
+     * @param cityId 根据城市id查询商圈
+     * @return 返回结果封装到VO中
+     * @throws Exception 若有异常抛出
+     */
+    List<AreaDicVO> selectAreaDicListByCityId(@Param(value = "cityId")Long cityId) throws Exception;
+
+
+
+
 
 
     //以下是自动生成CURD

@@ -41,6 +41,7 @@ public class ErrorCode {
 	/*biz模块错误码-start*/
 	public final static String BIZ_UNKNOWN_TYPE="10201";//type不能为空(1:国内 2:国外)
 	public final static String BIZ_SYSTEM_ERROR="10202";//系统异常，获取失败
+	public final static String BIZ_UNKNOWN_PARENT="10203";//cityId不能为空
 
 
 	/*biz模块错误码-end*/
