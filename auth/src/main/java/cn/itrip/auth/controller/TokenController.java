@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 @Controller
@@ -21,23 +22,18 @@ public class TokenController {
     private TokenService tokenService;
 
     @RequestMapping(value = "/retoken",method = RequestMethod.POST,produces = "application/json",headers = "token")
-    public @ResponseBody Dto validate(HttpServletRequest request){
+    public @ResponseBody Dto retoken(HttpServletRequest request) {
         try {
-          boolean result=  tokenService.validate(request.getHeader("user-agent"),request.getHeader("token"));
-        if(result){
             String newToken = tokenService.replaceToken(request.getHeader("user-agent"),request.getHeader("token"));
-            TokenVo tokenVo=new TokenVo(newToken,
-                    Calendar.getInstance().getTimeInMillis()+TokenService.SESSION_TIMEOUT*1000,//2h有效期
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+            TokenVo tokenVo = new TokenVo(newToken,
+                    Calendar.getInstance().getTimeInMillis()+2*60*60*1000,
                     Calendar.getInstance().getTimeInMillis());
-            return DtoUtil.returnSuccess("token已置换",tokenVo);
-        }
-        tokenService.delete("activationCode");
-        return DtoUtil.returnFail("token无效",ErrorCode.AUTH_TOKEN_INVALID);
+            return DtoUtil.returnDataSuccess(tokenVo);
         } catch (Exception e) {
             e.printStackTrace();
-            return DtoUtil.returnFail(e.getMessage(),ErrorCode.AUTH_REPLACEMENT_FAILED);
+            return DtoUtil.returnFail(e.getMessage(),ErrorCode.AUTH_UNKNOWN);
         }
-
     }
 
 }

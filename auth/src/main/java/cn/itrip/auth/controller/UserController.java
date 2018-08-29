@@ -36,7 +36,7 @@ public class UserController {
                                    @RequestParam(value = "password",required = false)String password,
                                    HttpServletRequest request){
         User user = null;
-        String token = null;
+        String token = "";
         try {
             user = userService.findByUserCode(userCode.trim());
         } catch (Exception e) {

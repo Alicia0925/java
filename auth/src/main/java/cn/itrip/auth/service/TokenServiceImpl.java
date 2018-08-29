@@ -57,13 +57,18 @@ public class TokenServiceImpl implements TokenService {
             redisAPI.set(token, JSON.toJSONString(user));
         }
     }
+
     /**验证token*/
     @Override
     public boolean validate(String userAgent, String token) throws Exception {
-
         if(!redisAPI.exist(token))
             return false;
-        String agentMD5 =token.split("-")[4];
+        String tokenInfo[] = token.split("-");
+        String genTime = tokenInfo[3];
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+        if ((Long.parseLong(sdf.format(new Date()))-Long.parseLong(genTime))>120)//判断是否超时
+            return false;
+        String agentMD5 =tokenInfo[4];
         if(!MD5.getMd5(userAgent,6).equals(agentMD5))
             return false;
         return true;
@@ -82,8 +87,37 @@ public class TokenServiceImpl implements TokenService {
         redisAPI.delete(token);
     }
 
+    /**
+     *  置换token
+     * @param agent
+     * @param token
+     * @return
+     * @throws Exception
+     */
     @Override
     public String replaceToken(String agent, String token) throws Exception {
-        return null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+        if (!redisAPI.exist(token))
+            //token不存在
+            throw new Exception ();
+        String[] tokenInfo = token.split("-");
+        String now = sdf.format(new Date());
+        if (((Long.parseLong(now)-Long.parseLong(tokenInfo[3]))-60)>0){
+            //可以置换
+            Long restTime = redisAPI.ttl(token);
+            User user = load(token);
+            if (restTime>0||restTime==-1){
+                redisAPI.set(token,120,JSON.toJSONString(user));//旧token设置2分钟过期
+                String newToken = generateToken(agent,user);
+                saveToken(newToken,user);//保存新token
+                return newToken;
+            }else{
+                //token不存在
+                throw new Exception ();
+            }
+        }else{
+            throw new Exception ();
+//            return "token剩余时间在安全时间内，不必置换";
+        }
     }
 }
