@@ -17,4 +17,13 @@ public class OrderLinkUserServiceImpl implements OrderLinkUserService{
     public List<OrderLinkUserVo> getOrderLinkUserListByOrderId(Long id) throws Exception {
         return orderLinkUserMapper.selectVoByOrderId(id);
     }
+    /**
+     *查询所有未支付状态下的旅客id
+     * */
+    @Override
+    public List<Long> getOrderLinkUserIdByOrderId(Long userId, Integer orderStatus) throws Exception {
+        return orderLinkUserMapper.selectOrderLinkUserIdByConditions(userId,orderStatus);
+    }
+
+
 }

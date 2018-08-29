@@ -78,6 +78,152 @@ public class HotelOrderController {
 
     }
 
+    /**
+     * 根据订单ID查看个人订单详情:
+     *
+     * 错误码:
+     * 100525 : 请传递参数：orderId
+     * 100526 : 没有相关订单信息
+     * 100527 : 获取个人订单信息错误
+     * 100000 : token失效，请重登录
+     * */
+    @RequestMapping(value = "/getpersonalorderinfo/{orderId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Dto<Object> getPersonalOrderInfo(@PathVariable String orderId,
+                                            HttpServletRequest request) {
+        Dto<Object> dto = null;
+        String token  = request.getHeader("token");
+        User currentUser = validationToken.getCurrentUser(token);
+        if (null != currentUser) {
+            if (null == orderId || "".equals(orderId)) {
+                return DtoUtil.returnFail("请传递参数：orderId", "100525");
+            }
+            try {
+                HotelOrder hotelOrder = hotelOrderService.getItripHotelOrderById(Long.valueOf(orderId));
+                if (null != hotelOrder) {
+                    PersonalHotelOrderVo personalHotelOrderVo = new PersonalHotelOrderVo();
+                    personalHotelOrderVo.setId(hotelOrder.getId());
+                    personalHotelOrderVo.setBookType(hotelOrder.getBookType());
+                    personalHotelOrderVo.setCreationDate(hotelOrder.getCreationDate());
+                    personalHotelOrderVo.setOrderNo(hotelOrder.getOrderNo());
+                    //查询预订房间的信息
+                    HotelRoom room = roomService.getHotelRoomById(hotelOrder.getRoomId());
+                    if (EmptyUtils.isNotEmpty(room)) {
+                        personalHotelOrderVo.setRoomPayType(room.getPayType());
+                    }
+                    Integer orderStatus = hotelOrder.getOrderStatus();
+                    personalHotelOrderVo.setOrderStatus(orderStatus);
+                    //订单状态（0：待支付 1:已取消 2:支付成功 3:已消费 4:已点评）
+                    //{"1":"订单提交","2":"订单支付","3":"支付成功","4":"入住","5":"订单点评","6":"订单完成"}
+                    //{"1":"订单提交","2":"订单支付","3":"订单取消"}
+
+                    if (orderStatus == 1) {
+                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessCancel()));
+                        personalHotelOrderVo.setProcessNode("3");
+                    } else if (orderStatus == 0) {
+                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
+                        personalHotelOrderVo.setProcessNode("2");//订单支付
+                    } else if (orderStatus == 2) {
+                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
+                        personalHotelOrderVo.setProcessNode("3");//支付成功（未出行）
+                    } else if (orderStatus == 3) {
+                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
+                        personalHotelOrderVo.setProcessNode("5");//订单点评
+                    } else if (orderStatus == 4) {
+                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
+                        personalHotelOrderVo.setProcessNode("6");//订单完成
+                    } else {
+                        personalHotelOrderVo.setOrderProcess(null);
+                        personalHotelOrderVo.setProcessNode(null);
+                    }
+                    personalHotelOrderVo.setPayAmount(hotelOrder.getPayAmount());
+                    personalHotelOrderVo.setPayType(hotelOrder.getPayType());
+                    personalHotelOrderVo.setNoticePhone(hotelOrder.getNoticePhone());
+                    dto = DtoUtil.returnSuccess("获取个人订单信息成功", personalHotelOrderVo);
+                } else {
+                    dto = DtoUtil.returnFail("没有相关订单信息", "100526");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                dto = DtoUtil.returnFail("获取个人订单信息错误", "100527");
+            }
+        } else {
+            dto = DtoUtil.returnFail("token失效，请重登录", "100000");
+        }
+        return dto;
+    }
+    /**
+     * 根据订单ID查看个人订单详情-房型相关信息
+     *
+     * 错误码：
+     * 100529 : 请传递参数：orderId
+     * 100530 : 没有相关订单房型信息
+     * 100531 : 获取个人订单房型信息错误
+     * 支持支付类型(roomPayType)： 1 : 在线付 , 2 : 线下付 , 3 : 不限
+     * 100000 : token失效，请重登录
+     * */
+    @RequestMapping(value = "/getpersonalorderroominfo/{orderId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Dto<Object> getPersonalOrderRoomInfo(
+            @PathVariable String orderId,
+            HttpServletRequest request) {
+        Dto<Object> dto = null;
+        String tokenString = request.getHeader("token");
+        User currentUser = validationToken.getCurrentUser(tokenString);
+        if (null != currentUser) {
+            if (null == orderId || "".equals(orderId)) {
+                return DtoUtil.returnFail("请传递参数：orderId", "100529");
+            }
+            try {
+                PersonalOrderRoomVo vo = hotelOrderService.getHotelOrderRoomById(Long.valueOf(orderId));
+                if (null != vo) {
+                    dto = DtoUtil.returnSuccess("获取个人订单房型信息成功", vo);
+                } else {
+                    dto = DtoUtil.returnFail("没有相关订单房型信息", "100530");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                dto = DtoUtil.returnFail("获取个人订单房型信息错误", "100531");
+            }
+        } else {
+            dto = DtoUtil.returnFail("token失效，请重登录", "100000");
+        }
+        return dto;
+    }
+
+
+    /**
+     * 根据订单ID获取订单信息
+     * 错误码：
+     * 100533 : 没有查询到相应订单
+     * 100534 : 系统异常
+     * */
+
+    @RequestMapping(value = "/queryOrderById/{orderId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Dto<Object> queryOrderById( @PathVariable Long orderId,HttpServletRequest request) {
+        ModifyHotelOrderVO  modifyHotelOrderVO = null;
+        try {
+            String token  = request.getHeader("token");
+            User currentUser = validationToken.getCurrentUser(token);
+            if(EmptyUtils.isEmpty(currentUser)){
+                return DtoUtil.returnFail("token失效，请重登录", "100000");
+            }
+            HotelOrder order = hotelOrderService.getItripHotelOrderById(orderId);
+            if (EmptyUtils.isEmpty(order)) {
+                return DtoUtil.returnFail("100533", "没有查询到相应订单");
+            }
+            modifyHotelOrderVO = new  ModifyHotelOrderVO();
+            BeanUtils.copyProperties(order, modifyHotelOrderVO);
+            List<OrderLinkUserVo> orderLinkUserList =  orderLinkUserService.getOrderLinkUserListByOrderId(order.getId());
+            modifyHotelOrderVO.setOrderLinkUserList(orderLinkUserList);
+            return DtoUtil.returnSuccess("获取订单成功", modifyHotelOrderVO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常", "100534");
+        }
+    }
+
 
 
 //
@@ -406,151 +552,7 @@ public class HotelOrderController {
 //            "<p>100526 : 没有相关订单信息 </p>" +
 //            "<p>100527 : 获取个人订单信息错误 </p>" +
 //            "<p>100000 : token失效，请重登录 </p>")
-    /**
-     * 根据订单ID查看个人订单详情:
-     * 
-     * 错误码:
-     * 100525 : 请传递参数：orderId
-     * 100526 : 没有相关订单信息 
-     * 100527 : 获取个人订单信息错误
-     * 100000 : token失效，请重登录
-     * */
-    @RequestMapping(value = "/getpersonalorderinfo/{orderId}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Dto<Object> getPersonalOrderInfo(@PathVariable String orderId,
-                                            HttpServletRequest request) {
-        Dto<Object> dto = null;
-        String token  = request.getHeader("token");
-        User currentUser = validationToken.getCurrentUser(token);
-        if (null != currentUser) {
-            if (null == orderId || "".equals(orderId)) {
-                return DtoUtil.returnFail("请传递参数：orderId", "100525");
-            }
-            try {
-                 HotelOrder hotelOrder = hotelOrderService.getItripHotelOrderById(Long.valueOf(orderId));
-                if (null != hotelOrder) {
-                    PersonalHotelOrderVo personalHotelOrderVo = new PersonalHotelOrderVo();
-                    personalHotelOrderVo.setId(hotelOrder.getId());
-                    personalHotelOrderVo.setBookType(hotelOrder.getBookType());
-                    personalHotelOrderVo.setCreationDate(hotelOrder.getCreationDate());
-                    personalHotelOrderVo.setOrderNo(hotelOrder.getOrderNo());
-                    //查询预订房间的信息
-                    HotelRoom room = roomService.getHotelRoomById(hotelOrder.getRoomId());
-                    if (EmptyUtils.isNotEmpty(room)) {
-                        personalHotelOrderVo.setRoomPayType(room.getPayType());
-                    }
-                    Integer orderStatus = hotelOrder.getOrderStatus();
-                    personalHotelOrderVo.setOrderStatus(orderStatus);
-                    //订单状态（0：待支付 1:已取消 2:支付成功 3:已消费 4:已点评）
-                    //{"1":"订单提交","2":"订单支付","3":"支付成功","4":"入住","5":"订单点评","6":"订单完成"}
-                    //{"1":"订单提交","2":"订单支付","3":"订单取消"}
 
-                    if (orderStatus == 1) {
-                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessCancel()));
-                        personalHotelOrderVo.setProcessNode("3");
-                    } else if (orderStatus == 0) {
-                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
-                        personalHotelOrderVo.setProcessNode("2");//订单支付
-                    } else if (orderStatus == 2) {
-                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
-                        personalHotelOrderVo.setProcessNode("3");//支付成功（未出行）
-                    } else if (orderStatus == 3) {
-                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
-                        personalHotelOrderVo.setProcessNode("5");//订单点评
-                    } else if (orderStatus == 4) {
-                        personalHotelOrderVo.setOrderProcess(JSONArray.parse(systemConfig.getOrderProcessOK()));
-                        personalHotelOrderVo.setProcessNode("6");//订单完成
-                    } else {
-                        personalHotelOrderVo.setOrderProcess(null);
-                        personalHotelOrderVo.setProcessNode(null);
-                    }
-                    personalHotelOrderVo.setPayAmount(hotelOrder.getPayAmount());
-                    personalHotelOrderVo.setPayType(hotelOrder.getPayType());
-                    personalHotelOrderVo.setNoticePhone(hotelOrder.getNoticePhone());
-                    dto = DtoUtil.returnSuccess("获取个人订单信息成功", personalHotelOrderVo);
-                } else {
-                    dto = DtoUtil.returnFail("没有相关订单信息", "100526");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                dto = DtoUtil.returnFail("获取个人订单信息错误", "100527");
-            }
-        } else {
-            dto = DtoUtil.returnFail("token失效，请重登录", "100000");
-        }
-        return dto;
-    }
-/**
- * 根据订单ID查看个人订单详情-房型相关信息
- *
- * 错误码：
- * 100529 : 请传递参数：orderId
- * 100530 : 没有相关订单房型信息
- * 100531 : 获取个人订单房型信息错误
- * 支持支付类型(roomPayType)： 1 : 在线付 , 2 : 线下付 , 3 : 不限
- * 100000 : token失效，请重登录
- * */
-    @RequestMapping(value = "/getpersonalorderroominfo/{orderId}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Dto<Object> getPersonalOrderRoomInfo(
-                                                @PathVariable String orderId,
-                                                HttpServletRequest request) {
-        Dto<Object> dto = null;
-        String tokenString = request.getHeader("token");
-         User currentUser = validationToken.getCurrentUser(tokenString);
-        if (null != currentUser) {
-            if (null == orderId || "".equals(orderId)) {
-                return DtoUtil.returnFail("请传递参数：orderId", "100529");
-            }
-            try {
-                PersonalOrderRoomVo vo = hotelOrderService.getHotelOrderRoomById(Long.valueOf(orderId));
-                if (null != vo) {
-                    dto = DtoUtil.returnSuccess("获取个人订单房型信息成功", vo);
-                } else {
-                    dto = DtoUtil.returnFail("没有相关订单房型信息", "100530");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                dto = DtoUtil.returnFail("获取个人订单房型信息错误", "100531");
-            }
-        } else {
-            dto = DtoUtil.returnFail("token失效，请重登录", "100000");
-        }
-        return dto;
-    }
-
-
-/**
- * 根据订单ID获取订单信息
- * 错误码：
- * 100533 : 没有查询到相应订单
- * 100534 : 系统异常
- * */
-
-    @RequestMapping(value = "/queryOrderById/{orderId}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Dto<Object> queryOrderById( @PathVariable Long orderId,HttpServletRequest request) {
-       ModifyHotelOrderVO  modifyHotelOrderVO = null;
-        try {
-            String token  = request.getHeader("token");
-             User currentUser = validationToken.getCurrentUser(token);
-            if(EmptyUtils.isEmpty(currentUser)){
-                return DtoUtil.returnFail("token失效，请重登录", "100000");
-            }
-            HotelOrder order = hotelOrderService.getItripHotelOrderById(orderId);
-            if (EmptyUtils.isEmpty(order)) {
-                return DtoUtil.returnFail("100533", "没有查询到相应订单");
-            }
-             modifyHotelOrderVO = new  ModifyHotelOrderVO();
-            BeanUtils.copyProperties(order, modifyHotelOrderVO);
-            List<OrderLinkUserVo> orderLinkUserList =  orderLinkUserService.getOrderLinkUserListByOrderId(order.getId());
-            modifyHotelOrderVO.setOrderLinkUserList(orderLinkUserList);
-            return DtoUtil.returnSuccess("获取订单成功", modifyHotelOrderVO);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return DtoUtil.returnFail("系统异常", "100534");
-        }
-    }
 
 
 //    @ApiOperation(value = "扫描中间表,执行库存更新操作", httpMethod = "GET",

@@ -41,6 +41,8 @@ public interface UserLinkUserService {
 
     /**删*/
 
-
     boolean deleteUserLinkUserById(UserLinkUser userLinkUser)throws Exception;
+    /**批量删*/
+    boolean deleteUserLinkUserByIds(List<Long> ids)throws Exception;
+
 }

@@ -21,7 +21,6 @@ public interface UserLinkUserMapper {
 
     int updateByPrimaryKey(UserLinkUser record);
 
-
     /**
      *根据登录用户ID查所有常用旅客
      * 旅客姓名模糊查询
@@ -37,4 +36,9 @@ public interface UserLinkUserMapper {
     List<UserLinkUser> selectByUserIdPage(Map<String,Object> param,
                                           @Param("offset") Integer offset,
                                           @Param("pageSize") Integer pageSize);
+
+    /**
+     * 批量删除
+     * */
+    Integer deleteByIds(List<Long> ids)throws Exception;
 }

@@ -4,11 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * Created by donghai on 2017-06-08.
+ * 查询常用联系人(模糊姓名)
  */
 @ApiModel(value = "SearchUserLinkUserVO",description = "查询常用联系人")
 public class SearchUserLinkUserVO {
-    @ApiModelProperty("[必填] 常用刚联系人姓名")
+
     private String linkUserName;
 
     public String getLinkUserName() {

@@ -167,6 +167,12 @@
 
   </select>
 
+  <!--查询个人各个状态的订单号-->
+  <select id="selectOrderIdByUserId" resultType="java.lang.Long">
+    select id from itrip_hotel_order
+    where userId=#{userId} and orderStatus=#{orderStatus}
+  </select>
+
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_hotel_order

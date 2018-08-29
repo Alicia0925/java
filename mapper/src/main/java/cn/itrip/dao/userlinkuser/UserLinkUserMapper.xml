@@ -2,16 +2,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.itrip.dao.userlinkuser.UserLinkUserMapper">
     <resultMap id="BaseResultMap" type="cn.itrip.beans.pojo.UserLinkUser">
-        <id column="id" jdbcType="BIGINT" property="id" />
-        <result column="linkUserName" jdbcType="VARCHAR" property="linkUserName" />
-        <result column="linkIdCard" jdbcType="VARCHAR" property="linkIdCard" />
-        <result column="linkPhone" jdbcType="VARCHAR" property="linkPhone" />
-        <result column="userId" jdbcType="INTEGER" property="userId" />
-        <result column="creationDate" jdbcType="TIMESTAMP" property="creationDate" />
-        <result column="createdBy" jdbcType="BIGINT" property="createdBy" />
-        <result column="modifyDate" jdbcType="TIMESTAMP" property="modifyDate" />
-        <result column="modifiedBy" jdbcType="BIGINT" property="modifiedBy" />
-        <result column="linkIdCardType" jdbcType="INTEGER" property="linkIdCardType" />
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="linkUserName" jdbcType="VARCHAR" property="linkUserName"/>
+        <result column="linkIdCard" jdbcType="VARCHAR" property="linkIdCard"/>
+        <result column="linkPhone" jdbcType="VARCHAR" property="linkPhone"/>
+        <result column="userId" jdbcType="INTEGER" property="userId"/>
+        <result column="creationDate" jdbcType="TIMESTAMP" property="creationDate"/>
+        <result column="createdBy" jdbcType="BIGINT" property="createdBy"/>
+        <result column="modifyDate" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="modifiedBy" jdbcType="BIGINT" property="modifiedBy"/>
+        <result column="linkIdCardType" jdbcType="INTEGER" property="linkIdCardType"/>
     </resultMap>
     <sql id="Base_Column_List">
     id, linkUserName, linkIdCard, linkPhone, userId, creationDate, createdBy, modifyDate,
@@ -19,17 +19,17 @@
   </sql>
     <!--根据用户ID查所有常用旅客-->
     <!--根据旅客姓名模糊查找-->
-    <select id="selectByUserId"  resultMap="BaseResultMap">
+    <select id="selectByUserId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
         from `itrip_user_link_user`
         where `userId`=#{userId}
-        <if test="linkUserName!=null and linkUserName='' ">
+        <if test="linkUserName!=null and linkUserName!='' ">
             and linkUserName like concat('%',#{linkUserName},'%')
         </if>
     </select>
     <!--分页-->
-    <select id="selectByUserIdPage"  resultMap="BaseResultMap">
+    <select id="selectByUserIdPage" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"></include>
         from `itrip_user_link_user`
@@ -41,7 +41,7 @@
 
     </select>
     <!--总记录-->
-    <select id="countByUserId"  resultMap="BaseResultMap">
+    <select id="countByUserId" resultMap="BaseResultMap">
         select
         count(1)
         from `itrip_user_link_user`
@@ -54,7 +54,7 @@
     <!--以下是自动生成CURD-->
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from itrip_user_link_user
         where id = #{id,jdbcType=BIGINT}
     </select>
@@ -62,6 +62,14 @@
     delete from itrip_user_link_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
+    <!--批量删除-->
+    <delete id="deleteByIds" parameterType="long">
+        delete from itrip_user_link_user
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
     <!--增加-->
     <insert id="insert" parameterType="cn.itrip.beans.pojo.UserLinkUser" keyProperty="id" useGeneratedKeys="true">
@@ -76,7 +84,8 @@
   </insert>
 
     <!--增加（判空）-->
-    <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.UserLinkUser" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.UserLinkUser" useGeneratedKeys="true"
+            keyProperty="id">
         insert into itrip_user_link_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
 

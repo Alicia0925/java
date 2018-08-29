@@ -27,7 +27,12 @@ public interface HotelOrderMapper {
 
     HotelOrder selectByPrimaryKey(Long id) throws Exception;
 
+/**
+ * 查询个人所有未支付状态的订单ID
+ * */
 
+List<Long> selectOrderIdByUserId(@Param("userId") Long userId,
+                                 @Param("orderStatus") Integer orderStatus)throws Exception;
 
 
 

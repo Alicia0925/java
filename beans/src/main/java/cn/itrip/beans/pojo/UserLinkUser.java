@@ -8,7 +8,7 @@ public class UserLinkUser {
     private String linkUserName;//常用联系人姓名
     private String linkIdCard;//证件号码
     private String linkPhone;//常用联系人电话
-    private Integer userId;//用户id
+    private Long  userId;//用户id
     private Integer linkIdCardType;//证件类型：(0-身份证，1-护照，2-学生证，3-军人证，4-驾驶证，5-旅行证)
 
     private Date creationDate;
@@ -52,11 +52,11 @@ public class UserLinkUser {
         this.linkPhone = linkPhone;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

@@ -40,9 +40,14 @@
      where orderId=#{orderId}
 
   </select>
+  <select id="selectOrderLinkUserIdByConditions" resultType="java.lang.Long">
+     select distinct linkUserId  from itrip_order_link_user where orderId in
+     (select id from itrip_hotel_order
+    where userId=#{userId} and orderStatus=#{orderStatus})
+  </select>
 
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_order_link_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
