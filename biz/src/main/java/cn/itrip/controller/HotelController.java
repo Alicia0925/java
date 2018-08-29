@@ -2,15 +2,15 @@ package cn.itrip.controller;
 
 
 import cn.itrip.beans.dto.Dto;
-import cn.itrip.beans.pojo.AreaDic;
+import cn.itrip.beans.pojo.LabelDic;
 import cn.itrip.beans.vo.AreaDicVO;
 import cn.itrip.common.DtoUtil;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.ErrorCode;
 import cn.itrip.service.areadic.AreaDicService;
+import cn.itrip.service.labeldic.LabelDicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * 酒店信息Controller
@@ -48,18 +46,14 @@ public class HotelController {
     @Resource
     private AreaDicService areaDicService;
 
+    @Resource
+    private LabelDicService labelDicService;
 
 
-
-
-
-
-    /****
-     * 查询热门城市的接口
-     *
-     * @param type
-     * @return
-     * @throws Exception
+    /**
+     * 查询国内外的热门城市
+     * @param type 1:国内 2:国外
+     * @return 区域字典表的VO
      */
     @ApiOperation(value = "查询热门城市", httpMethod = "GET",
             protocols = "HTTP", produces = "application/json",
@@ -84,6 +78,35 @@ public class HotelController {
         }
         return DtoUtil.returnDataSuccess(areaDicVOs);
     }
+
+    /**
+     * 查询酒店特色列表
+     * @return 返回标签字典表集合
+     */
+    @ApiOperation(value = "查询酒店特色列表", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "获取酒店特色(用于查询页列表)" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>错误码: </p>" +
+            "<p>10202: 系统异常,获取失败</p>")
+    @RequestMapping(value = "/queryhotelfeature", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<LabelDic> queryHotelFeature() {
+        List<LabelDic> labelDicVOList = null;
+        try {
+            labelDicVOList = labelDicService.selectLabelDicS();
+        } catch (Exception e) {
+            DtoUtil.returnFail("系统异常", ErrorCode.BIZ_SYSTEM_ERROR);
+            e.printStackTrace();
+        }
+        return DtoUtil.returnDataSuccess(labelDicVOList);
+    }
+
+
+
+
+
+
 
 
 }

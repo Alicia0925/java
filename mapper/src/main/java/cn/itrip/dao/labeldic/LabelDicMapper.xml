@@ -19,6 +19,14 @@
   </sql>
 
 
+  <!--查询父类ID是酒店特色的标签字典列表(parentId是酒店特色16)-->
+  <select id="selectLabelDicS" resultType="cn.itrip.beans.pojo.LabelDic">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM `itrip_label_dic`
+    WHERE `parentId` = 16
+  </select>
+
 
 
   <!--以下是自动生成CURD-->
@@ -28,7 +36,7 @@
     from itrip_label_dic
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_label_dic
     where id = #{id,jdbcType=BIGINT}
   </delete>
