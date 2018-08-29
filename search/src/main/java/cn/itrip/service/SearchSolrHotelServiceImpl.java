@@ -131,7 +131,7 @@ public class SearchSolrHotelServiceImpl implements SearchSolrHotelService {
     }
 
     /**
-     * 根据热门城市查询酒店
+     * 根据热门城市查询酒店列表
      * @param cityId 城市id
      * @param pageSize 每页行数
      * @return 返回结果封装到VO中

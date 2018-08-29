@@ -22,6 +22,16 @@
     creationDate, createdBy, modifyDate, modifiedBy
   </sql>
 
+
+  <!--查询国内外的热门城市-->
+  <select id="selectAreaDicList" resultType="cn.itrip.beans.vo.AreaDicVO">
+    SELECT `id`,`name`
+    FROM `itrip_area_dic`
+    WHERE `isHot`=1
+    AND `isChina`= #{isChina,jdbcType=INTEGER}
+  </select>
+
+
   <!--以下是自动生成CURD-->
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -29,7 +39,8 @@
     from itrip_area_dic
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_area_dic
     where id = #{id,jdbcType=BIGINT}
   </delete>

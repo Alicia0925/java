@@ -57,9 +57,9 @@ public class HotelsController {
         return DtoUtil.returnDataSuccess(page);
     }
 
-    @ApiOperation(value = "根据热门城市查询酒店", httpMethod = "POST",
+    @ApiOperation(value = "根据热门城市查询酒店列表", httpMethod = "POST",
             protocols = "HTTP", produces = "application/json",
-            response = Dto.class, notes = "根据热门城市查询酒店" +
+            response = Dto.class, notes = "根据热门城市查询酒店列表" +
             "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
             "<p>错误码: </p>" +
             "<p>20003: 城市id不能为空</p>")
@@ -69,8 +69,6 @@ public class HotelsController {
         if (EmptyUtils.isEmpty(vo) || EmptyUtils.isEmpty(vo.getCityId())) {
             return DtoUtil.returnFail("城市id不能为空", ErrorCode.SEARCH_UNKNOWN_CITYID);
         }
-        Map<String, Object> param = new HashMap<>();
-        param.put("cityId", vo.getCityId());
         List list = searchSolrHotelService.searchHotelsByHotCity(vo.getCityId(), vo.getCount());
         return DtoUtil.returnDataSuccess(list);
     }
