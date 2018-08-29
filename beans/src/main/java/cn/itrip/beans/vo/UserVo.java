@@ -2,6 +2,9 @@ package cn.itrip.beans.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
+
 /**
  * 接收客户端表单中的用户注册信息VO
  *
@@ -9,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  * */
 @ApiModel(value="ItripUserVo",description ="用户注册信息" )
-public class UserVo {
+public class UserVo implements Serializable {
     @ApiModelProperty("[必填]注册用户名称")
     private String userCode;
 

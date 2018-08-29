@@ -1,11 +1,13 @@
 package cn.itrip.beans.vo.order;
 
 
+import java.io.Serializable;
+
 /**
  * 根据订单查询联系人返回VO
  *
  */
-public class OrderLinkUserVo {
+public class OrderLinkUserVo implements Serializable {
 
     private Long linkUserId;
     private String linkUserName;

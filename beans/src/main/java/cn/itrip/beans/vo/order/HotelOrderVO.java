@@ -1,6 +1,9 @@
 package cn.itrip.beans.vo.order;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,18 +11,30 @@ import java.util.Date;
  * 返回前端-订单列表页VO
  *
  */
-public class HotelOrderVO {
+public class HotelOrderVO implements Serializable {
 
     private Long id;                //订单id
     private Long hotelId;           //酒店id
     private String hotelName;        //酒店的名称
     private String orderNo;         //订单号
     private Integer orderType;      //订单类型
-    private String linkUserName;    //旅客的姓名，多个旅客的姓名之间用逗号隔开
-    private Date creationDate;      //预定时间
+    private String linkUserName;//旅客的姓名，多个旅客的姓名之间用逗号隔开
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date creationDate;//预定时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date checkInDate;       //入住时间（行程/有效日期）
     private BigDecimal payAmount;   //订单金额
     private Integer orderStatus;    //订单状态（0：待支付 1:已取消 2:支付成功 3:已消费）
+    private Integer count;
+
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 
     public Long getId() {
         return id;

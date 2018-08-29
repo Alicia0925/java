@@ -3,6 +3,8 @@ package cn.itrip.beans.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.io.Serializable;
+
 /**
  * 接收客户端表单中的用户新增常用旅客信息VO
  *
@@ -10,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  * */
 @ApiModel(value="UserLinkUserVo",description ="新增旅客信息" )
-public class UserLinkUserVo {
+public class UserLinkUserVo implements Serializable {
     @ApiModelProperty("[必填]注册旅客姓名")
     private String linkUserName;
 

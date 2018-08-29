@@ -69,15 +69,11 @@
   订单号，酒店名，预订时间，结束时间，订单状态
   订单类型，旅客名称
   -->
-  <select id="selectByMap" resultType="cn.itrip.beans.vo.order.HotelOrderVO">
+  <select id="selectByMap" resultType="cn.itrip.beans.vo.order.HotelOrderVO" parameterType="cn.itrip.beans.vo.order.SearchOrderVO">
     select
-    id,orderType,orderNo,hotelId,hotelName,orderStatus,
-    count,checkInDate,payAmount,payType,linkUserName,creationDate
+    id,orderType,orderNo,hotelId,hotelName,orderStatus,`count`,checkInDate,payAmount,linkUserName,creationDate
     from itrip_hotel_order
     <trim prefix="where" prefixOverrides="and | or">
-      <if test="id != null and id!=''">
-        and id=#{id}
-      </if>
       <if test="userId != null and userId!=''">
         and userId=#{userId}
       </if>
@@ -87,28 +83,16 @@
       <if test="orderNo != null and orderNo!=''">
         and orderNo like CONCAT ('%',#{orderNo},'%')
       </if>
-      <if test="hotelId != null and hotelId!=''">
-        and hotelId=#{hotelId}
-      </if>
-      <if test="hotelName != null and hotelName!=''">
-        and hotelName=#{hotelName}
-      </if>
-      <if test="checkInDate != null and checkInDate!=''">
-        and checkInDate=#{checkInDate}
-      </if>
       <if test="orderStatus != null">
         and orderStatus=#{orderStatus}
-      </if>
-      <if test="payAmount != null and payAmount!=''">
-        and payAmount=#{payAmount}
       </if>
       <if test="linkUserName != null and linkUserName != ''">
         and linkUserName like CONCAT ('%',#{linkUserName},'%')
       </if>
-      <if test="startDate != null and startDate!=''">
+      <if test="startDate != null">
         and creationDate &gt;= #{startDate}
       </if>
-      <if test="endDate != null and endDate!=''">
+      <if test="endDate != null">
         and creationDate &lt;= #{endDate}
       </if>
       and creationDate between date_sub(now(),interval 1 year) and now()
@@ -121,12 +105,10 @@
 
   <!--count 查询个人订单总数-->
 
-  <select id="CountOrderByMap" resultType="Integer"  parameterType="java.util.Map">
+  <select id="CountOrderByMap" resultType="java.lang.Integer" parameterType="cn.itrip.beans.vo.order.SearchOrderVO">
     select count(*) from itrip_hotel_order
     <trim prefix="where" prefixOverrides="and | or">
-      <if test="id != null and id!=''">
-        and id=#{id}
-      </if>
+
       <if test="userId != null and userId!=''">
         and userId=#{userId}
       </if>
@@ -136,31 +118,51 @@
       <if test="orderNo != null and orderNo!=''">
         and orderNo like CONCAT ('%',#{orderNo},'%')
       </if>
-      <if test="hotelId != null and hotelId!=''">
-        and hotelId=#{hotelId}
-      </if>
-      <if test="hotelName != null and hotelName!=''">
-        and hotelName=#{hotelName}
-      </if>
-      <if test="checkInDate != null and checkInDate!=''">
-        and checkInDate=#{checkInDate}
-      </if>
       <if test="orderStatus != null">
         and orderStatus=#{orderStatus}
-      </if>
-      <if test="payAmount != null and payAmount!=''">
-        and payAmount=#{payAmount}
       </if>
       <if test="linkUserName != null and linkUserName != ''">
         and linkUserName like CONCAT ('%',#{linkUserName},'%')
       </if>
-      <if test="startDate != null and startDate!=''">
+      <if test="startDate != null ">
         and creationDate &gt;= #{startDate}
       </if>
-      <if test="endDate != null and endDate!=''">
+      <if test="endDate != null ">
         and creationDate &lt;= #{endDate}
       </if>
+      and creationDate between date_sub(now(),interval 1 year) and now()
     </trim>
+  </select>
+  <select id="getItripHotelOrderRoomInfoById" resultType="cn.itrip.beans.vo.order.PersonalOrderRoomVo">
+    select
+    o.id AS id,
+    o.hotelId AS hotelId,
+    o.hotelName AS hotelName,
+    h.hotelLevel AS hotelLevel,
+    h.address AS address,
+    o.roomId AS roomId,
+    r.roomTitle AS roomTitle,
+    r.roomBedTypeId AS roomBedTypeId,
+    o.count AS count,
+    o.bookingDays AS bookingDays,
+    o.checkInDate AS checkInDate,
+    o.checkOutDate AS checkOutDate,
+    o.specialRequirement AS specialRequirement,
+    o.linkUserName AS linkUserName,
+    o.payAmount AS payAmount,
+    r.payType AS roomPayType,
+    d.name as roomBedTypeName,
+    r.isHavingBreakfast as isHavingBreakfast,
+    dayofweek(o.checkInDate) as checkInWeek,
+    dayofweek(o.checkOutDate) as checkOutWeek
+    from itrip_hotel_order o,itrip_hotel h,itrip_hotel_room r,itrip_label_dic d
+    <trim prefix="where" prefixOverrides="and | or">
+    o.hotelId=h.id and o.roomId=r.id and d.id=r.roomBedTypeId
+    <if test="id != null">
+      and o.id=#{id}
+    </if>
+    </trim>
+
   </select>
 
 
