@@ -8,6 +8,10 @@ public interface TokenService {
      */
     public final static int SESSION_TIMEOUT=2*60*60;//默认2h
     /**
+     * 测试用会话超时时间
+     */
+    public final static int TEST_TIMEOUT=60;
+    /**
      * 置换保护时间
      */
     public final static int REPLACEMENT_PROTECTION_TIMEOUT=60*60;//默认1h

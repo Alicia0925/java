@@ -24,7 +24,8 @@ public class ErrorCode {
 	public final static String AUTH_REPLACEMENT_FAILED="30005";//置换token失败
 	public final static String AUTH_TOKEN_INVALID="30006";//token无效
 	public static final String AUTH_ILLEGAL_USERCODE = "30007";//非法的用户名
-	
+	public static final String AUTH_ILLEGAL_EMAIL = "30008";//非法的邮箱格式
+
 	
 	/*认证模块错误码-end*/
 

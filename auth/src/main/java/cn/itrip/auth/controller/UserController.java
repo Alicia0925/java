@@ -30,8 +30,6 @@ public class UserController {
     //手机号码验证
     private static String phoneReg = "1[358]\\d{9}";
 
-
-
     //登录的方法
     @RequestMapping(value = "/dologin",method = RequestMethod.POST)
     public @ResponseBody Dto login(@RequestParam("name")String userCode,
@@ -51,18 +49,19 @@ public class UserController {
                     tokenService.saveToken(token,user);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    return DtoUtil.returnFail("登录失败",ErrorCode.AUTH_UNKNOWN);
                 }
-//返回ItripTokenVO
+                //返回ItripTokenVO
                 TokenVo tokenVo=new TokenVo(token,
                         Calendar.getInstance().getTimeInMillis()+TokenService.SESSION_TIMEOUT*1000,//2h有效期
+//                        Calendar.getInstance().getTimeInMillis()+TokenService.TEST_TIMEOUT*1000,//测试，1分钟有效期
                         Calendar.getInstance().getTimeInMillis());
-
                 return DtoUtil.returnDataSuccess(tokenVo);
             }else{
-                return DtoUtil.returnFail("用户密码错误","1201");
+                return DtoUtil.returnFail("用户密码错误",ErrorCode.AUTH_PARAMETER_ERROR);
             }
         }
-        return DtoUtil.returnFail("该邮箱或手机号尚未注册，请注册后继续登录","1202");
+        return DtoUtil.returnFail("该邮箱或手机号尚未注册，请注册后继续登录",ErrorCode.AUTH_AUTHENTICATION_FAILED);
     }
 
     //判断该userCode是否已被注册
@@ -70,10 +69,11 @@ public class UserController {
     public @ResponseBody Dto ckusr(@RequestParam("name")String userCode){
         try {
             if (userService.findByUserCode(userCode)!=null){
-                return DtoUtil.returnFail("已被注册","");
+                return DtoUtil.returnFail("已被注册",ErrorCode.AUTH_USER_ALREADY_EXISTS);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return DtoUtil.returnFail("未知错误",ErrorCode.AUTH_UNKNOWN);
         }
         return DtoUtil.returnSuccess();
     }
@@ -83,13 +83,13 @@ public class UserController {
     public @ResponseBody Dto doregister(@RequestBody User user){
         int isEmail = 0;
         if (!user.getUserCode().matches(emailReg)){//如果不符合邮箱格式
-            return DtoUtil.returnFail("邮箱地址不符合规格","1205");
+            return DtoUtil.returnFail("邮箱格式不符合规范",ErrorCode.AUTH_ILLEGAL_EMAIL);
         }else{
             try {
                 userService.addNewUser(user,isEmail);
             } catch (Exception e) {
                 e.printStackTrace();
-                return DtoUtil.returnFail("","");
+                return DtoUtil.returnFail("注册失败",ErrorCode.AUTH_UNKNOWN);
             }
             return DtoUtil.returnSuccess("注册成功");
         }
@@ -106,7 +106,7 @@ public class UserController {
                 userService.addNewUser(user,isEmail);
             } catch (Exception e) {
                 e.printStackTrace();
-                return DtoUtil.returnFail("","");
+                return DtoUtil.returnFail("注册失败",ErrorCode.AUTH_UNKNOWN);
             }
             return DtoUtil.returnSuccess("注册成功");
         }
@@ -118,12 +118,14 @@ public class UserController {
                                       @RequestParam("user")String userCode){
         return ckAcCode(code,userCode);
     }
+
     //判断验证码是否匹配的方法(手机)
     @RequestMapping(value = "/validatephone",method = RequestMethod.PUT)
     public @ResponseBody Dto validatephone(@RequestParam("code")String code,
                                       @RequestParam("user")String userCode){
         return ckAcCode(code,userCode);
     }
+
     //注销的方法
     @RequestMapping(value = "/logout",method = RequestMethod.GET)
     public @ResponseBody Dto logout(HttpServletRequest request){
@@ -141,6 +143,7 @@ public class UserController {
         }
        // return null;
     }
+
     public Dto ckAcCode(String code,
                         String userCode){
         User user = null;
@@ -150,12 +153,12 @@ public class UserController {
                 user.setActivated(1);
             } catch (Exception e) {
                 e.printStackTrace();
-                return DtoUtil.returnFail("","");
+                return DtoUtil.returnFail("失败",ErrorCode.AUTH_ACTIVATE_FAILED);
             }
             redisAPI.delete("activationCode");
             return DtoUtil.returnSuccess();
         }
-        return DtoUtil.returnFail("","");
+        return DtoUtil.returnFail("失败",ErrorCode.AUTH_ACTIVATE_FAILED);
     }
 
 }

@@ -52,6 +52,7 @@ public class TokenServiceImpl implements TokenService {
         //判断
         if(token.startsWith("token:PC-")){
             redisAPI.set(token,2*60*60, JSON.toJSONString(user));
+//            redisAPI.set(token,60, JSON.toJSONString(user));//测试时间
         }else{
             redisAPI.set(token, JSON.toJSONString(user));
         }

@@ -31,8 +31,8 @@ public interface UserService {
 
     public User login(String userCode, String userPassword) throws Exception;
 
-    String sendActivationMail(String email);
+    String sendActivationMail(String email)throws Exception ;
 
-    boolean isActivationCodeTrue(String checkActivationCode,User user);
+    boolean isActivationCodeTrue(String checkActivationCode,User user)throws Exception ;
     void addNewUser(User user,int isEmail) throws Exception;
 }

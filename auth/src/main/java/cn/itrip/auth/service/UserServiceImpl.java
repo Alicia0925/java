@@ -1,7 +1,6 @@
 package cn.itrip.auth.service;
 
 import cn.itrip.beans.pojo.User;
-import cn.itrip.common.DtoUtil;
 import cn.itrip.common.MD5;
 import cn.itrip.common.RedisAPI;
 import cn.itrip.common.SendMessage;
@@ -42,7 +41,6 @@ public class UserServiceImpl implements UserService  {
 
     @Override
     public boolean addSelective(User record) throws Exception{
-
         return userMapper.insertSelective(record) > 0;
     }
 
@@ -86,7 +84,7 @@ public class UserServiceImpl implements UserService  {
      * @param email
      */
     @Override
-    public String sendActivationMail(String email){
+    public String sendActivationMail(String email)throws Exception {
         String activationCode = MD5.getMd5(new Date().toString(),12);
         simpleMailMessage.setTo(email);
         simpleMailMessage.setText("注册邮箱"+email+"激活码"+activationCode);
@@ -95,7 +93,7 @@ public class UserServiceImpl implements UserService  {
     }
 
     //判断验证码是否正确的方法
-    public boolean isActivationCodeTrue(String checkActivationCode,User user){
+    public boolean isActivationCodeTrue(String checkActivationCode,User user)throws Exception {
         if (redisAPI.get("activationCode").equals(checkActivationCode)){//判断验证码是否正确
             user.setUserType(0);
             user.setActivated(1);
