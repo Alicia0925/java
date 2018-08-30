@@ -4,6 +4,7 @@ import cn.itrip.beans.pojo.AreaDic;
 import cn.itrip.beans.pojo.HotelWithBLOBs;
 import cn.itrip.beans.pojo.LabelDic;
 import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
+import cn.itrip.beans.vo.hotel.SearchDetailsHotelVO;
 import cn.itrip.dao.hotel.HotelMapper;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +50,25 @@ public class HotelServiceImpl implements HotelService {
         hotelVideoDescVO.setTradingAreaNameList(tradingAreaNames);
 
         return hotelVideoDescVO;
+    }
+
+    //根据酒店的id查询酒店的特色和介绍
+    @Override
+    public List<SearchDetailsHotelVO> getHotelDetails(Long id) throws Exception {
+        //获取酒店的介绍
+        SearchDetailsHotelVO vo = new SearchDetailsHotelVO();
+        List<SearchDetailsHotelVO> searchDetailsHotelVOS = new ArrayList<>();
+        vo.setName("酒店介绍");
+        vo.setDescription(hotelMapper.selectHotelWithBLOBsById(id).getDetails());
+        searchDetailsHotelVOS.add(vo);
+        //获取酒店的特色
+        List<LabelDic> labelDicList = hotelMapper.selectHotelFeatureByHotelId(id);
+        for (LabelDic labelDic:labelDicList) {
+            SearchDetailsHotelVO vo2 = new SearchDetailsHotelVO();
+            vo2.setName(labelDic.getName());
+            vo2.setDescription(labelDic.getDescription());
+            searchDetailsHotelVOS.add(vo2);
+        }
+        return searchDetailsHotelVOS;
     }
 }

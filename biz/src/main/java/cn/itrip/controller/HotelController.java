@@ -5,6 +5,8 @@ import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.LabelDic;
 import cn.itrip.beans.vo.AreaDicVO;
 import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
+import cn.itrip.beans.vo.hotel.SearchDetailsHotelVO;
+import cn.itrip.beans.vo.hotel.SearchFacilitiesHotelVO;
 import cn.itrip.common.DtoUtil;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.ErrorCode;
@@ -14,7 +16,6 @@ import cn.itrip.service.labeldic.LabelDicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 
 /**
@@ -59,12 +58,7 @@ public class HotelController {
     private HotelService hotelService;
 
 
-    /**
-     * 查询国内外的热门城市
-     *
-     * @param type 1:国内 2:国外
-     * @return 区域字典表的VO
-     */
+
     @ApiOperation(value = "查询热门城市", httpMethod = "GET",
             protocols = "HTTP", produces = "application/json",
             response = Dto.class, notes = "查询国内、国外的热门城市(1:国内 2:国外)" +
@@ -89,11 +83,8 @@ public class HotelController {
         return DtoUtil.returnDataSuccess(areaDicVOs);
     }
 
-    /**
-     * 查询酒店特色列表
-     *
-     * @return 返回标签字典表集合
-     */
+
+
     @ApiOperation(value = "查询酒店特色列表", httpMethod = "GET",
             protocols = "HTTP", produces = "application/json",
             response = Dto.class, notes = "获取酒店特色(用于查询页列表)" +
@@ -113,11 +104,7 @@ public class HotelController {
         return DtoUtil.returnDataSuccess(labelDicVOList);
     }
 
-    /**
-     * 查询商圈
-     * @param cityId 根据城市查询商圈
-     * @return 区域字典表的VO
-     */
+
     @ApiOperation(value = "查询商圈", httpMethod = "GET",
             protocols = "HTTP", produces = "application/json",
             response = Dto.class, notes = "根据城市查询商圈" +
@@ -172,9 +159,30 @@ public class HotelController {
         return dto;
     }
 
-
-
-
+    @ApiOperation(value = "根据酒店id查询酒店特色和介绍", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "根据酒店id查询酒店特色和介绍" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>10210: 酒店id不能为空</p>" +
+            "<p>10211: 系统异常,获取失败</p>")
+    @RequestMapping(value = "/queryhoteldetails/{id}", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<SearchFacilitiesHotelVO> queryHotelDetails(
+            @ApiParam(required = true, name = "id", value = "酒店ID")
+            @PathVariable Long id) {
+        List<SearchDetailsHotelVO> searchDetailsHotelVOList = null;
+        try {
+            if (EmptyUtils.isNotEmpty(id)) {
+                searchDetailsHotelVOList = hotelService.getHotelDetails(id);
+                return DtoUtil.returnDataSuccess(searchDetailsHotelVOList);
+            } else {
+                return DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常,获取酒店介绍失败", ErrorCode.BIZ_GETDETAILS_ERROR);
+        }
+    }
 
 
 

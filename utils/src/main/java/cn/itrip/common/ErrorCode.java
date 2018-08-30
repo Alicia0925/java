@@ -48,6 +48,8 @@ public class ErrorCode {
 	public final static String BIZ_GETBEDTYPE_ERROR="100305";//获取床型失败
 	public final static String BIZ_UNKNOWN_HOTELID_HOTELTIME="100303";//酒店id不能为空,酒店入住及退房时间不能为空,入住时间不能大于退房时间
 	public final static String BIZ_GETHOTELROOM_ERROR="100304";//获取酒店房型列表失败
+	public final static String BIZ_UNKNOWN_HOTELID1="10210";//酒店id不能为空
+	public final static String BIZ_GETDETAILS_ERROR="10211";//系统异常,获取酒店介绍失败
 
 	/*biz模块错误码-end*/
 }
