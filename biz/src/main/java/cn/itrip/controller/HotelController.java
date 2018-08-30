@@ -99,7 +99,7 @@ public class HotelController {
             response = Dto.class, notes = "获取酒店特色(用于查询页列表)" +
             "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
             "<p>错误码: </p>" +
-            "<p>10202: 系统异常,获取失败</p>")
+            "<p>10205: 系统异常,获取失败</p>")
     @RequestMapping(value = "/queryhotelfeature", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
     public Dto<LabelDic> queryHotelFeature() {
@@ -107,7 +107,7 @@ public class HotelController {
         try {
             labelDicVOList = labelDicService.getLabelDicS(16L);
         } catch (Exception e) {
-            DtoUtil.returnFail("系统异常", ErrorCode.BIZ_SYSTEM_ERROR);
+            DtoUtil.returnFail("酒店特色列表获取失败", ErrorCode.BIZ_SYSTEM_ERROR);
             e.printStackTrace();
         }
         return DtoUtil.returnDataSuccess(labelDicVOList);
@@ -124,7 +124,7 @@ public class HotelController {
             "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
             "<p>错误码：</p>" +
             "<p>10203 : cityId不能为空 </p>" +
-            "<p>10202 : 系统异常,获取失败</p>")
+            "<p>10204 : 系统异常,获取失败</p>")
     @RequestMapping(value = "/querytradearea/{cityId}" +
             "", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
@@ -134,10 +134,10 @@ public class HotelController {
             if (EmptyUtils.isNotEmpty(cityId)) {
                 areaDicVOList = areaDicService.getAreaDicListByCityId(cityId);
             } else {
-                DtoUtil.returnFail("cityId不能为空", ErrorCode.BIZ_UNKNOWN_PARENT);
+                DtoUtil.returnFail("cityId不能为空", ErrorCode.BIZ_UNKNOWN_CITYID);
             }
         } catch (Exception e) {
-            DtoUtil.returnFail("系统异常", ErrorCode.BIZ_SYSTEM_ERROR);
+            DtoUtil.returnFail("城市商圈获取失败", ErrorCode.BIZ_GETTRADINGAREA_ERROR);
             e.printStackTrace();
         }
         return DtoUtil.returnDataSuccess(areaDicVOList);
@@ -149,8 +149,8 @@ public class HotelController {
             response = Dto.class, notes = "根据酒店id查询酒店特色、商圈、酒店名称（视频文字描述）" +
             "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
             "<p>错误码：</p>" +
-            "<p>10301 : 获取酒店视频文字描述失败 </p>" +
-            "<p>10302 : 酒店id不能为空</p>")
+            "<p>100214 : 获取酒店视频文字描述失败 </p>" +
+            "<p>100215 : 酒店id不能为空</p>")
     @RequestMapping(value = "/getvideodesc/{hotelId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Dto<Object> getVideoDescByHotelId(@ApiParam(required = true, name = "hotelId", value = "酒店ID")
@@ -163,14 +163,21 @@ public class HotelController {
                 dto = DtoUtil.returnSuccess("获取酒店视频文字描述成功", hotelVideoDescVO);
             } catch (Exception e) {
                 e.printStackTrace();
-                dto = DtoUtil.returnFail("获取酒店视频文字描述失败", "10301");
+                dto = DtoUtil.returnFail("获取酒店视频文字描述失败", ErrorCode.BIZ_GETHOTELDESC_ERROR);
             }
 
         } else {
-            dto = DtoUtil.returnFail("酒店id不能为空", "10302");
+            dto = DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID);
         }
         return dto;
     }
+
+
+
+
+
+
+
 
 
 }

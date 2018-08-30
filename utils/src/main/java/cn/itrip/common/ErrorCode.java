@@ -40,9 +40,14 @@ public class ErrorCode {
 
 	/*biz模块错误码-start*/
 	public final static String BIZ_UNKNOWN_TYPE="10201";//type不能为空(1:国内 2:国外)
-	public final static String BIZ_SYSTEM_ERROR="10202";//系统异常，获取失败
-	public final static String BIZ_UNKNOWN_PARENT="10203";//cityId不能为空
-
+	public final static String BIZ_SYSTEM_ERROR="10205";//酒店特色列表获取失败
+	public final static String BIZ_UNKNOWN_CITYID="10203";//cityId不能为空
+	public final static String BIZ_GETTRADINGAREA_ERROR="10204";//城市商圈获取失败
+	public final static String BIZ_GETHOTELDESC_ERROR="100214";//获取酒店视频文字描述失败
+	public final static String BIZ_UNKNOWN_HOTELID="100215";//酒店id不能为空
+	public final static String BIZ_GETBEDTYPE_ERROR="100305";//获取床型失败
+	public final static String BIZ_UNKNOWN_HOTELID_HOTELTIME="100303";//酒店id不能为空,酒店入住及退房时间不能为空,入住时间不能大于退房时间
+	public final static String BIZ_GETHOTELROOM_ERROR="100304";//获取酒店房型列表失败
 
 	/*biz模块错误码-end*/
 }

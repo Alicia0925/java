@@ -1,10 +1,19 @@
 package cn.itrip.dao.hotelroom;
 
 import cn.itrip.beans.pojo.HotelRoom;
+import cn.itrip.beans.vo.hotel.SearchHotelRoomVO;
+
+import java.util.List;
 
 public interface HotelRoomMapper {
 
-
+    /**
+     * 通过条件查询酒店房间列表
+     * @param searchHotelRoomVO 查询条件
+     * @return 返回房间集合
+     * @throws Exception 有异常抛出
+     */
+    List<HotelRoom> selectHotelRoomListByQuery(SearchHotelRoomVO searchHotelRoomVO)throws Exception;
 
 
 
