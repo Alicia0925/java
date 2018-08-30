@@ -369,7 +369,7 @@ public class HotelOrderController {
                 return DtoUtil.returnFail("roomId不能为空", "100511");
             } else {
                 roomStoreVO = new RoomStoreVO();
-                hotel = hotelService.getHotelById(validateRoomStoreVO.getHotelId());
+                hotel = hotelService.getHotelWithBLOBsById(validateRoomStoreVO.getHotelId());
                 room = roomService.getHotelRoomById(validateRoomStoreVO.getRoomId());
                 Map param = new HashMap();
                 param.put("startTime", validateRoomStoreVO.getCheckInDate());

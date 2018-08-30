@@ -34,6 +34,36 @@
     details, facilities, hotelPolicy
   </sql>
 
+    <!--根据酒店id查询酒店信息-->
+    <select id="selectHotelWithBLOBsById" resultMap="ResultMapWithBLOBs">
+        SELECT
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        FROM itrip_hotel
+        WHERE id = #{hotelId,jdbcType=BIGINT}
+    </select>
+
+    <!--根据酒店ID获取商圈信息-->
+    <select id="selectHotelAreaDicByHotelId" resultType="cn.itrip.beans.pojo.AreaDic">
+        SELECT t.`id` id,a.`name` `name`
+        FROM `itrip_hotel_trading_area` t
+        JOIN `itrip_area_dic` a
+        ON t.`areaId`=a.`id`
+        WHERE t.`hotelId`= #{hotelId,jdbcType=BIGINT}
+    </select>
+
+    <!--根据酒店ID获取酒店特色信息-->
+    <select id="selectHotelFeatureByHotelId" resultType="cn.itrip.beans.pojo.LabelDic">
+        SELECT f.`id` id,l.`name` `name`,l.`description` description
+        FROM `itrip_hotel_feature` f
+        JOIN `itrip_label_dic` l
+        ON f.`featureId`=l.`id`
+        WHERE f.`hotelId`= #{hotelId,jdbcType=BIGINT}
+    </select>
+
+
+
 
 
 
@@ -46,7 +76,7 @@
     from itrip_hotel
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_hotel
     where id = #{id,jdbcType=BIGINT}
   </delete>
