@@ -78,27 +78,27 @@
        <property name="orderProcessCancel" value="${sysConfig.orderProcessCancel}"/>
 
    </bean>
-    <!--!1 指定任务类-->
-    <bean id="" class=""/>
-    <!--2 指定工作任务细节-->
-    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="任务类"/>
-        <property name="targetMethod" value="任务类中的方法名"/>
-    </bean>
-    <!--3 任务调度者-->
-    <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
-        <property name="jobDetail" ref="jobDetail"/>
-        <property name="repeatCount" value="需要重复的次数"/>
-        <property name="repeatInterval" value="重复间隔时间ms"/>
-        <property name="startDelay" value="延迟时间ms"/>
-    </bean>
-    <!--4 指定任务调度者工厂-->
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="triggers" >
-            <list>
-                <ref bean="simpleTrigger"/>
-            </list>
-        </property>
-    </bean>
+    <!--&lt;!&ndash;!1 指定任务类&ndash;&gt;-->
+    <!--<bean id="" class=""/>-->
+    <!--&lt;!&ndash;2 指定工作任务细节&ndash;&gt;-->
+    <!--<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--<property name="targetObject" ref="任务类"/>-->
+        <!--<property name="targetMethod" value="任务类中的方法名"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash;3 任务调度者&ndash;&gt;-->
+    <!--<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">-->
+        <!--<property name="jobDetail" ref="jobDetail"/>-->
+        <!--<property name="repeatCount" value="需要重复的次数"/>-->
+        <!--<property name="repeatInterval" value="重复间隔时间ms"/>-->
+        <!--<property name="startDelay" value="延迟时间ms"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash;4 指定任务调度者工厂&ndash;&gt;-->
+    <!--<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
+        <!--<property name="triggers" >-->
+            <!--<list>-->
+                <!--<ref bean="simpleTrigger"/>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
 
 </beans>

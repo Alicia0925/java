@@ -1,11 +1,9 @@
 package cn.itrip.beans.vo.order;
 
-import cn.itrip.beans.pojo.OrderLinkUser;
 import cn.itrip.beans.pojo.UserLinkUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -43,10 +41,6 @@ public class AddHotelOrderVO {
     private Integer invoiceType;
     @ApiModelProperty("[非必填] 发票抬头")
     private String invoiceHead;
-   /* @ApiModelProperty("[必填] 入住人id，多个id之间用逗号隔开")
-    private String linkUserIds;
-    @ApiModelProperty("[必填] 入住人名称，多个名称之间用逗号隔开")
-    private String linkUserName;*/
     @ApiModelProperty("[必填] 入住人(只传递：id、linkUserName)")
     private List<UserLinkUser> linkUser;
 

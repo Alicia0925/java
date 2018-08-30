@@ -16,7 +16,55 @@
     id, hotelId, roomId, recordDate, store, creationDate, createdBy, modifyDate, modifiedBy
   </sql>
 
+<!--库存刷新-->
+  <update id="flushStore" statementType="CALLABLE" parameterType="map">
+    {call pre_flush_store(
+    #{startTime},
+    #{endStime},
+    #{roomId},
+    #{hotelId})
+    }
 
+  </update>
+
+
+  <!--当日库存=实时库存表的库存数量-当日订单中对应该房型未支付的订单所占的库存-->
+
+  <select id="queryRoomStore" resultType="cn.itrip.beans.vo.store.StoreVO"  parameterType="java.util.Map">
+              SELECT A.roomId,A.recordDate,A.store from (
+              SELECT
+                    store.roomId,
+                    store.recordDate,
+                    DATE_FORMAT(store.recordDate,'%Y-%m-%d'),
+	                store.store - (
+                            CASE
+                            WHEN SUM(ord.count) IS NULL THEN
+                                0
+                            ELSE
+                                SUM(ord.count)
+                            END
+	                ) AS store
+                    FROM
+                        itrip_hotel_temp_store store
+                    LEFT JOIN itrip_hotel_order ord ON store.roomId = ord.roomId AND ord.orderStatus = 0
+                    AND DATE_FORMAT(store.recordDate,'%Y-%m-%d') BETWEEN DATE_FORMAT(ord.checkInDate, '%Y-%m-%d') AND DATE_FORMAT(ord.checkOutDate,'%Y-%m-%d')
+                    WHERE   store.roomId = #{roomId}
+                    GROUP BY  store.roomId,store.recordDate) AS A
+                    WHERE  A.recordDate BETWEEN DATE_FORMAT(#{startTime}, '%Y-%m-%d') AND DATE_FORMAT(#{endTime}, '%Y-%m-%d') ORDER by A.store ASC
+    </select>
+
+<!--如果库存满足则锁定库存-->
+  <update id="updateRoomStore" parameterType="java.util.Map">
+     update itrip_hotel_temp_store set  store=store-#{count}
+        WHERE
+            roomId=#{roomId}
+        AND
+            DATE_FORMAT(recordDate, '%Y-%m-%d ')
+        BETWEEN
+            DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+        AND
+            DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+    </update>
 
 
   <!--以下是自动生成CURD-->
@@ -143,4 +191,7 @@
       modifiedBy = #{modifiedBy,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+
+
 </mapper>

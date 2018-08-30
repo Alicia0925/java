@@ -5,14 +5,13 @@ import java.util.Date;
 
 /**
  * 验证房间库存时，返回的库存列表VO
- *
  */
 public class StoreVO implements Serializable {
-
+    //房间ID
     private Long roomId;
-
+    //库存记录日期
     private Date date;
-
+    //房间库存
     private Integer store;
 
     public Long getRoomId() {

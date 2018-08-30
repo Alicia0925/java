@@ -254,4 +254,6 @@ public class HotelOrder {
     public void setSpecialRequirement(String specialRequirement) {
         this.specialRequirement = specialRequirement;
     }
+
+
 }

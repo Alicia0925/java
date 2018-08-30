@@ -1,10 +1,7 @@
 package cn.itrip.controller;
 
 import cn.itrip.beans.dto.Dto;
-import cn.itrip.beans.pojo.Hotel;
-import cn.itrip.beans.pojo.HotelOrder;
-import cn.itrip.beans.pojo.HotelRoom;
-import cn.itrip.beans.pojo.User;
+import cn.itrip.beans.pojo.*;
 import cn.itrip.beans.vo.order.*;
 import cn.itrip.beans.vo.store.StoreVO;
 import cn.itrip.common.*;
@@ -16,11 +13,13 @@ import cn.itrip.service.order.OrderLinkUserService;
 import cn.itrip.service.order.TradeEndsService;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,108 +238,107 @@ public class HotelOrderController {
      * 100507 : 库存不足
      * 100000 : token失效，请重登录
      * */
-//    @RequestMapping(value = "/addhotelorder", method = RequestMethod.POST, produces = "application/json")
-//    @ResponseBody
-//    public Dto<Object> addHotelOrder(@RequestBody AddHotelOrderVO itripAddHotelOrderVO, HttpServletRequest request) {
-//        Dto<Object> dto = new Dto<Object>();
-//        String token  = request.getHeader("token");
-//        logger.debug("token name is from header : " + tokenString);
-//        ItripUser currentUser = validationToken.getCurrentUser(tokenString);
-//        Map<String, Object> validateStoreMap = new HashMap<String, Object>();
-//        validateStoreMap.put("startTime", itripAddHotelOrderVO.getCheckInDate());
-//        validateStoreMap.put("endTime", itripAddHotelOrderVO.getCheckOutDate());
-//        validateStoreMap.put("hotelId", itripAddHotelOrderVO.getHotelId());
-//        validateStoreMap.put("roomId", itripAddHotelOrderVO.getRoomId());
-//        validateStoreMap.put("count", itripAddHotelOrderVO.getCount());
-//        List<ItripUserLinkUser> linkUserList = itripAddHotelOrderVO.getLinkUser();
-//        if(EmptyUtils.isEmpty(currentUser)){
-//            return DtoUtil.returnFail("token失效，请重登录", "100000");
-//        }
-//        try {
-//            //判断库存是否充足
-//            Boolean flag = itripHotelTempStoreService.validateRoomStore(validateStoreMap);
-//            if (flag && null != itripAddHotelOrderVO) {
-//                //计算订单的预定天数
-//                Integer days = DateUtil.getBetweenDates(
-//                        itripAddHotelOrderVO.getCheckInDate(), itripAddHotelOrderVO.getCheckOutDate()
-//                ).size()-1;
-//                if(days<=0){
-//                    return DtoUtil.returnFail("退房日期必须大于入住日期", "100505");
-//                }
-//                ItripHotelOrder itripHotelOrder = new ItripHotelOrder();
-//                itripHotelOrder.setId(itripAddHotelOrderVO.getId());
-//                itripHotelOrder.setUserId(currentUser.getId());
-//                itripHotelOrder.setOrderType(itripAddHotelOrderVO.getOrderType());
-//                itripHotelOrder.setHotelId(itripAddHotelOrderVO.getHotelId());
-//                itripHotelOrder.setHotelName(itripAddHotelOrderVO.getHotelName());
-//                itripHotelOrder.setRoomId(itripAddHotelOrderVO.getRoomId());
-//                itripHotelOrder.setCount(itripAddHotelOrderVO.getCount());
-//                itripHotelOrder.setCheckInDate(itripAddHotelOrderVO.getCheckInDate());
-//                itripHotelOrder.setCheckOutDate(itripAddHotelOrderVO.getCheckOutDate());
-//                itripHotelOrder.setNoticePhone(itripAddHotelOrderVO.getNoticePhone());
-//                itripHotelOrder.setNoticeEmail(itripAddHotelOrderVO.getNoticeEmail());
-//                itripHotelOrder.setSpecialRequirement(itripAddHotelOrderVO.getSpecialRequirement());
-//                itripHotelOrder.setIsNeedInvoice(itripAddHotelOrderVO.getIsNeedInvoice());
-//                itripHotelOrder.setInvoiceHead(itripAddHotelOrderVO.getInvoiceHead());
-//                itripHotelOrder.setInvoiceType(itripAddHotelOrderVO.getInvoiceType());
-//                itripHotelOrder.setCreatedBy(currentUser.getId());
-//                StringBuilder linkUserName = new StringBuilder();
-//                int size = linkUserList.size();
-//                for (int i = 0; i < size; i++) {
-//                    if (i != size - 1) {
-//                        linkUserName.append(linkUserList.get(i).getLinkUserName() + ",");
-//                    } else {
-//                        linkUserName.append(linkUserList.get(i).getLinkUserName());
-//                    }
-//                }
-//                itripHotelOrder.setLinkUserName(linkUserName.toString());
-//                itripHotelOrder.setBookingDays(days);
-//                if (tokenString.startsWith("token:PC")) {
-//                    itripHotelOrder.setBookType(0);
-//                } else if (tokenString.startsWith("token:MOBILE")) {
-//                    itripHotelOrder.setBookType(1);
-//                } else {
-//                    itripHotelOrder.setBookType(2);
-//                }
-//                //支付之前生成的订单的初始状态为未支付
-//                itripHotelOrder.setOrderStatus(0);
-//                try {
-//                    //生成订单号：机器码 +日期+（MD5）（商品IDs+毫秒数+1000000的随机数）
-//                    StringBuilder md5String = new StringBuilder();
-//                    md5String.append(itripHotelOrder.getHotelId());
-//                    md5String.append(itripHotelOrder.getRoomId());
-//                    md5String.append(System.currentTimeMillis());
-//                    md5String.append(Math.random() * 1000000);
-//                    String md5 = MD5.getMd5(md5String.toString(), 6);
-//
-//                    //生成订单编号
-//                    StringBuilder orderNo = new StringBuilder();
-//                    orderNo.append(systemConfig.getMachineCode());
-//                    orderNo.append(DateUtil.format(new Date(), "yyyyMMddHHmmss"));
-//                    orderNo.append(md5);
-//                    itripHotelOrder.setOrderNo(orderNo.toString());
-//                    //计算订单的总金额
-//                    itripHotelOrder.setPayAmount(itripHotelOrderService.getOrderPayAmount(days * itripAddHotelOrderVO.getCount(), itripAddHotelOrderVO.getRoomId()));
-//
-//                    Map<String, String> map = itripHotelOrderService.itriptxAddItripHotelOrder(itripHotelOrder, linkUserList);
-//                    DtoUtil.returnSuccess();
-//                    dto = DtoUtil.returnSuccess("生成订单成功", map);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    dto = DtoUtil.returnFail("生成订单失败", "100505");
-//                }
-//            } else if (flag && null == itripAddHotelOrderVO) {
-//                dto = DtoUtil.returnFail("不能提交空，请填写订单信息", "100506");
-//            } else {
-//                dto = DtoUtil.returnFail("库存不足", "100507");
-//            }
-//            return dto;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return DtoUtil.returnFail("系统异常", "100508");
-//        }
-//    }
-//
+    @RequestMapping(value = "/addhotelorder", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public Dto<Object> addHotelOrder(@RequestBody AddHotelOrderVO addHotelOrderVO, HttpServletRequest request) {
+        Dto<Object> dto = new Dto<Object>();
+        String token  = request.getHeader("token");
+        User currentUser = validationToken.getCurrentUser(token);
+        Map<String, Object> validateStoreMap = new HashMap<>();
+        validateStoreMap.put("startTime", addHotelOrderVO.getCheckInDate());
+        validateStoreMap.put("endTime", addHotelOrderVO.getCheckOutDate());
+        validateStoreMap.put("hotelId", addHotelOrderVO.getHotelId());
+        validateStoreMap.put("roomId", addHotelOrderVO.getRoomId());
+        validateStoreMap.put("count", addHotelOrderVO.getCount());
+        List<UserLinkUser> linkUserList = addHotelOrderVO.getLinkUser();
+        if(EmptyUtils.isEmpty(currentUser)){
+            return DtoUtil.returnFail("token失效，请重登录", "100000");
+        }
+        try {
+            //判断库存是否充足
+            Boolean flag = tempStoreService.validateRoomStore(validateStoreMap);
+            if (flag && null != addHotelOrderVO) {
+                //计算订单的预定天数
+                Integer days = DateUtil.getBetweenDates(
+                        addHotelOrderVO.getCheckInDate(), addHotelOrderVO.getCheckOutDate()
+                ).size()-1;
+                if(days<=0){
+                    return DtoUtil.returnFail("退房日期必须大于入住日期", "100505");
+                }
+                HotelOrder hotelOrder = new HotelOrder();
+                hotelOrder.setId(addHotelOrderVO.getId());
+                hotelOrder.setUserId(currentUser.getId());
+                hotelOrder.setOrderType(addHotelOrderVO.getOrderType());
+                hotelOrder.setHotelId(addHotelOrderVO.getHotelId());
+                hotelOrder.setHotelName(addHotelOrderVO.getHotelName());
+                hotelOrder.setRoomId(addHotelOrderVO.getRoomId());
+                hotelOrder.setCount(addHotelOrderVO.getCount());
+                hotelOrder.setCheckInDate(addHotelOrderVO.getCheckInDate());
+                hotelOrder.setCheckOutDate(addHotelOrderVO.getCheckOutDate());
+                hotelOrder.setNoticePhone(addHotelOrderVO.getNoticePhone());
+                hotelOrder.setNoticeEmail(addHotelOrderVO.getNoticeEmail());
+                hotelOrder.setSpecialRequirement(addHotelOrderVO.getSpecialRequirement());
+                hotelOrder.setIsNeedInvoice(addHotelOrderVO.getIsNeedInvoice());
+                hotelOrder.setInvoiceHead(addHotelOrderVO.getInvoiceHead());
+                hotelOrder.setInvoiceType(addHotelOrderVO.getInvoiceType());
+                hotelOrder.setCreatedBy(currentUser.getId());
+                StringBuilder linkUserName = new StringBuilder();
+                int size = linkUserList.size();
+                for (int i = 0; i < size; i++) {
+                    if (i != size - 1) {
+                        linkUserName.append(linkUserList.get(i).getLinkUserName() + ",");
+                    } else {
+                        linkUserName.append(linkUserList.get(i).getLinkUserName());
+                    }
+                }
+                hotelOrder.setLinkUserName(linkUserName.toString());
+                hotelOrder.setBookingDays(days);
+                if (token.startsWith("token:PC")) {
+                    hotelOrder.setBookType(0);
+                } else if (token.startsWith("token:MOBILE")) {
+                    hotelOrder.setBookType(1);
+                } else {
+                    hotelOrder.setBookType(2);
+                }
+                //支付之前生成的订单的初始状态为未支付
+                hotelOrder.setOrderStatus(0);
+                try {
+                    //生成订单号：机器码 +日期+（MD5）（商品IDs+毫秒数+1000000的随机数）
+                    StringBuilder md5String = new StringBuilder();
+                    md5String.append(hotelOrder.getHotelId());
+                    md5String.append(hotelOrder.getRoomId());
+                    md5String.append(System.currentTimeMillis());
+                    md5String.append(Math.random() * 1000000);
+                    String md5 = MD5.getMd5(md5String.toString(), 6);
+
+                    //生成订单编号
+                    StringBuilder orderNo = new StringBuilder();
+                    orderNo.append(systemConfig.getMachineCode());
+                    orderNo.append(DateUtil.format(new Date(), "yyyyMMddHHmmss"));
+                    orderNo.append(md5);
+                    hotelOrder.setOrderNo(orderNo.toString());
+                    //计算订单的总金额
+                    hotelOrder.setPayAmount(hotelOrderService.getOrderPayAmount(days * addHotelOrderVO.getCount(), addHotelOrderVO.getRoomId()));
+
+                    Map<String, String> map = hotelOrderService.addHotelOrder(hotelOrder, linkUserList);
+                    DtoUtil.returnSuccess();
+                    dto = DtoUtil.returnSuccess("生成订单成功", map);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    dto = DtoUtil.returnFail("生成订单失败", "100505");
+                }
+            } else if (flag && null == addHotelOrderVO) {
+                dto = DtoUtil.returnFail("不能提交空，请填写订单信息", "100506");
+            } else {
+                dto = DtoUtil.returnFail("库存不足", "100507");
+            }
+            return dto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常", "100508");
+        }
+    }
+
 
     /**
      * 生成订单前,获取预订信息
@@ -368,21 +366,25 @@ public class HotelOrderController {
             } else if (EmptyUtils.isEmpty(validateRoomStoreVO.getRoomId())) {
                 return DtoUtil.returnFail("roomId不能为空", "100511");
             } else {
+                //库存房间信息
                 roomStoreVO = new RoomStoreVO();
                 hotel = hotelService.getHotelWithBLOBsById(validateRoomStoreVO.getHotelId());
                 room = roomService.getHotelRoomById(validateRoomStoreVO.getRoomId());
-                Map param = new HashMap();
-                param.put("startTime", validateRoomStoreVO.getCheckInDate());
-                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
-                param.put("roomId", validateRoomStoreVO.getRoomId());
-                param.put("hotelId", validateRoomStoreVO.getHotelId());
                 roomStoreVO.setCheckInDate(validateRoomStoreVO.getCheckInDate());
                 roomStoreVO.setCheckOutDate(validateRoomStoreVO.getCheckOutDate());
                 roomStoreVO.setHotelName(hotel.getHotelName());
                 roomStoreVO.setRoomId(room.getId());
                 roomStoreVO.setPrice(room.getRoomPrice());
                 roomStoreVO.setHotelId(validateRoomStoreVO.getHotelId());
+
+                //查询房间库存 list
+                Map param = new HashMap();
+                param.put("startTime", validateRoomStoreVO.getCheckInDate());
+                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
+                param.put("roomId", validateRoomStoreVO.getRoomId());
+                param.put("hotelId", validateRoomStoreVO.getHotelId());
                 List<StoreVO> storeVOList = tempStoreService.queryRoomStore(param);
+
                 roomStoreVO.setCount(1);
                 if (EmptyUtils.isNotEmpty(storeVOList)) {
                     roomStoreVO.setStore(storeVOList.get(0).getStore());
@@ -396,112 +398,113 @@ public class HotelOrderController {
             return DtoUtil.returnFail("系统异常", "100513");
         }
     }
+
+
+    /**
+     * 验证是否有房
+     *
+     * 错误码：
+     * 100000 : token失效，请重登录
+     * 100515 : hotelId不能为空
+     * 100516 : roomId不能为空
+     * 100517 : 系统异常
+     *
+     * */
+
+    @RequestMapping(value = "/validateroomstore", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public Dto<Map<String, Boolean>> validateRoomStore(@RequestBody ValidateRoomStoreVO validateRoomStoreVO, HttpServletRequest request) {
+        try {
+            String token  = request.getHeader("token");
+            User currentUser = validationToken.getCurrentUser(token);
+            if (EmptyUtils.isEmpty(currentUser)) {
+                return DtoUtil.returnFail("token失效，请重登录", "100000");
+            }
+            if (EmptyUtils.isEmpty(validateRoomStoreVO.getHotelId())) {
+                return DtoUtil.returnFail("hotelId不能为空", "100515");
+            } else if (EmptyUtils.isEmpty(validateRoomStoreVO.getRoomId())) {
+                return DtoUtil.returnFail("roomId不能为空", "100516");
+            } else {
+                Map param = new HashMap();
+                param.put("startTime", validateRoomStoreVO.getCheckInDate());
+                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
+                param.put("roomId", validateRoomStoreVO.getRoomId());
+                param.put("hotelId", validateRoomStoreVO.getHotelId());
+                param.put("count", validateRoomStoreVO.getCount());
+                boolean flag = tempStoreService.validateRoomStore(param);
+                Map<String, Boolean> map = new HashMap<String, Boolean>();
+                map.put("flag", flag);
+                return DtoUtil.returnSuccess("操作成功", map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常", "100517");
+        }
+    }
+
+
+    /**
+     * 支付成功后查询订单信息
+     * 错误码：
+     * 100000 : token失效，请重登录
+     * 100519 : id不能为空
+     * 100520 : 获取数据失败
+     *
+     * */
+    @RequestMapping(value = "/querysuccessorderinfo/{id}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Dto<Map<String, Boolean>> querySuccessOrderInfo(@PathVariable Long id, HttpServletRequest request) {
+        String token = request.getHeader("token");
+        User currentUser = validationToken.getCurrentUser(token);
+        if (EmptyUtils.isEmpty(currentUser)) {
+            return DtoUtil.returnFail("token失效，请重登录", "100000");
+        }
+        if (EmptyUtils.isEmpty(id)) {
+            return DtoUtil.returnFail("id不能为空", "100519");
+        }
+        try {
+            HotelOrder order = hotelOrderService.getItripHotelOrderById(id);
+            if (EmptyUtils.isEmpty(order)) {
+                return DtoUtil.returnFail("没有查询到相应订单", "100519");
+            }
+            HotelRoom room = roomService.getHotelRoomById(order.getRoomId());
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("id", order.getId());
+            resultMap.put("orderNo", order.getOrderNo());
+            resultMap.put("payType", order.getPayType());
+            resultMap.put("payAmount", order.getPayAmount());
+            resultMap.put("hotelName", order.getHotelName());
+            resultMap.put("roomTitle", room.getRoomTitle());
+            return DtoUtil.returnSuccess("获取数据成功", resultMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("获取数据失败", "100520");
+        }
+    }
 //
-//    @ApiOperation(value = "修改订房日期验证是否有房", httpMethod = "POST",
-//            protocols = "HTTP", produces = "application/json",
-//            response = Dto.class, notes = "修改订房日期验证是否有房" +
-//            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
-//            "<p>错误码：</p>" +
-//            "<p>100000 : token失效，请重登录 </p>" +
-//            "<p>100515 : hotelId不能为空</p>" +
-//            "<p>100516 : roomId不能为空</p>" +
-//            "<p>100517 : 系统异常</p>")
-//    @RequestMapping(value = "/validateroomstore", method = RequestMethod.POST, produces = "application/json")
-//    @ResponseBody
-//    public Dto<Map<String, Boolean>> validateRoomStore(@RequestBody ValidateRoomStoreVO validateRoomStoreVO, HttpServletRequest request) {
-//        try {
-//            String tokenString = request.getHeader("token");
-//            ItripUser currentUser = validationToken.getCurrentUser(tokenString);
-//            if (EmptyUtils.isEmpty(currentUser)) {
-//                return DtoUtil.returnFail("token失效，请重登录", "100000");
-//            }
-//            if (EmptyUtils.isEmpty(validateRoomStoreVO.getHotelId())) {
-//                return DtoUtil.returnFail("hotelId不能为空", "100515");
-//            } else if (EmptyUtils.isEmpty(validateRoomStoreVO.getRoomId())) {
-//                return DtoUtil.returnFail("roomId不能为空", "100516");
-//            } else {
-//                Map param = new HashMap();
-//                param.put("startTime", validateRoomStoreVO.getCheckInDate());
-//                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
-//                param.put("roomId", validateRoomStoreVO.getRoomId());
-//                param.put("hotelId", validateRoomStoreVO.getHotelId());
-//                param.put("count", validateRoomStoreVO.getCount());
-//                boolean flag = tempStoreService.validateRoomStore(param);
-//                Map<String, Boolean> map = new HashMap<String, Boolean>();
-//                map.put("flag", flag);
-//                return DtoUtil.returnSuccess("操作成功", map);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return DtoUtil.returnFail("系统异常", "100517");
-//        }
-//    }
-//
-//    @ApiOperation(value = "支付成功后查询订单信息", httpMethod = "POST",
-//            protocols = "HTTP", produces = "application/json",
-//            response = Dto.class, notes = "支付成功后查询订单信息" +
-//            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
-//            "<p>错误码：</p>" +
-//            "<p>100000 : token失效，请重登录 </p>" +
-//            "<p>100519 : id不能为空</p>" +
-//            "<p>100520 : 获取数据失败</p>")
-//    @RequestMapping(value = "/querysuccessorderinfo/{id}", method = RequestMethod.GET, produces = "application/json")
-//    @ResponseBody
-//    public Dto<Map<String, Boolean>> querySuccessOrderInfo(@PathVariable Long id, HttpServletRequest request) {
-//        String tokenString = request.getHeader("token");
-//        ItripUser currentUser = validationToken.getCurrentUser(tokenString);
-//        if (EmptyUtils.isEmpty(currentUser)) {
-//            return DtoUtil.returnFail("token失效，请重登录", "100000");
-//        }
-//        if (EmptyUtils.isEmpty(id)) {
-//            return DtoUtil.returnFail("id不能为空", "100519");
-//        }
-//        try {
-//            ItripHotelOrder order = itripHotelOrderService.getItripHotelOrderById(id);
-//            if (EmptyUtils.isEmpty(order)) {
-//                return DtoUtil.returnFail("没有查询到相应订单", "100519");
-//            }
-//            ItripHotelRoom room = roomService.getItripHotelRoomById(order.getRoomId());
-//            Map<String, Object> resultMap = new HashMap<>();
-//            resultMap.put("id", order.getId());
-//            resultMap.put("orderNo", order.getOrderNo());
-//            resultMap.put("payType", order.getPayType());
-//            resultMap.put("payAmount", order.getPayAmount());
-//            resultMap.put("hotelName", order.getHotelName());
-//            resultMap.put("roomTitle", room.getRoomTitle());
-//            return DtoUtil.returnSuccess("获取数据成功", resultMap);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return DtoUtil.returnFail("获取数据失败", "100520");
-//        }
-//    }
-//
-//    /***
-//     * 10分钟执行一次 刷新订单的状态 不对外公布
-//     */
-//    @Scheduled(cron = "*0 0/10 * * * ?")
-//    public void flushCancelOrderStatus() {
-//        try {
-//            boolean flag = itripHotelOrderService.flushOrderStatus(1);
-//            logger.info(flag ? "刷取订单成功" : "刷单失败");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    /***
-//     * 2小时执行一次 刷新订单的状态 不对外公布
-//     */
-//    @Scheduled(cron = "0 0 0/2 * * ?")
-//    public void flushOrderStatus() {
-//        try {
-//            logger.info("刷单程序开始执行.......");
-//            boolean flag = itripHotelOrderService.flushOrderStatus(2);
-//            logger.info("刷单程序执行完毕.......");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    /***
+     * 10分钟执行一次 刷新订单的状态 不对外公布
+     */
+    @Scheduled(cron = "*0 0/10 * * * ?")
+    public void flushCancelOrderStatus() {
+        try {
+            boolean flag = hotelOrderService.flushOrderStatus(1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /***
+     * 2小时执行一次 刷新订单的状态 不对外公布
+     */
+    @Scheduled(cron = "0 0 0/2 * * ?")
+    public void flushOrderStatus() {
+        try {
+            boolean flag = hotelOrderService.flushOrderStatus(2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 //
 //    @ApiOperation(value = "修改订单的支付方式和状态", httpMethod = "POST",
 //            protocols = "HTTP", produces = "application/json",
@@ -541,20 +544,6 @@ public class HotelOrderController {
 //    }
 
 
-//    @ApiOperation(value = "根据订单ID查看个人订单详情", httpMethod = "GET",
-//            protocols = "HTTP", produces = "application/json",
-//            response = Dto.class, notes = "根据订单ID查看个人订单详情" +
-//            "<p>订单状态(orderStatus)（0：待支付 1:已取消 2:支付成功 3:已消费 4：已点评）：</p>" +
-//            "<p>订单流程：</p>" +
-//            "<p>订单状态(0：待支付 2:支付成功 3:已消费 4:已点评)的流程：{\"1\":\"订单提交\",\"2\":\"订单支付\",\"3\":\"支付成功\",\"4\":\"入住\",\"5\":\"订单点评\",\"6\":\"订单完成\"}</p>" +
-//            "<p>订单状态(1:已取消)的流程：{\"1\":\"订单提交\",\"2\":\"订单支付\",\"3\":\"订单取消\"}</p>" +
-//            "<p>支持支付类型(roomPayType)：{\"1\":\"在线付\",\"2\":\"线下付\",\"3\":\"不限\"}</p>" +
-//            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
-//            "<p>错误码：</p>" +
-//            "<p>100525 : 请传递参数：orderId </p>" +
-//            "<p>100526 : 没有相关订单信息 </p>" +
-//            "<p>100527 : 获取个人订单信息错误 </p>" +
-//            "<p>100000 : token失效，请重登录 </p>")
 
 
 

@@ -20,4 +20,6 @@ public interface TradeEndsMapper {
     int updateByPrimaryKeySelective(TradeEnds record);
 
     int updateByPrimaryKey(TradeEnds record);
+
+    void insertTradeEnds(TradeEnds tradeEnds);
 }
