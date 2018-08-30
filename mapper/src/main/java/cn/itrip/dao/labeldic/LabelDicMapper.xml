@@ -19,12 +19,12 @@
   </sql>
 
 
-  <!--查询父类ID是酒店特色的标签字典列表(parentId是酒店特色16)-->
+  <!--根据父类ID查询标签字典列表-->
   <select id="selectLabelDicS" resultType="cn.itrip.beans.pojo.LabelDic">
     SELECT
     <include refid="Base_Column_List" />
     FROM `itrip_label_dic`
-    WHERE `parentId` = 16
+    WHERE `parentId` = #{parentId,jdbcType=BIGINT}
   </select>
 
 

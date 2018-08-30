@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LabelDicService {
 
-    //查询父类ID是酒店特色的标签字典列表
-    List<LabelDic> getLabelDicS() throws Exception;
+    //根据父类ID查询标签字典列表
+    List<LabelDic> getLabelDicS(Long parentId) throws Exception;
 
 }

@@ -13,9 +13,9 @@ public class LabelDicServiceImpl implements LabelDicService {
     @Resource
     private LabelDicMapper labelDicMapper;
 
-    //查询父类ID是酒店特色的标签字典列表
+    //根据父类ID查询标签字典列表
     @Override
-    public List<LabelDic> getLabelDicS() throws Exception {
-        return labelDicMapper.selectLabelDicS();
+    public List<LabelDic> getLabelDicS(Long parentId) throws Exception {
+        return labelDicMapper.selectLabelDicS(parentId);
     }
 }

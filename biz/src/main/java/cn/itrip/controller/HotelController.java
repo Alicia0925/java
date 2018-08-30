@@ -105,7 +105,7 @@ public class HotelController {
     public Dto<LabelDic> queryHotelFeature() {
         List<LabelDic> labelDicVOList = null;
         try {
-            labelDicVOList = labelDicService.getLabelDicS();
+            labelDicVOList = labelDicService.getLabelDicS(16L);
         } catch (Exception e) {
             DtoUtil.returnFail("系统异常", ErrorCode.BIZ_SYSTEM_ERROR);
             e.printStackTrace();
