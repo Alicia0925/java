@@ -56,6 +56,13 @@ public class ErrorCode {
 	public final static String BIZ_GETHOTELPOLICY_ERROR="10209";//系统异常,获取酒店政策信息失败
 	public final static String BIZ_GETHOTELSCORE_ERROR="100001";//获取评分失败
 	public final static String BIZ_UNKNOWN_HOTELID4="100002";//酒店id不能为空
+	public final static String BIZ_GETALLCOMMENT_ERROR="100014";//获取酒店总评论数失败
+	public final static String BIZ_GETIMGCOMMENT_ERROR="100015";//获取酒店有图片评论数失败
+	public final static String BIZ_GETISNOTOKCOMMENT_ERROR="100016";//获取酒店有待改善评论数失败
+	public final static String BIZ_GETISOKCOMMENT_ERROR="100017";//获取酒店值得推荐评论数失败
+	public final static String BIZ_UNKNOWN_HOTELID5="100018";//参数hotelId为空
+	public final static String BIZ_GETIMG_ERROR="100301";//获取酒店房型图片失败
+	public final static String BIZ_UNKNOWN_TARGETID="100302";//酒店房型id不能为空
 
 	/*biz模块错误码-end*/
 }

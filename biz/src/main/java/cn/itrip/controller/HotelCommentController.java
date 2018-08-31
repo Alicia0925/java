@@ -336,7 +336,7 @@ public class HotelCommentController {
             if(count != -1){
                 countMap.put("allcomment",count);
             }else{
-                return DtoUtil.returnFail("获取酒店总评论数失败","100014");
+                return DtoUtil.returnFail("获取酒店总评论数失败",ErrorCode.BIZ_GETALLCOMMENT_ERROR);
             }
             //0：有待改善 1：值得推荐
             comment.setIsOk(1);
@@ -344,7 +344,7 @@ public class HotelCommentController {
             if(count != -1){
                 countMap.put("isok",count);
             }else{
-                return DtoUtil.returnFail("获取酒店值得推荐评论数失败","100017");
+                return DtoUtil.returnFail("获取酒店值得推荐评论数失败",ErrorCode.BIZ_GETISOKCOMMENT_ERROR);
             }
             //0：有待改善 1：值得推荐
             comment.setIsOk(0);
@@ -352,7 +352,7 @@ public class HotelCommentController {
             if(count != -1){
                 countMap.put("improve",count);
             }else{
-                return DtoUtil.returnFail("获取酒店有待改善评论数失败","100016");
+                return DtoUtil.returnFail("获取酒店有待改善评论数失败",ErrorCode.BIZ_GETISNOTOKCOMMENT_ERROR);
             }
             
             //0:无图片 1:有图片
@@ -362,11 +362,11 @@ public class HotelCommentController {
             if(count != -1){
                 countMap.put("havingimg",count);
             }else{
-                return DtoUtil.returnFail("获取酒店有图片评论数失败","100015");
+                return DtoUtil.returnFail("获取酒店有图片评论数失败",ErrorCode.BIZ_GETIMGCOMMENT_ERROR);
             }
 
         }else{
-            return DtoUtil.returnFail("参数hotelId为空","100018");
+            return DtoUtil.returnFail("参数hotelId为空",ErrorCode.BIZ_UNKNOWN_HOTELID5);
         }
         dto = DtoUtil.returnSuccess("获取酒店各类评论数成功",countMap);
         return dto;

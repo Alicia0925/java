@@ -6,7 +6,7 @@ import java.util.Date;
 public class Image {
     private Long id;//主键
 
-    private String type;//图片类型(0:酒店图片1:房间图片2:评论图片)
+    private String type;//图片类型(0:酒店图片 1:房间图片 2:评论图片)
 
     private Long targetId;//关联id
 

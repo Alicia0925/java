@@ -3,6 +3,7 @@ package cn.itrip.controller;
 
 import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.HotelRoom;
+import cn.itrip.beans.pojo.Image;
 import cn.itrip.beans.pojo.LabelDic;
 import cn.itrip.beans.vo.hotel.SearchHotelRoomVO;
 import cn.itrip.common.DateUtil;
@@ -10,14 +11,13 @@ import cn.itrip.common.DtoUtil;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.ErrorCode;
 import cn.itrip.service.hotelroom.HotelRoomService;
+import cn.itrip.service.image.ImageService;
 import cn.itrip.service.labeldic.LabelDicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -31,6 +31,9 @@ public class HotelRoomController {
 
     @Resource
     private HotelRoomService hotelRoomService;
+
+    @Resource
+    private ImageService imageService;
 
 
     @ApiOperation(value = "查询酒店房间床型列表", httpMethod = "GET",
@@ -92,7 +95,31 @@ public class HotelRoomController {
         }
     }
 
-
+    @ApiOperation(value = "根据targetId查询酒店房型图片(type=1)", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "根据酒店房型ID查询酒店房型图片" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>错误码：</p>" +
+            "<p>100301 : 获取酒店房型图片失败 </p>" +
+            "<p>100302 : 酒店房型id不能为空</p>")
+    @RequestMapping(value = "/getimg/{targetId}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public Dto<Object> getImgByTargetId(@ApiParam(required = true, name = "targetId", value = "酒店房型ID") @PathVariable String targetId) {
+        Dto<Object> dto = null;
+        if (null != targetId && !"".equals(targetId)) {
+            List<Image> itripImageVOList = null;
+            try {
+                itripImageVOList = imageService.getImageList(Long.parseLong(targetId));
+                dto = DtoUtil.returnSuccess("获取酒店图片房型成功", itripImageVOList);
+            } catch (Exception e) {
+                e.printStackTrace();
+                dto = DtoUtil.returnFail("获取酒店房型图片失败", ErrorCode.BIZ_GETIMG_ERROR);
+            }
+        } else {
+            dto = DtoUtil.returnFail("酒店房型id不能为空", ErrorCode.BIZ_UNKNOWN_TARGETID);
+        }
+        return dto;
+    }
 
 
 }

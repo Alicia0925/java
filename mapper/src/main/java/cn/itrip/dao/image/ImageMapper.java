@@ -1,10 +1,19 @@
 package cn.itrip.dao.image;
 
 import cn.itrip.beans.pojo.Image;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ImageMapper {
 
-
+    /**
+     * 根据targetId查询酒店房型图片(type=1)
+     * @param targetId 查询条件
+     * @return 返回图片集合
+     * @throws Exception 有异常抛出
+     */
+    List<Image> selectImageList(@Param(value = "targetId" ) Long targetId)throws Exception;
 
 
 

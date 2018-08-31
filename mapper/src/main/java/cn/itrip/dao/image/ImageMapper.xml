@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.itrip.dao.image.ImageMapper">
-  <resultMap id="BaseResultMap" type="cn.itrip.beans.pojo.Image">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="targetId" jdbcType="BIGINT" property="targetId" />
-    <result column="position" jdbcType="INTEGER" property="position" />
-    <result column="imgUrl" jdbcType="VARCHAR" property="imgUrl" />
-    <result column="creationDate" jdbcType="TIMESTAMP" property="creationDate" />
-    <result column="createdBy" jdbcType="BIGINT" property="createdBy" />
-    <result column="modifyDate" jdbcType="TIMESTAMP" property="modifyDate" />
-    <result column="modifiedBy" jdbcType="BIGINT" property="modifiedBy" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="cn.itrip.beans.pojo.Image">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="type" jdbcType="VARCHAR" property="type"/>
+        <result column="targetId" jdbcType="BIGINT" property="targetId"/>
+        <result column="position" jdbcType="INTEGER" property="position"/>
+        <result column="imgUrl" jdbcType="VARCHAR" property="imgUrl"/>
+        <result column="creationDate" jdbcType="TIMESTAMP" property="creationDate"/>
+        <result column="createdBy" jdbcType="BIGINT" property="createdBy"/>
+        <result column="modifyDate" jdbcType="TIMESTAMP" property="modifyDate"/>
+        <result column="modifiedBy" jdbcType="BIGINT" property="modifiedBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, type, targetId, position, imgUrl, creationDate, createdBy, modifyDate, modifiedBy
   </sql>
 
+    <!--根据targetId查询酒店房型图片(type=1)-->
+    <select id="selectImageList" resultType="cn.itrip.beans.pojo.Image">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM `itrip_image`
+        WHERE `type` = 1
+        AND `targetId` = #{targetId,jdbcType=BIGINT}
+    </select>
 
 
-
-  <!--以下是自动生成CURD-->
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from itrip_image
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--以下是自动生成CURD-->
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from itrip_image
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_image
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.itrip.beans.pojo.Image">
+    <insert id="insert" parameterType="cn.itrip.beans.pojo.Image">
     insert into itrip_image (id, type, targetId, 
       position, imgUrl, creationDate, 
       createdBy, modifyDate, modifiedBy
@@ -40,98 +47,98 @@
       #{createdBy,jdbcType=BIGINT}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.Image">
-    insert into itrip_image
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="type != null">
-        type,
-      </if>
-      <if test="targetId != null">
-        targetId,
-      </if>
-      <if test="position != null">
-        position,
-      </if>
-      <if test="imgUrl != null">
-        imgUrl,
-      </if>
-      <if test="creationDate != null">
-        creationDate,
-      </if>
-      <if test="createdBy != null">
-        createdBy,
-      </if>
-      <if test="modifyDate != null">
-        modifyDate,
-      </if>
-      <if test="modifiedBy != null">
-        modifiedBy,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="targetId != null">
-        #{targetId,jdbcType=BIGINT},
-      </if>
-      <if test="position != null">
-        #{position,jdbcType=INTEGER},
-      </if>
-      <if test="imgUrl != null">
-        #{imgUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="creationDate != null">
-        #{creationDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=BIGINT},
-      </if>
-      <if test="modifyDate != null">
-        #{modifyDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifiedBy != null">
-        #{modifiedBy,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.itrip.beans.pojo.Image">
-    update itrip_image
-    <set>
-      <if test="type != null">
-        type = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="targetId != null">
-        targetId = #{targetId,jdbcType=BIGINT},
-      </if>
-      <if test="position != null">
-        position = #{position,jdbcType=INTEGER},
-      </if>
-      <if test="imgUrl != null">
-        imgUrl = #{imgUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="creationDate != null">
-        creationDate = #{creationDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createdBy != null">
-        createdBy = #{createdBy,jdbcType=BIGINT},
-      </if>
-      <if test="modifyDate != null">
-        modifyDate = #{modifyDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="modifiedBy != null">
-        modifiedBy = #{modifiedBy,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="cn.itrip.beans.pojo.Image">
+    <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.Image">
+        insert into itrip_image
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="targetId != null">
+                targetId,
+            </if>
+            <if test="position != null">
+                position,
+            </if>
+            <if test="imgUrl != null">
+                imgUrl,
+            </if>
+            <if test="creationDate != null">
+                creationDate,
+            </if>
+            <if test="createdBy != null">
+                createdBy,
+            </if>
+            <if test="modifyDate != null">
+                modifyDate,
+            </if>
+            <if test="modifiedBy != null">
+                modifiedBy,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="targetId != null">
+                #{targetId,jdbcType=BIGINT},
+            </if>
+            <if test="position != null">
+                #{position,jdbcType=INTEGER},
+            </if>
+            <if test="imgUrl != null">
+                #{imgUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="creationDate != null">
+                #{creationDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifyDate != null">
+                #{modifyDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy != null">
+                #{modifiedBy,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.itrip.beans.pojo.Image">
+        update itrip_image
+        <set>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="targetId != null">
+                targetId = #{targetId,jdbcType=BIGINT},
+            </if>
+            <if test="position != null">
+                position = #{position,jdbcType=INTEGER},
+            </if>
+            <if test="imgUrl != null">
+                imgUrl = #{imgUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="creationDate != null">
+                creationDate = #{creationDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createdBy != null">
+                createdBy = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="modifyDate != null">
+                modifyDate = #{modifyDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifiedBy != null">
+                modifiedBy = #{modifiedBy,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.itrip.beans.pojo.Image">
     update itrip_image
     set type = #{type,jdbcType=VARCHAR},
       targetId = #{targetId,jdbcType=BIGINT},
