@@ -152,7 +152,6 @@ public class HotelController {
                 e.printStackTrace();
                 dto = DtoUtil.returnFail("获取酒店视频文字描述失败", ErrorCode.BIZ_GETHOTELDESC_ERROR);
             }
-
         } else {
             dto = DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID);
         }

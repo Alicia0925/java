@@ -43,8 +43,8 @@ public class HotelRoomController {
     @ResponseBody
     public Dto<Object> queryHotelRoomBed() {
         try {
-            List<LabelDic> labelDicList = labelDicService.getLabelDicS(1L);
-            return DtoUtil.returnSuccess("获取成功", labelDicList);
+            List<LabelDic> itripLabelDicList = labelDicService.getLabelDicS(1L);
+            return DtoUtil.returnSuccess("获取成功", itripLabelDicList);
         } catch (Exception e) {
             e.printStackTrace();
             return DtoUtil.returnFail("获取床型失败", ErrorCode.BIZ_GETBEDTYPE_ERROR);
@@ -85,7 +85,7 @@ public class HotelRoomController {
                 tempList.add(roomVO);
                 hotelRoomList.add(tempList);
             }
-            return DtoUtil.returnSuccess("获取成功", originalRoomList);
+            return DtoUtil.returnSuccess("获取成功", hotelRoomList);
         } catch (Exception e) {
             e.printStackTrace();
             return DtoUtil.returnFail("获取酒店房型列表失败", ErrorCode.BIZ_GETHOTELROOM_ERROR);
