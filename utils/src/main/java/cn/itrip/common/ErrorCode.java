@@ -50,6 +50,8 @@ public class ErrorCode {
 	public final static String BIZ_GETHOTELROOM_ERROR="100304";//获取酒店房型列表失败
 	public final static String BIZ_UNKNOWN_HOTELID1="10210";//酒店id不能为空
 	public final static String BIZ_GETDETAILS_ERROR="10211";//系统异常,获取酒店介绍失败
+	public final static String BIZ_UNKNOWN_HOTELID2="10206";//酒店id不能为空
+	public final static String BIZ_GETHOTELFACILITIES_ERROR="10207";//系统异常,获取酒店设施信息失败
 
 	/*biz模块错误码-end*/
 }

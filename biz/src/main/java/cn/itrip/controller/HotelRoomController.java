@@ -62,7 +62,7 @@ public class HotelRoomController {
     @RequestMapping(value = "/queryhotelroombyhotel", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Dto<List<HotelRoom>> queryHotelRoomByHotel(@RequestBody SearchHotelRoomVO vo) {
-        List<List<HotelRoom>> hotelRoomList = null;
+        List<List<HotelRoom>> hotelRoomVOList = null;
         try {
             if (EmptyUtils.isEmpty(vo.getHotelId())) {
                 return DtoUtil.returnFail("酒店ID不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID);
@@ -79,13 +79,13 @@ public class HotelRoomController {
             }
 
             List<HotelRoom> originalRoomList = hotelRoomService.getHotelRoomListByQuery(vo);
-            hotelRoomList = new ArrayList();
+            hotelRoomVOList = new ArrayList();
             for (HotelRoom roomVO : originalRoomList) {
                 List<HotelRoom> tempList = new ArrayList<HotelRoom>();
                 tempList.add(roomVO);
-                hotelRoomList.add(tempList);
+                hotelRoomVOList.add(tempList);
             }
-            return DtoUtil.returnSuccess("获取成功", hotelRoomList);
+            return DtoUtil.returnSuccess("获取成功", hotelRoomVOList);
         } catch (Exception e) {
             e.printStackTrace();
             return DtoUtil.returnFail("获取酒店房型列表失败", ErrorCode.BIZ_GETHOTELROOM_ERROR);

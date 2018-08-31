@@ -5,6 +5,7 @@ import cn.itrip.beans.pojo.Hotel;
 import cn.itrip.beans.pojo.HotelWithBLOBs;
 import cn.itrip.beans.pojo.LabelDic;
 import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
+import cn.itrip.beans.vo.hotel.SearchFacilitiesHotelVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

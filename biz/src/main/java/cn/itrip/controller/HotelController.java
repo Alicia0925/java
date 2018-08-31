@@ -2,6 +2,7 @@ package cn.itrip.controller;
 
 
 import cn.itrip.beans.dto.Dto;
+import cn.itrip.beans.pojo.HotelWithBLOBs;
 import cn.itrip.beans.pojo.LabelDic;
 import cn.itrip.beans.vo.AreaDicVO;
 import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
@@ -69,10 +70,10 @@ public class HotelController {
     @RequestMapping(value = "/queryhotcity/{type}", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
     public Dto<AreaDicVO> queryHotCity(@PathVariable Integer type) {
-        List<AreaDicVO> areaDicVOs = null;
+        List<AreaDicVO> itripAreaDicVOs = null;
         try {
             if (EmptyUtils.isNotEmpty(type)) {
-                areaDicVOs = areaDicService.getAreaDicList(type);
+                itripAreaDicVOs = areaDicService.getAreaDicList(type);
             } else {
                 DtoUtil.returnFail("type不能为空", ErrorCode.BIZ_UNKNOWN_TYPE);
             }
@@ -80,7 +81,7 @@ public class HotelController {
             DtoUtil.returnFail("系统异常", ErrorCode.BIZ_SYSTEM_ERROR);
             e.printStackTrace();
         }
-        return DtoUtil.returnDataSuccess(areaDicVOs);
+        return DtoUtil.returnDataSuccess(itripAreaDicVOs);
     }
 
 
@@ -94,14 +95,14 @@ public class HotelController {
     @RequestMapping(value = "/queryhotelfeature", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
     public Dto<LabelDic> queryHotelFeature() {
-        List<LabelDic> labelDicVOList = null;
+        List<LabelDic> itripAreaDicVOs = null;
         try {
-            labelDicVOList = labelDicService.getLabelDicS(16L);
+            itripAreaDicVOs = labelDicService.getLabelDicS(16L);
         } catch (Exception e) {
             DtoUtil.returnFail("酒店特色列表获取失败", ErrorCode.BIZ_SYSTEM_ERROR);
             e.printStackTrace();
         }
-        return DtoUtil.returnDataSuccess(labelDicVOList);
+        return DtoUtil.returnDataSuccess(itripAreaDicVOs);
     }
 
 
@@ -116,10 +117,10 @@ public class HotelController {
             "", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
     public Dto<AreaDicVO> queryTradeArea(@PathVariable Long cityId) {
-        List<AreaDicVO> areaDicVOList = null;
+        List<AreaDicVO> itripAreaDicVOs = null;
         try {
             if (EmptyUtils.isNotEmpty(cityId)) {
-                areaDicVOList = areaDicService.getAreaDicListByCityId(cityId);
+                itripAreaDicVOs = areaDicService.getAreaDicListByCityId(cityId);
             } else {
                 DtoUtil.returnFail("cityId不能为空", ErrorCode.BIZ_UNKNOWN_CITYID);
             }
@@ -127,7 +128,7 @@ public class HotelController {
             DtoUtil.returnFail("城市商圈获取失败", ErrorCode.BIZ_GETTRADINGAREA_ERROR);
             e.printStackTrace();
         }
-        return DtoUtil.returnDataSuccess(areaDicVOList);
+        return DtoUtil.returnDataSuccess(itripAreaDicVOs);
     }
 
 
@@ -169,11 +170,11 @@ public class HotelController {
     public Dto<SearchFacilitiesHotelVO> queryHotelDetails(
             @ApiParam(required = true, name = "id", value = "酒店ID")
             @PathVariable Long id) {
-        List<SearchDetailsHotelVO> searchDetailsHotelVOList = null;
+        List<SearchDetailsHotelVO> itripSearchDetailsHotelVOList = null;
         try {
             if (EmptyUtils.isNotEmpty(id)) {
-                searchDetailsHotelVOList = hotelService.getHotelDetails(id);
-                return DtoUtil.returnDataSuccess(searchDetailsHotelVOList);
+                itripSearchDetailsHotelVOList = hotelService.getHotelDetails(id);
+                return DtoUtil.returnDataSuccess(itripSearchDetailsHotelVOList);
             } else {
                 return DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID1);
             }
@@ -183,7 +184,33 @@ public class HotelController {
         }
     }
 
-
+    @ApiOperation(value = "根据酒店id查询酒店设施", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "根据酒店id查询酒店设施" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>10206: 酒店id不能为空</p>" +
+            "<p>10207: 系统异常,获取失败</p>")
+    @RequestMapping(value = "/queryhotelfacilities/{id}", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<SearchFacilitiesHotelVO> queryHotelFacilities(
+            @ApiParam(required = true, name = "id", value = "酒店ID")
+            @PathVariable Long id) {
+        SearchFacilitiesHotelVO searchFacilitiesHotelVO = new SearchFacilitiesHotelVO();
+        try {
+            if (EmptyUtils.isNotEmpty(id)) {
+                //获取酒店的所有信息
+                HotelWithBLOBs hotelWithBLOBs = hotelService.getHotelWithBLOBsById(id);
+                //将酒店的设施信息封装到VO中
+                searchFacilitiesHotelVO.setFacilities(hotelWithBLOBs.getFacilities());
+                return DtoUtil.returnDataSuccess(searchFacilitiesHotelVO.getFacilities());
+            } else {
+                return DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常,获取酒店设施信息失败", ErrorCode.BIZ_GETHOTELFACILITIES_ERROR);
+        }
+    }
 
 
 
