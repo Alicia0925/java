@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 返回前端-酒店详情页视频文字描述（酒店特色、商圈、酒店名称）VO
- * Created by hanlu on 2017/5/24.
+ *
  */
 @ApiModel(value = "HotelVideoDescVO",description = "酒店特色、商圈、酒店名称（视频文字描述）")
 

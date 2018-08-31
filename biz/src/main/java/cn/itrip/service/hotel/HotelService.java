@@ -1,6 +1,7 @@
 package cn.itrip.service.hotel;
 
 
+import cn.itrip.beans.pojo.Hotel;
 import cn.itrip.beans.pojo.HotelWithBLOBs;
 import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
 import cn.itrip.beans.vo.hotel.SearchDetailsHotelVO;

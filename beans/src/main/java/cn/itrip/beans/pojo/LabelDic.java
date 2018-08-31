@@ -14,7 +14,7 @@ public class LabelDic {
 
     private Long parentId;//父级标签id(1级标签则为0)
 
-    private String pic;//标签图片地址
+    private String pic="";//标签图片地址
 
     private Date creationDate;
 
