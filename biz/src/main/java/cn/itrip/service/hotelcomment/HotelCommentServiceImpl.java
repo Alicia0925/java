@@ -22,4 +22,10 @@ public class HotelCommentServiceImpl implements HotelCommentService {
     public ScoreCommentVO getCommentAvgScore(Long hotelId) throws Exception {
         return commentMapper.getCommentAvgScore(hotelId);
     }
+
+    //根据酒店id查询各类评论数量
+    @Override
+    public Integer getCommentCount(Comment comment) throws Exception {
+        return commentMapper.getCommentCount(comment);
+    }
 }

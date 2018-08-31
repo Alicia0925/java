@@ -13,4 +13,6 @@ public interface HotelCommentService {
     //根据酒店的id查询并计算所有点评的位置、设施、服务、卫生和综合评分
     ScoreCommentVO getCommentAvgScore(Long hotelId) throws Exception;
 
+    //根据酒店id查询各类评论数量
+    Integer getCommentCount(Comment comment)throws Exception;
 }

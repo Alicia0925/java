@@ -27,10 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * 评论Controller
@@ -315,6 +312,75 @@ public class HotelCommentController {
         return dto;
     }
 
+    @ApiOperation(value = "根据酒店id查询各类评论数量", httpMethod = "GET",
+            protocols = "HTTP",produces = "application/json",
+            response = Dto.class,notes = "根据酒店id查询评论数量（全部评论、值得推荐、有待改善、有图片）"+
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>错误码：</p>"+
+            "<p>100014 : 获取酒店总评论数失败 </p>"+
+            "<p>100015 : 获取酒店有图片评论数失败</p>"+
+            "<p>100016 : 获取酒店有待改善评论数失败</p>"+
+            "<p>100017 : 获取酒店值得推荐评论数失败</p>"+
+            "<p>100018 : 参数hotelId为空</p>")
+    @RequestMapping(value = "/getcount/{hotelId}",method=RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public Dto<Object> getCommentCountByType(@ApiParam(required = true, name = "hotelId", value = "酒店ID")
+                                             @PathVariable String hotelId){
+        Dto<Object> dto = new Dto<Object>();
+        Integer count = 0;
+        Map<String,Integer> countMap = new HashMap<String,Integer>();
+        Comment comment = new Comment();
+        if(null != hotelId && !"".equals(hotelId)){
+            comment.setHotelId(Long.parseLong(hotelId));
+            count = getCommentCountByQuery(comment);
+            if(count != -1){
+                countMap.put("allcomment",count);
+            }else{
+                return DtoUtil.returnFail("获取酒店总评论数失败","100014");
+            }
+            //0：有待改善 1：值得推荐
+            comment.setIsOk(1);
+            count = getCommentCountByQuery(comment);
+            if(count != -1){
+                countMap.put("isok",count);
+            }else{
+                return DtoUtil.returnFail("获取酒店值得推荐评论数失败","100017");
+            }
+            //0：有待改善 1：值得推荐
+            comment.setIsOk(0);
+            count = getCommentCountByQuery(comment);
+            if(count != -1){
+                countMap.put("improve",count);
+            }else{
+                return DtoUtil.returnFail("获取酒店有待改善评论数失败","100016");
+            }
+            
+            //0:无图片 1:有图片
+            comment.setIsOk(null);
+            comment.setIsHavingImg(1);
+            count = getCommentCountByQuery(comment);
+            if(count != -1){
+                countMap.put("havingimg",count);
+            }else{
+                return DtoUtil.returnFail("获取酒店有图片评论数失败","100015");
+            }
+
+        }else{
+            return DtoUtil.returnFail("参数hotelId为空","100018");
+        }
+        dto = DtoUtil.returnSuccess("获取酒店各类评论数成功",countMap);
+        return dto;
+    }
+
+    public Integer getCommentCountByQuery(Comment comment){
+        Integer count  = -1;
+        try {
+            count =  hotelCommentService.getCommentCount(comment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 
 
 

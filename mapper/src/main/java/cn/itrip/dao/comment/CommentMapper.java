@@ -4,6 +4,8 @@ import cn.itrip.beans.pojo.Comment;
 import cn.itrip.beans.vo.comment.ScoreCommentVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Map;
+
 public interface CommentMapper {
 
     /**
@@ -14,6 +16,13 @@ public interface CommentMapper {
      */
     ScoreCommentVO getCommentAvgScore(@Param(value = "hotelId") Long hotelId) throws Exception;
 
+    /**
+     * 根据酒店id查询各类评论数量
+     * @param comment 参数封装到comment中
+     * @return 返回数量
+     * @throws Exception 有异常抛出
+     */
+    Integer getCommentCount(Comment comment)throws Exception;
 
 
 
