@@ -54,6 +54,8 @@ public class ErrorCode {
 	public final static String BIZ_GETHOTELFACILITIES_ERROR="10207";//系统异常,获取酒店设施信息失败
 	public final static String BIZ_UNKNOWN_HOTELID3="10208";//酒店id不能为空
 	public final static String BIZ_GETHOTELPOLICY_ERROR="10209";//系统异常,获取酒店政策信息失败
+	public final static String BIZ_GETHOTELSCORE_ERROR="100001";//获取评分失败
+	public final static String BIZ_UNKNOWN_HOTELID4="100002";//酒店id不能为空
 
 	/*biz模块错误码-end*/
 }

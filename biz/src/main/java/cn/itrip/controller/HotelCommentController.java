@@ -5,13 +5,17 @@ import cn.itrip.beans.pojo.*;
 import cn.itrip.beans.vo.LabelDicVO;
 import cn.itrip.beans.vo.comment.AddCommentVO;
 import cn.itrip.beans.vo.comment.HotelDescVO;
+import cn.itrip.beans.vo.comment.ScoreCommentVO;
 import cn.itrip.beans.vo.hotel.HotelVO;
 import cn.itrip.common.DtoUtil;
+import cn.itrip.common.ErrorCode;
 import cn.itrip.common.SystemConfig;
 import cn.itrip.common.ValidationToken;
 import cn.itrip.service.hotel.HotelService;
 import cn.itrip.service.hotelcomment.HotelCommentService;
 import cn.itrip.service.labeldic.LabelDicService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -282,6 +286,37 @@ public class HotelCommentController {
         }
         return dto;
     }
+
+
+    @ApiOperation(value = "据酒店id查询酒店平均分", httpMethod = "GET",
+            protocols = "HTTP",produces = "application/json",
+            response = Dto.class,notes = "总体评分、位置评分、设施评分、服务评分、卫生评分"+
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>错误码：</p>"+
+            "<p>100001 : 获取评分失败 </p>"+
+            "<p>100002 : hotelId不能为空</p>")
+    @RequestMapping(value = "/gethotelscore/{hotelId}",method=RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public Dto<Object> getHotelScore(@ApiParam(required = true, name = "hotelId", value = "酒店ID")
+                                     @PathVariable String hotelId){
+        Dto<Object> dto = new Dto<Object>();
+        if(null != hotelId && !"".equals(hotelId)){
+            ScoreCommentVO itripScoreCommentVO = null;
+            try {
+                itripScoreCommentVO =  hotelCommentService.getCommentAvgScore(Long.valueOf(hotelId));
+                dto = DtoUtil.returnSuccess("获取评分成功",itripScoreCommentVO);
+            } catch (Exception e) {
+                e.printStackTrace();
+                dto = DtoUtil.returnFail("获取评分失败",ErrorCode.BIZ_GETHOTELSCORE_ERROR);
+            }
+        }else{
+            dto = DtoUtil.returnFail("hotelId不能为空",ErrorCode.BIZ_UNKNOWN_HOTELID4);
+        }
+        return dto;
+    }
+
+
+
 
 
 }

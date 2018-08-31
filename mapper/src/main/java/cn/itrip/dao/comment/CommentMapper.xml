@@ -34,6 +34,17 @@
   </sql>
 
 
+  <!--根据酒店的id查询并计算所有点评的位置、设施、服务、卫生和综合评分-->
+  <select id="getCommentAvgScore" resultType="cn.itrip.beans.vo.comment.ScoreCommentVO">
+      SELECT
+      ROUND(AVG(positionScore),1) AS avgPositionScore,
+      ROUND(AVG(facilitiesScore),1) AS avgFacilitiesScore,
+      ROUND(AVG(serviceScore),1) AS avgServiceScore,
+      ROUND(AVG(hygieneScore),1) AS avgHygieneScore,
+      ROUND(AVG(score),1) AS avgScore
+      FROM itrip_comment
+      WHERE `hotelId` = #{hotelId,jdbcType=BIGINT}
+  </select>
 
 
 
@@ -46,7 +57,7 @@
     from itrip_comment
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_comment
     where id = #{id,jdbcType=BIGINT}
   </delete>
