@@ -35,7 +35,7 @@
 
 
     <!--根据酒店的id查询并计算所有点评的位置、设施、服务、卫生和综合评分-->
-    <select id="getCommentAvgScore" resultType="cn.itrip.beans.vo.comment.ScoreCommentVO">
+    <select id="selectCommentAvgScore" resultType="cn.itrip.beans.vo.comment.ScoreCommentVO">
       SELECT
       ROUND(AVG(positionScore),1) AS avgPositionScore,
       ROUND(AVG(facilitiesScore),1) AS avgFacilitiesScore,
@@ -44,20 +44,154 @@
       ROUND(AVG(score),1) AS avgScore
       FROM itrip_comment
       WHERE `hotelId` = #{hotelId,jdbcType=BIGINT}
-  </select>
+    </select>
 
-    <!--根据酒店id查询各类评论数量-->
-    <select id="getCommentCount" resultType="java.lang.Integer">
+    <!--根据条件查询各类评论数量-->
+    <select id="selectCommentCount" resultType="java.lang.Integer" parameterType="java.util.Map">
         SELECT COUNT(1)
         FROM `itrip_comment`
-        WHERE `hotelId` = #{hotelId,jdbcType=BIGINT}
-        <if test="isHavingImg != null">
-            and isHavingImg = #{isHavingImg,jdbcType=INTEGER}
-        </if>
-        <if test="isOk != null">
-            and isOk = #{isOk,jdbcType=INTEGER}
-        </if>
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id!=''">
+                AND id=#{id}
+            </if>
+            <if test="hotelId != null and hotelId!=''">
+                AND hotelId=#{hotelId}
+            </if>
+            <if test="productId != null and productId!=''">
+                AND productId=#{productId}
+            </if>
+            <if test="orderId != null and orderId!=''">
+                AND orderId=#{orderId}
+            </if>
+            <if test="productType != null and productType!=''">
+                AND productType=#{productType}
+            </if>
+            <if test="content != null and content!=''">
+                AND content=#{content}
+            </if>
+            <if test="userId != null and userId!=''">
+                AND userId=#{userId}
+            </if>
+            <if test="isHavingImg != null">
+                AND isHavingImg=#{isHavingImg}
+            </if>
+            <if test="positionScore != null and positionScore!=''">
+                AND positionScore=#{positionScore}
+            </if>
+            <if test="facilitiesScore != null and facilitiesScore!=''">
+                AND facilitiesScore=#{facilitiesScore}
+            </if>
+            <if test="serviceScore != null and serviceScore!=''">
+                AND serviceScore=#{serviceScore}
+            </if>
+            <if test="hygieneScore != null and hygieneScore!=''">
+                AND hygieneScore=#{hygieneScore}
+            </if>
+            <if test="score != null and score!=''">
+                AND score=#{score}
+            </if>
+            <if test="tripMode != null and tripMode!=''">
+                AND tripMode=#{tripMode}
+            </if>
+            <if test="isOk != null">
+                AND isOk=#{isOk}
+            </if>
+            <if test="creationDate != null and creationDate!=''">
+                AND creationDate=#{creationDate}
+            </if>
+            <if test="createdBy != null and createdBy!=''">
+                AND createdBy=#{createdBy}
+            </if>
+            <if test="modifyDate != null and modifyDate!=''">
+                AND modifyDate=#{modifyDate}
+            </if>
+            <if test="modifiedBy != null and modifiedBy!=''">
+                AND modifiedBy=#{modifiedBy}
+            </if>
+        </trim>
+    </select>
 
+
+    <select id="selectCommentListByMap" resultType="cn.itrip.beans.vo.comment.ListCommentVO"
+            parameterType="java.util.Map">
+        SELECT
+        id AS id,
+        hotelId AS hotelId,
+        (SELECT h.hotelName FROM itrip_hotel h WHERE id = hotelId) AS hotelName,
+        productId AS productId,
+        (SELECT r.roomTitle FROM itrip_hotel_room r WHERE id = productId) AS roomTitle,
+        content AS content,
+        userId AS userId,
+        (SELECT u.userCode FROM itrip_user u WHERE id = userId) AS userCode,
+        isHavingImg AS isHavingImg,
+        score AS score,
+        tripMode AS tripMode,
+        (SELECT d.name FROM itrip_label_dic d WHERE id = tripMode) AS tripModeName,
+        orderId,
+        (SELECT o.checkInDate FROM itrip_hotel_order o WHERE id = orderId) AS checkInDate,
+        creationDate AS creationDate,
+        createdBy AS createdBy
+        FROM itrip_comment
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null and id!=''">
+                AND id=#{id}
+            </if>
+            <if test="hotelId != null and hotelId!=''">
+                AND hotelId=#{hotelId}
+            </if>
+            <if test="productId != null and productId!=''">
+                AND productId=#{productId}
+            </if>
+            <if test="orderId != null and orderId!=''">
+                AND orderId=#{orderId}
+            </if>
+            <if test="productType != null and productType!=''">
+                AND productType=#{productType}
+            </if>
+            <if test="content != null and content!=''">
+                AND content=#{content}
+            </if>
+            <if test="userId != null and userId!=''">
+                AND userId=#{userId}
+            </if>
+            <if test="isHavingImg != null">
+                AND isHavingImg=#{isHavingImg}
+            </if>
+            <if test="positionScore != null and positionScore!=''">
+                AND positionScore=#{positionScore}
+            </if>
+            <if test="facilitiesScore != null and facilitiesScore!=''">
+                AND facilitiesScore=#{facilitiesScore}
+            </if>
+            <if test="serviceScore != null and serviceScore!=''">
+                AND serviceScore=#{serviceScore}
+            </if>
+            <if test="hygieneScore != null and hygieneScore!=''">
+                AND hygieneScore=#{hygieneScore}
+            </if>
+            <if test="score != null and score!=''">
+                AND score=#{score}
+            </if>
+            <if test="tripMode != null and tripMode!=''">
+                AND tripMode=#{tripMode}
+            </if>
+            <if test="isOk != null">
+                AND isOk=#{isOk}
+            </if>
+            <if test="creationDate != null and creationDate!=''">
+                AND creationDate=#{creationDate}
+            </if>
+            <if test="createdBy != null and createdBy!=''">
+                AND createdBy=#{createdBy}
+            </if>
+            <if test="modifyDate != null and modifyDate!=''">
+                AND modifyDate=#{modifyDate}
+            </if>
+        </trim>
+        ORDER BY creationDate DESC
+        <if test="beginPos != null and pageSize != null and pageSize !='' ">
+            limit #{beginPos},#{pageSize}
+        </if>
     </select>
 
 

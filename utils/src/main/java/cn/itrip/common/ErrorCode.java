@@ -63,6 +63,9 @@ public class ErrorCode {
 	public final static String BIZ_UNKNOWN_HOTELID5="100018";//参数hotelId为空
 	public final static String BIZ_GETIMG_ERROR="100301";//获取酒店房型图片失败
 	public final static String BIZ_UNKNOWN_TARGETID="100302";//酒店房型id不能为空
+	public final static String BIZ_GETCOMMENTLIST_ERROR="100020";//获取评论列表错误
+    public final static String BIZ_GETCOMMENTIMG_ERROR="100012";//获取评论图片失败
+    public final static String BIZ_UNKNOWN_COMMENTID="100013";//评论id不能为空
 
 	/*biz模块错误码-end*/
 }

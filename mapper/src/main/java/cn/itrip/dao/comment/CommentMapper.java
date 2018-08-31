@@ -1,9 +1,11 @@
 package cn.itrip.dao.comment;
 
 import cn.itrip.beans.pojo.Comment;
+import cn.itrip.beans.vo.comment.ListCommentVO;
 import cn.itrip.beans.vo.comment.ScoreCommentVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 public interface CommentMapper {
@@ -14,15 +16,25 @@ public interface CommentMapper {
      * @return 返回结果封装到ScoreCommentVO中
      * @throws Exception 有异常抛出
      */
-    ScoreCommentVO getCommentAvgScore(@Param(value = "hotelId") Long hotelId) throws Exception;
+    ScoreCommentVO selectCommentAvgScore(@Param(value = "hotelId") Long hotelId) throws Exception;
 
     /**
-     * 根据酒店id查询各类评论数量
-     * @param comment 参数封装到comment中
+     * 根据条件查询各类评论数量
+     * @param param 参数封装到map中
      * @return 返回数量
      * @throws Exception 有异常抛出
      */
-    Integer getCommentCount(Comment comment)throws Exception;
+    Integer selectCommentCount(Map<String,Object> param)throws Exception;
+
+    /**
+     * 根据评论类型查询评论列表，并分页显示
+     * @param param 参数封装到Map中
+     * @return 返回结果集放到List
+     * @throws Exception 有异常抛出
+     */
+    List<ListCommentVO> selectCommentListByMap(Map<String,Object> param)throws Exception;
+
+
 
 
 

@@ -2,12 +2,14 @@ package cn.itrip.controller;
 
 
 import cn.itrip.beans.dto.Dto;
+import cn.itrip.beans.pojo.HotelWithBLOBs;
 import cn.itrip.beans.pojo.Image;
 import cn.itrip.beans.pojo.LabelDic;
 import cn.itrip.beans.vo.AreaDicVO;
 import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
 import cn.itrip.beans.vo.hotel.SearchDetailsHotelVO;
 import cn.itrip.beans.vo.hotel.SearchFacilitiesHotelVO;
+import cn.itrip.beans.vo.hotel.SearchPolicyHotelVO;
 import cn.itrip.common.DtoUtil;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.ErrorCode;
@@ -23,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-
 
 
 /**
@@ -60,7 +61,6 @@ public class HotelController {
     private ImageService imageService;
 
 
-
     @ApiOperation(value = "查询热门城市", httpMethod = "GET",
             protocols = "HTTP", produces = "application/json",
             response = Dto.class, notes = "查询国内、国外的热门城市(1:国内 2:国外)" +
@@ -84,7 +84,6 @@ public class HotelController {
         }
         return DtoUtil.returnDataSuccess(areaDicVOs);
     }
-
 
 
     @ApiOperation(value = "查询酒店特色列表", httpMethod = "GET",
@@ -148,7 +147,7 @@ public class HotelController {
         if (EmptyUtils.isNotEmpty(hotelId)) {
             HotelVideoDescVO hotelVideoDescVO = null;
             try {
-                hotelVideoDescVO = hotelService.getVideoDescByHotelId(Long.parseLong(hotelId) );
+                hotelVideoDescVO = hotelService.getVideoDescByHotelId(Long.parseLong(hotelId));
                 dto = DtoUtil.returnSuccess("获取酒店视频文字描述成功", hotelVideoDescVO);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -187,30 +186,87 @@ public class HotelController {
 
 
     /**
-     * 追加评论 获取酒店图片
-     *
+     * 追加评论 获取图片
+     * <p>
      * 错误码：
-     * 100212：获取酒店图片失败
-     * 100213：酒店id不能为空
-     *
-     * */
-    @RequestMapping(value = "/getimg/{targetId}",method = RequestMethod.GET,produces = "application/json")
+     * 100012：获取评论图片失败
+     * 100013：评论id不能为空
+     */
+    @RequestMapping(value = "/getimg/{targetId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Dto getImgByTargetId(@PathVariable Long targetId){
-        if(null != targetId){
-            List<Image> list= null;
+    public Dto getImgByTargetId(@PathVariable Long targetId) {
+        if (null != targetId) {
+            List<Image> list = null;
             try {
-                list = imageService.getImgListByConditions(targetId,"0");
-            return DtoUtil.returnSuccess("获取评论图片成功",list);
+                list = imageService.getImgListByConditions(targetId, "2");
+                return DtoUtil.returnSuccess("获取评论图片成功", list);
             } catch (Exception e1) {
                 e1.printStackTrace();
-                return DtoUtil.returnFail("获取评论图片失败","100012");
+                return DtoUtil.returnFail("获取评论图片失败", "100012");
             }
-        }else{
-           return DtoUtil.returnFail("评论id不能为空","100013");
+        } else {
+            return DtoUtil.returnFail("评论id不能为空", "100013");
         }
 
 
     }
+
+
+    @ApiOperation(value = "根据酒店id查询酒店设施", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "根据酒店id查询酒店设施" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>10206: 酒店id不能为空</p>" +
+            "<p>10207: 系统异常,获取失败</p>")
+    @RequestMapping(value = "/queryhotelfacilities/{id}", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<SearchFacilitiesHotelVO> queryHotelFacilities(
+            @ApiParam(required = true, name = "id", value = "酒店ID")
+            @PathVariable Long id) {
+        SearchFacilitiesHotelVO searchFacilitiesHotelVO = new SearchFacilitiesHotelVO();
+        try {
+            if (EmptyUtils.isNotEmpty(id)) {
+                //获取酒店的所有信息
+                HotelWithBLOBs hotelWithBLOBs = hotelService.getHotelWithBLOBsById(id);
+                //将酒店的设施信息封装到VO中
+                searchFacilitiesHotelVO.setFacilities(hotelWithBLOBs.getFacilities());
+                return DtoUtil.returnDataSuccess(searchFacilitiesHotelVO.getFacilities());
+            } else {
+                return DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常,获取酒店设施信息失败", ErrorCode.BIZ_GETHOTELFACILITIES_ERROR);
+        }
+    }
+
+    @ApiOperation(value = "根据酒店id查询酒店政策", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "根据酒店id查询酒店政策" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>10208: 酒店id不能为空</p>" +
+            "<p>10209: 系统异常,获取失败</p>")
+    @RequestMapping(value = "/queryhotelpolicy/{id}", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<SearchFacilitiesHotelVO> queryHotelPolicy(
+            @ApiParam(required = true, name = "id", value = "酒店ID")
+            @PathVariable Long id) {
+        SearchPolicyHotelVO searchPolicyHotelVO = new SearchPolicyHotelVO();
+        try {
+            if (EmptyUtils.isNotEmpty(id)) {
+                //获取酒店的所有信息
+                HotelWithBLOBs hotelWithBLOBs = hotelService.getHotelWithBLOBsById(id);
+                //将酒店的政策信息封装到VO中
+                searchPolicyHotelVO.setHotelPolicy(hotelWithBLOBs.getHotelPolicy());
+                return DtoUtil.returnDataSuccess(searchPolicyHotelVO.getHotelPolicy());
+            } else {
+                return DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID3);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常,获取酒店政策信息失败", ErrorCode.BIZ_GETHOTELPOLICY_ERROR);
+        }
+    }
+
 
 }
