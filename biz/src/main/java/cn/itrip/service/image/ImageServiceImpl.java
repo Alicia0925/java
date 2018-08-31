@@ -17,7 +17,7 @@ public class ImageServiceImpl implements ImageService {
         if(null!=images && images.size()>0){
 
             for(Image img:images){
-                imageMapper.insert(img);
+                imageMapper.insertSelective(img);
             }
             return true;
         }

@@ -18,7 +18,7 @@
 
 	<!--配置solr搜索引擎-->
 	<bean id="httpSolrClient" class="org.apache.solr.client.solrj.impl.HttpSolrClient">
-		<constructor-arg index="0" value="http://127.0.0.1:8180/solr/hotel"/>
+		<constructor-arg index="0" value="http://192.168.3.52:8180/solr/hotel"/>
 		<property name="parser">
 			<bean class="org.apache.solr.client.solrj.impl.XMLResponseParser"/>
 		</property>

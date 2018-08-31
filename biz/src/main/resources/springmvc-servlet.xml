@@ -11,7 +11,7 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-
+    <!--定时任务注解-->
     <task:annotation-driven/>
     <context:component-scan base-package="cn.itrip.controller">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
@@ -46,8 +46,8 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-    <!--定时任务注解-->
-    <task:annotation-driven/>
+
+
 
     <!-- 配置多视图解析器 -->
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">

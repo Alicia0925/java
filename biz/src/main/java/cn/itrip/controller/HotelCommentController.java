@@ -82,7 +82,7 @@ public class HotelCommentController {
                 Hotel hotelInfo = hotelService.getHotelWithBLOBsById(hotelId);
                 HotelDescVO hotelDescVO = new HotelDescVO();
                 hotelDescVO.setHotelName(hotelInfo.getHotelName());
-                hotelDescVO.setHotelType(hotelInfo.getHotelType());
+                hotelDescVO.setHotelLevel(hotelInfo.getHotelLevel());
                 hotelDescVO.setHotelId(hotelId);
                 return DtoUtil.returnDataSuccess(hotelDescVO);
             } else {
@@ -127,7 +127,7 @@ public class HotelCommentController {
      * 100005 : 新增评论，订单ID不能为空
      * 100000 : token失效，请重登录
      */
-    @RequestMapping(value = "/add", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Dto addComment(@RequestBody AddCommentVO addCommentVO, HttpServletRequest request) {
         String token = request.getHeader("token");
@@ -157,6 +157,7 @@ public class HotelCommentController {
             comment.setProductType(addCommentVO.getProductType());
             List<Image> images = new ArrayList<>();
             try {
+
                 if (addCommentVO.getIsHavingImg() == 1) {
                     Image[] img = addCommentVO.getImages();
                     for (int i = 0; i < img.length; i++) {
@@ -164,11 +165,10 @@ public class HotelCommentController {
                         img[i].setType("2");
                         img[i].setCreatedBy(currentUser.getId());
                         img[i].setCreationDate(comment.getCreationDate());
+                        img[i].setTargetId(comment.getId());
                         images.add(img[i]);
                     }
-
-                    hotelCommentService.addHotelComment(comment);
-                    imageService.addImgs(images);
+                    hotelCommentService.addHotelComment(comment,images);
 
                     return DtoUtil.returnSuccess("新增评论成功");
                 }
@@ -289,6 +289,33 @@ public class HotelCommentController {
             dto = DtoUtil.returnFail("token失效，请重登录", "100000");
         }
         return dto;
+    }
+
+    /**
+     * 获取评论图片
+     *
+     * 错误码：
+     * 100012：获取评论图片失败
+     * 100013：评论id不能为空
+     *
+     * */
+    @RequestMapping(value = "/getimg/{targetId}",method = RequestMethod.GET,produces = "application/json")
+    @ResponseBody
+    public Dto getImgByTargetId(@PathVariable Long targetId){
+        if(null != targetId){
+            List<Image> list= null;
+            try {
+                list = imageService.getImgListByConditions(targetId,"2");
+                return DtoUtil.returnSuccess("获取评论图片成功",list);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return DtoUtil.returnFail("获取评论图片失败","100012");
+            }
+        }else{
+            return DtoUtil.returnFail("评论id不能为空","100013");
+        }
+
+
     }
 
 

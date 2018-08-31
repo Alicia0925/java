@@ -11,7 +11,7 @@ public class HotelDescVO implements Serializable {
 
     private String hotelName;
 
-    private Integer hotelType;
+    private Integer hotelLevel;
 
     public Long getHotelId() {
         return hotelId;
@@ -29,11 +29,11 @@ public class HotelDescVO implements Serializable {
         this.hotelName = hotelName;
     }
 
-    public Integer getHotelType() {
-        return hotelType;
+    public Integer getHotelLevel() {
+        return hotelLevel;
     }
 
-    public void setHotelType(Integer hotelType) {
-        this.hotelType = hotelType;
+    public void setHotelLevel(Integer hotelLevel) {
+        this.hotelLevel = hotelLevel;
     }
 }

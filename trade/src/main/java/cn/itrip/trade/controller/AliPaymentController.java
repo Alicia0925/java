@@ -1,5 +1,6 @@
 package cn.itrip.trade.controller;
 
+import cn.itrip.beans.pojo.HotelOrder;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
@@ -30,7 +31,7 @@ import com.alipay.api.domain.AlipayTradeWapPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 
-import cn.itrip.beans.pojo.ItripHotelOrder;
+import cn.itrip.beans.pojo.HotelOrder;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.trade.config.AlipayConfig;
 import cn.itrip.trade.service.OrderService;
@@ -54,7 +55,7 @@ public class AliPaymentController {
 	/**
 	 * 确认订单信息
 	 *
-	 * @param id
+	 * @param orderNo
 	 *            订单ID
 	 * @return
 	 */
@@ -62,7 +63,7 @@ public class AliPaymentController {
 	@RequestMapping(value = "/prepay/{orderNo}", method = RequestMethod.GET)
 	public String prePay(@PathVariable String orderNo, ModelMap model) {
 		try {
-			ItripHotelOrder order = orderService.loadItripHotelOrder(orderNo);
+			HotelOrder order = orderService.loadHotelOrder(orderNo);
 
 			if (!EmptyUtils.isEmpty(order)) {
 				model.addAttribute("hotelName", order.getHotelName());
