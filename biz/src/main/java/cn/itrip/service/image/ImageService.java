@@ -5,8 +5,17 @@ import cn.itrip.beans.pojo.Image;
 import java.util.List;
 
 public interface ImageService {
+    /**
+     * 新增
+     * */
 
-    //根据targetId查询酒店房型图片(type=1)
-    List<Image> getImageList(Long targetId)throws Exception;
+    boolean addImgs(List<Image> images)throws Exception;
+
+
+    /**
+     * 根据targetId 和type 获取图片列表
+     * */
+
+    List<Image> getImgListByConditions(Long targetId, String type)throws Exception;
 
 }

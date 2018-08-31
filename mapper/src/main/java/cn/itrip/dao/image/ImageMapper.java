@@ -7,13 +7,7 @@ import java.util.List;
 
 public interface ImageMapper {
 
-    /**
-     * 根据targetId查询酒店房型图片(type=1)
-     * @param targetId 查询条件
-     * @return 返回图片集合
-     * @throws Exception 有异常抛出
-     */
-    List<Image> selectImageList(@Param(value = "targetId" ) Long targetId)throws Exception;
+
 
 
 
@@ -29,4 +23,7 @@ public interface ImageMapper {
     int updateByPrimaryKeySelective(Image record);
 
     int updateByPrimaryKey(Image record);
+
+    List<Image> selectByConditions(@Param("type")String type,
+                                   @Param("targetId")Long targetId)throws Exception;
 }

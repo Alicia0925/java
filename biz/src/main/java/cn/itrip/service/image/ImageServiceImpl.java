@@ -6,16 +6,27 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-
 @Service
 public class ImageServiceImpl implements ImageService {
     @Resource
     private ImageMapper imageMapper;
 
 
-    //根据targetId查询酒店房型图片(type=1)
     @Override
-    public List<Image> getImageList(Long targetId) throws Exception {
-        return imageMapper.selectImageList(targetId);
+    public boolean addImgs(List<Image> images)throws Exception {
+        if(null!=images && images.size()>0){
+
+            for(Image img:images){
+                imageMapper.insert(img);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<Image> getImgListByConditions(Long targetId, String type) throws Exception {
+        return imageMapper.selectByConditions();
     }
 }
