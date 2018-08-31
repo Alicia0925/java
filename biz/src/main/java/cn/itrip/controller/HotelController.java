@@ -8,6 +8,7 @@ import cn.itrip.beans.vo.AreaDicVO;
 import cn.itrip.beans.vo.hotel.HotelVideoDescVO;
 import cn.itrip.beans.vo.hotel.SearchDetailsHotelVO;
 import cn.itrip.beans.vo.hotel.SearchFacilitiesHotelVO;
+import cn.itrip.beans.vo.hotel.SearchPolicyHotelVO;
 import cn.itrip.common.DtoUtil;
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.common.ErrorCode;
@@ -211,6 +212,36 @@ public class HotelController {
             return DtoUtil.returnFail("系统异常,获取酒店设施信息失败", ErrorCode.BIZ_GETHOTELFACILITIES_ERROR);
         }
     }
+
+    @ApiOperation(value = "根据酒店id查询酒店政策", httpMethod = "GET",
+            protocols = "HTTP", produces = "application/json",
+            response = Dto.class, notes = "根据酒店id查询酒店政策" +
+            "<p>成功：success = ‘true’ | 失败：success = ‘false’ 并返回错误码，如下：</p>" +
+            "<p>10208: 酒店id不能为空</p>" +
+            "<p>10209: 系统异常,获取失败</p>")
+    @RequestMapping(value = "/queryhotelpolicy/{id}", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Dto<SearchFacilitiesHotelVO> queryHotelPolicy(
+            @ApiParam(required = true, name = "id", value = "酒店ID")
+            @PathVariable Long id) {
+        SearchPolicyHotelVO searchPolicyHotelVO= new SearchPolicyHotelVO();
+        try {
+            if (EmptyUtils.isNotEmpty(id)) {
+                //获取酒店的所有信息
+                HotelWithBLOBs hotelWithBLOBs = hotelService.getHotelWithBLOBsById(id);
+                //将酒店的政策信息封装到VO中
+                searchPolicyHotelVO.setHotelPolicy(hotelWithBLOBs.getHotelPolicy());
+                return DtoUtil.returnDataSuccess(searchPolicyHotelVO.getHotelPolicy());
+            } else {
+                return DtoUtil.returnFail("酒店id不能为空", ErrorCode.BIZ_UNKNOWN_HOTELID3);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return DtoUtil.returnFail("系统异常,获取酒店政策信息失败", ErrorCode.BIZ_GETHOTELPOLICY_ERROR);
+        }
+    }
+
+
 
 
 
