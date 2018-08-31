@@ -46,6 +46,8 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
+    <!--定时任务注解-->
+    <task:annotation-driven/>
 
     <!-- 配置多视图解析器 -->
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
@@ -76,6 +78,7 @@
        <property name="machineCode" value="${sysConfig.machineCode}"/>
        <property name="orderProcessOK" value="${sysConfig.orderProcessOK}"/>
        <property name="orderProcessCancel" value="${sysConfig.orderProcessCancel}"/>
+       <property name="localUploadPath" value="${sysConfig.localUploadPath}"/>
 
    </bean>
     <!--&lt;!&ndash;!1 指定任务类&ndash;&gt;-->
@@ -100,5 +103,7 @@
             <!--</list>-->
         <!--</property>-->
     <!--</bean>-->
+
+
 
 </beans>

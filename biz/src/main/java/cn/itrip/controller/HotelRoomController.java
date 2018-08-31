@@ -109,7 +109,7 @@ public class HotelRoomController {
         if (null != targetId && !"".equals(targetId)) {
             List<Image> itripImageVOList = null;
             try {
-                itripImageVOList = imageService.getImageList(Long.parseLong(targetId));
+                itripImageVOList = imageService.getImgListByConditions(Long.parseLong(targetId),"1");
                 dto = DtoUtil.returnSuccess("获取酒店图片房型成功", itripImageVOList);
             } catch (Exception e) {
                 e.printStackTrace();

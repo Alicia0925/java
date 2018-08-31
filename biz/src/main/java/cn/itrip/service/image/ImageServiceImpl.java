@@ -27,6 +27,6 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public List<Image> getImgListByConditions(Long targetId, String type) throws Exception {
-        return imageMapper.selectByConditions();
+        return imageMapper.selectByConditions(type,targetId);
     }
 }

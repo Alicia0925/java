@@ -188,6 +188,11 @@ public class HotelController {
 
     /**
      * 追加评论 获取图片
+     *
+     * 错误码：
+     * 100012：获取评论图片失败
+     * 100013：评论id不能为空
+     *
      * */
     @RequestMapping(value = "/getimg/{targetId}",method = RequestMethod.GET,produces = "application/json")
     @ResponseBody

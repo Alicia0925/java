@@ -239,7 +239,7 @@ public class HotelCommentController {
                                     String suffixString = myFileName.substring(file.getOriginalFilename().indexOf("."));
                                     String fileName = currentUser.getId() + "-" + System.currentTimeMillis() + "-" + ((int) (Math.random() * 10000000)) + suffixString;
                                     //定义上传路径
-                                    String path = ("/users/mac/upload") + File.separator + fileName;
+                                    String path = (systemConfig.getLocalUploadPath()) + File.separator + fileName;
                                     File localFile = new File(path);
                                     file.transferTo(localFile);
 

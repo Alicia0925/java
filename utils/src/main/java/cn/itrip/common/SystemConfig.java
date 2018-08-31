@@ -11,6 +11,15 @@ public class SystemConfig {
     private String machineCode;
     private String orderProcessOK;
     private String orderProcessCancel;
+    private String localUploadPath;
+
+    public String getLocalUploadPath() {
+        return localUploadPath;
+    }
+
+    public void setLocalUploadPath(String localUploadPath) {
+        this.localUploadPath = localUploadPath;
+    }
 
     public void setSmsAccountSid(String smsAccountSid) {
         this.smsAccountSid = smsAccountSid;
