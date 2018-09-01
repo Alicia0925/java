@@ -5,14 +5,19 @@ import cn.itrip.beans.pojo.UserLinkUser;
 import cn.itrip.beans.vo.order.HotelOrderVO;
 import cn.itrip.beans.vo.order.PersonalOrderRoomVo;
 import cn.itrip.beans.vo.order.SearchOrderVO;
+import cn.itrip.common.BigDecimalUtil;
 import cn.itrip.common.Page;
 import cn.itrip.dao.hotelorder.HotelOrderMapper;
+import cn.itrip.dao.hotelroom.HotelRoomMapper;
+import io.swagger.models.auth.In;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+
+import static java.math.BigDecimal.ROUND_DOWN;
 
 /**
  * 酒店订单Service实现类
@@ -21,6 +26,9 @@ import java.util.Map;
 public class HotelOrderServiceImpl implements HotelOrderService {
     @Resource
     private HotelOrderMapper hotelOrderMapper;
+    @Resource
+    private HotelRoomMapper hotelRoomMapper;
+
 
     @Override
     public Page<HotelOrderVO> getPageByMap(SearchOrderVO searchOrderVO) throws Exception {
@@ -49,19 +57,28 @@ public class HotelOrderServiceImpl implements HotelOrderService {
      * 刷新订单状态
      */
     @Override
-    public boolean flushOrderStatus(int i)throws Exception {
-        return false;
+    public boolean flushOrderStatus(Integer type)throws Exception {
+        Integer flag;
+        if (type == 1) {
+            flag = hotelOrderMapper.flushCancelOrderStatus();
+        } else {
+            flag = hotelOrderMapper.flushSuccessOrderStatus();
+        }
+        return flag > 0 ? true : false;
     }
+
 
     /**
      * 计算订单金额
      */
     @Override
-    public BigDecimal getOrderPayAmount(int i, Long roomId)throws Exception {
-
-
-
-        return null;
+    public BigDecimal getOrderPayAmount(Integer count, Long roomId)throws Exception {
+        BigDecimal payAmount = null;
+        BigDecimal roomPrice = hotelRoomMapper.selectByPrimaryKey(roomId).getRoomPrice();
+        payAmount = BigDecimalUtil.OperationASMD(count, roomPrice,
+                BigDecimalUtil.BigDecimalOprations.multiply,
+                2, ROUND_DOWN);
+        return payAmount;
     }
 
     /**
@@ -69,6 +86,16 @@ public class HotelOrderServiceImpl implements HotelOrderService {
      */
     @Override
     public Map<String, String> addHotelOrder(HotelOrder hotelOrder, List<UserLinkUser> linkUserList)throws Exception {
+        return null;
+    }
+
+    @Override
+    public void modifyHotelOrder(HotelOrder hotelOrder) {
+
+    }
+
+    @Override
+    public List<HotelOrder> getHotelOrderListByMap(Map<String, Object> orderParam) {
         return null;
     }
 

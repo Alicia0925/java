@@ -18,4 +18,12 @@ public class HotelRoomServiceImpl implements HotelRoomService {
     public List<HotelRoom> getHotelRoomListByQuery(SearchHotelRoomVO searchHotelRoomVO) throws Exception {
         return hotelRoomMapper.selectHotelRoomListByQuery(searchHotelRoomVO);
     }
+/**
+ * 根据id查房间
+ * */
+    @Override
+    public HotelRoom getHotelRoomById(Long roomId) {
+        return hotelRoomMapper.selectByPrimaryKey(roomId);
+    }
+
 }

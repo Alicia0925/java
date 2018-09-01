@@ -224,12 +224,10 @@
       #{createdBy,jdbcType=BIGINT}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-    <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.Comment">
+    <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.Comment" keyProperty="id" useGeneratedKeys="true">
         insert into itrip_comment
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
+
             <if test="hotelId != null">
                 hotelId,
             </if>
@@ -286,9 +284,7 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=BIGINT},
-            </if>
+
             <if test="hotelId != null">
                 #{hotelId,jdbcType=BIGINT},
             </if>

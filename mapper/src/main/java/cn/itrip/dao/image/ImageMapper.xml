@@ -53,12 +53,10 @@
       #{createdBy,jdbcType=BIGINT}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.Image">
+  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.Image" useGeneratedKeys="true" keyProperty="id">
     insert into itrip_image
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
+
       <if test="type != null">
         type,
       </if>
@@ -85,9 +83,7 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
+
       <if test="type != null">
         #{type,jdbcType=VARCHAR},
       </if>

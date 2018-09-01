@@ -35,17 +35,23 @@ public interface HotelOrderService {
     /**
      * 刷新订单状态-定时任务
      */
-    boolean flushOrderStatus(int i)throws Exception;
+    boolean flushOrderStatus(Integer type)throws Exception;
     /**
      * 订单总金额=入住天数*订单数量*房间价格
      *
      * */
 
-    BigDecimal getOrderPayAmount(int i, Long roomId)throws Exception;
+    BigDecimal getOrderPayAmount(Integer count, Long roomId)throws Exception;
 
     /**
      * 生成订单
      * */
 
     Map<String,String> addHotelOrder(HotelOrder hotelOrder, List<UserLinkUser> linkUserList)throws Exception;
+/**
+ * 修改订单
+ * */
+    void modifyHotelOrder(HotelOrder hotelOrder);
+
+    List<HotelOrder> getHotelOrderListByMap(Map<String,Object> orderParam);
 }
