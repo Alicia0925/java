@@ -186,11 +186,11 @@ public class HotelController {
 
 
     /**
-     * 追加评论 获取图片
+     * 追加评论 获取酒店图片
      * <p>
      * 错误码：
-     * 100012：获取评论图片失败
-     * 100013：评论id不能为空
+     * 100212：获取酒店图片失败
+     * 100213：酒店id不能为空
      */
     @RequestMapping(value = "/getimg/{targetId}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -198,14 +198,14 @@ public class HotelController {
         if (null != targetId) {
             List<Image> list = null;
             try {
-                list = imageService.getImgListByConditions(targetId, "2");
+                list = imageService.getImgListByConditions(targetId, "0");
                 return DtoUtil.returnSuccess("获取评论图片成功", list);
             } catch (Exception e1) {
                 e1.printStackTrace();
-                return DtoUtil.returnFail("获取评论图片失败", "100012");
+                return DtoUtil.returnFail("获取评论图片失败", "100212");
             }
         } else {
-            return DtoUtil.returnFail("评论id不能为空", "100013");
+            return DtoUtil.returnFail("评论id不能为空", "100213");
         }
 
 

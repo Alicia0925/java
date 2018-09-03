@@ -16,18 +16,70 @@
     id, hotelId, roomId, recordDate, store, creationDate, createdBy, modifyDate, modifiedBy
   </sql>
 
-<!--库存刷新-->
-  <update id="flushStore" statementType="CALLABLE" parameterType="map">
-    {call pre_flush_store(
-    #{startTime},
-    #{endStime},
-    #{roomId},
-    #{hotelId})
-    }
+<!--&lt;!&ndash;库存刷新:调用存储过程&ndash;&gt;-->
+  <!--<update id="flushStore" statementType="CALLABLE" parameterType="map">-->
+    <!--{call pre_flush_store(-->
+    <!--#{startTime},-->
+    <!--#{endTime},-->
+    <!--#{roomId},-->
+    <!--#{hotelId})-->
+    <!--}-->
 
-  </update>
+  <!--</update>-->
+
+  <!--根据roomId和记录时间查询库存记录数-->
+
+  <select id="getCountByRoomIdAndRecordTime" resultType="int">
+    SELECT
+
+		COUNT(id)
+
+	FROM
+
+		itrip_hotel_temp_store
+
+	WHERE
+
+		roomId = #{roomId}
+
+	AND DATE_FORMAT(recordDate, '%Y-%m-%d') = DATE_FORMAT(#{tempTime}, '%Y-%m-%d');
+  </select>
+
+<!--插入一条临时库存-->
+
+  <insert id="addTempStore" useGeneratedKeys="true" keyProperty="id" parameterType="map">
+    INSERT INTO itrip_hotel_temp_store (
+
+	hotelId,
+
+	roomId,
+
+	recordDate,
+
+	store,
+
+	creationDate
+
+)
+
+VALUES
+
+	(
+
+		#{hotelId1},
+
+		#{roomId1},
+
+		#{tempTime},
+
+		#{store1},
+
+		NOW()
+
+	);
 
 
+  </insert>
   <!--当日库存=实时库存表的库存数量-当日订单中对应该房型未支付的订单所占的库存-->
 
   <select id="queryRoomStore" resultType="cn.itrip.beans.vo.store.StoreVO"  parameterType="java.util.Map">
@@ -88,12 +140,10 @@
       #{createdBy,jdbcType=BIGINT}, #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.HotelTempStore">
+  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.HotelTempStore" useGeneratedKeys="true" keyProperty="id">
     insert into itrip_hotel_temp_store
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
+
       <if test="hotelId != null">
         hotelId,
       </if>
@@ -120,9 +170,7 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
+
       <if test="hotelId != null">
         #{hotelId,jdbcType=INTEGER},
       </if>

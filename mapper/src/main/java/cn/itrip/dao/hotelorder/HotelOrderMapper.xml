@@ -174,6 +174,19 @@
     where userId=#{userId} and orderStatus=#{orderStatus}
   </select>
 
+    <!--获取订单list-->
+    <select id="getHotelOrderListByMap" resultType="cn.itrip.beans.pojo.HotelOrder" parameterType="map">
+        select
+        id,orderType,orderNo,hotelId,hotelName,orderStatus,`count`,checkInDate,payAmount,linkUserName,creationDate
+        from itrip_hotel_order
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="orderNo != null and orderNo!=''">
+                and orderNo =#{orderNo}
+            </if>
+
+        </trim>
+   </select>
+
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_hotel_order
@@ -536,6 +549,36 @@
             ,modifiedBy=#{modifiedBy}
         </if>
         where id=#{id}
+    </update>
+    <update id="updateHotelOrder" parameterType="cn.itrip.beans.pojo.HotelOrder">
+     update itrip_hotel_order
+        set userId = #{userId,jdbcType=BIGINT},
+          orderType = #{orderType,jdbcType=INTEGER},
+          orderNo = #{orderNo,jdbcType=VARCHAR},
+          tradeNo = #{tradeNo,jdbcType=VARCHAR},
+          hotelId = #{hotelId,jdbcType=BIGINT},
+          hotelName = #{hotelName,jdbcType=VARCHAR},
+          roomId = #{roomId,jdbcType=BIGINT},
+          count = #{count,jdbcType=INTEGER},
+          bookingDays = #{bookingDays,jdbcType=INTEGER},
+          checkInDate = #{checkInDate,jdbcType=TIMESTAMP},
+          checkOutDate = #{checkOutDate,jdbcType=TIMESTAMP},
+          orderStatus = #{orderStatus,jdbcType=INTEGER},
+          payAmount = #{payAmount,jdbcType=DECIMAL},
+          payType = #{payType,jdbcType=INTEGER},
+          noticePhone = #{noticePhone,jdbcType=VARCHAR},
+          noticeEmail = #{noticeEmail,jdbcType=VARCHAR},
+          isNeedInvoice = #{isNeedInvoice,jdbcType=INTEGER},
+          invoiceType = #{invoiceType,jdbcType=INTEGER},
+          invoiceHead = #{invoiceHead,jdbcType=VARCHAR},
+          linkUserName = #{linkUserName,jdbcType=VARCHAR},
+          bookType = #{bookType,jdbcType=INTEGER},
+          creationDate = #{creationDate,jdbcType=TIMESTAMP},
+          createdBy = #{createdBy,jdbcType=BIGINT},
+          modifyDate = #{modifyDate,jdbcType=TIMESTAMP},
+          modifiedBy = #{modifiedBy,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+
     </update>
 </mapper>
 

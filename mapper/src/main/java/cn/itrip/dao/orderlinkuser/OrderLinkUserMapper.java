@@ -34,5 +34,8 @@ public interface OrderLinkUserMapper {
  * */
    List<Long> selectOrderLinkUserIdByConditions(@Param("userId") Long userId,
                                              @Param("orderStatus") Integer orderStatus)throws Exception;
-
+/**
+ * 根据订单编号删除联系人
+ * */
+    Integer deleteOrderLinkUserByOrderId(Long orderId);
 }

@@ -25,6 +25,20 @@
     from itrip_product_store
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectStoreByProductIdType" resultType="java.lang.Integer">
+   SELECT
+
+	  store
+
+	FROM
+
+		itrip_product_store
+
+	WHERE
+
+		productId = #{roomId} AND productType =#{productType};
+
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from itrip_product_store
     where id = #{id,jdbcType=BIGINT}

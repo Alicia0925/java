@@ -10,7 +10,16 @@ public class StoreVO implements Serializable {
     //房间ID
     private Long roomId;
     //库存记录日期
-    private Date date;
+    private Date recordDate;
+
+    public Date getRecordDate() {
+        return recordDate;
+    }
+
+    public void setRecordDate(Date recordDate) {
+        this.recordDate = recordDate;
+    }
+
     //房间库存
     private Integer store;
 
@@ -20,14 +29,6 @@ public class StoreVO implements Serializable {
 
     public void setRoomId(Long roomId) {
         this.roomId = roomId;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public Integer getStore() {

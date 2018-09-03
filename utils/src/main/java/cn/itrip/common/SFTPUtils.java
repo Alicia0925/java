@@ -191,25 +191,6 @@ public class SFTPUtils {
         return sftp.ls(directory);
     }
 
-    public static void main(String[] args) throws IOException {
-        SFTPUtils sf = SFTPUtils.getInstance();
-        sf.upload(directory, "/Users/mac/Desktop/屏幕快照.png");    //上传文件
 
-//        sf.download(directory, "2.png", "C:\\Users\\hp\\Desktop\\1212.png");
-//        File download = sf.download("/home/1.png", "C:\\Users\\hp\\Desktop\\122221.png");
-
-//        sf.delete(directory, deleteFile); //删除文件
-
-//        Vector<LsEntry> files = null;        //查看文件列表
-//        try {
-//            files = sf.listFiles(directory);
-//        } catch (SftpException e) {
-//            e.printStackTrace();
-//        }
-//        for (LsEntry file : files) {
-//            System.out.println("###\t" + file.getFilename());
-//        }
-        sf.disconnect();
-    }
 }
 

@@ -73,5 +73,5 @@ public interface HotelOrderMapper {
 
     List<HotelOrder> getHotelOrderListByMap(Map<String,Object> param);
 
-    void updateHotelOrder(HotelOrder hotelOrder);
+    Integer updateHotelOrder(HotelOrder hotelOrder);
 }

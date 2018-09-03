@@ -51,7 +51,11 @@
     delete from itrip_order_link_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="cn.itrip.beans.pojo.OrderLinkUser">
+    <delete id="deleteOrderLinkUserByOrderId">
+
+
+    </delete>
+    <insert id="insert" parameterType="cn.itrip.beans.pojo.OrderLinkUser">
     insert into itrip_order_link_user (id, orderId, linkUserId, 
       linkUserName, creationDate, createdBy, 
       modifyDate, modifiedBy)
@@ -59,12 +63,10 @@
       #{linkUserName,jdbcType=VARCHAR}, #{creationDate,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=BIGINT}, 
       #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.OrderLinkUser">
+  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.OrderLinkUser" keyProperty="id" useGeneratedKeys="true">
     insert into itrip_order_link_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
+
       <if test="orderId != null">
         orderId,
       </if>
@@ -88,9 +90,7 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
+
       <if test="orderId != null">
         #{orderId,jdbcType=BIGINT},
       </if>

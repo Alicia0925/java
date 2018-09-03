@@ -11,16 +11,53 @@
   </sql>
 
 
+  <select id="getTradeEndsListByMap" resultType="cn.itrip.beans.pojo.TradeEnds"
+          parameterType="java.util.Map">
+    select
+    id as id,
+    orderNo as orderNo,
+    flag as flag
+    from itrip_trade_ends
+    <trim prefix="where" prefixOverrides="and | or">
+      <if test="id != null and id!=''">
+        and id=#{id}
+      </if>
+      <if test="orderNo != null and orderNo!=''">
+        and orderNo=#{orderNo}
+      </if>
+    </trim>
+    <if test="beginPos != null and beginPos!='' and pageSize != null  and pageSize !='' ">
+      limit #{beginPos},#{pageSize}
+    </if>
+  </select>
 
+  <select id="getTradeEndsCountByMap" resultType="Integer" parameterType="java.util.Map">
+    select count(*) from itrip_trade_ends
+    <trim prefix="where" prefixOverrides="and | or">
+      <if test="id != null and id!=''">
+        and id=#{id}
+      </if>
+      <if test="orderNo != null and orderNo!=''">
+        and orderNo=#{orderNo}
+      </if>
+      <if test="flag != null and flag!=''">
+        and flag=#{flag}
+      </if>
+    </trim>
+  </select>
+
+  <update id="updateTradeEnds" parameterType="java.util.Map">
+        update itrip_trade_ends set flag=#{flag} where flag=#{oldFlag}
+    </update>
 
   <!--以下是自动生成CURD-->
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="getTradeEndsById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from itrip_trade_ends
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteTradeEndsById" parameterType="java.lang.Long">
     delete from itrip_trade_ends
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -28,12 +65,10 @@
     insert into itrip_trade_ends (id, orderNo, flag)
     values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, #{flag,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.TradeEnds">
+  <insert id="insertTradeEnds" parameterType="cn.itrip.beans.pojo.TradeEnds" keyProperty="id" useGeneratedKeys="true">
     insert into itrip_trade_ends
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
+
       <if test="orderNo != null">
         orderNo,
       </if>
@@ -42,9 +77,7 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
+
       <if test="orderNo != null">
         #{orderNo,jdbcType=VARCHAR},
       </if>

@@ -51,7 +51,7 @@ public interface HotelOrderService {
 /**
  * 修改订单
  * */
-    void modifyHotelOrder(HotelOrder hotelOrder);
+    Integer modifyHotelOrder(HotelOrder hotelOrder)throws Exception;
 
-    List<HotelOrder> getHotelOrderListByMap(Map<String,Object> orderParam);
+    List<HotelOrder> getHotelOrderListByMap(Map<String,Object> orderParam)throws Exception;
 }

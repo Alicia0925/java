@@ -240,19 +240,20 @@ public class HotelOrderController {
         Dto<Object> dto = new Dto<Object>();
         String token  = request.getHeader("token");
         User currentUser = validationToken.getCurrentUser(token);
-        Map<String, Object> validateStoreMap = new HashMap<>();
-        validateStoreMap.put("startTime", addHotelOrderVO.getCheckInDate());
-        validateStoreMap.put("endTime", addHotelOrderVO.getCheckOutDate());
-        validateStoreMap.put("hotelId", addHotelOrderVO.getHotelId());
-        validateStoreMap.put("roomId", addHotelOrderVO.getRoomId());
-        validateStoreMap.put("count", addHotelOrderVO.getCount());
+        ValidateRoomStoreVO v=new ValidateRoomStoreVO();
+        v.setCheckInDate(addHotelOrderVO.getCheckInDate());
+        v.setCheckOutDate(addHotelOrderVO.getCheckOutDate());
+        v.setRoomId(addHotelOrderVO.getRoomId());
+        v.setCount(addHotelOrderVO.getCount());
+        v.setHotelId(addHotelOrderVO.getHotelId());
+
         List<UserLinkUser> linkUserList = addHotelOrderVO.getLinkUser();
         if(EmptyUtils.isEmpty(currentUser)){
             return DtoUtil.returnFail("token失效，请重登录", "100000");
         }
         try {
             //判断库存是否充足
-            Boolean flag = tempStoreService.validateRoomStore(validateStoreMap);
+            Boolean flag = tempStoreService.validateRoomStore(v).size()>0 ? true:false;
             if (flag && null != addHotelOrderVO) {
                 //计算订单的预定天数
                 Integer days = DateUtil.getBetweenDates(
@@ -317,7 +318,6 @@ public class HotelOrderController {
                     hotelOrder.setPayAmount(hotelOrderService.getOrderPayAmount(days * addHotelOrderVO.getCount(), addHotelOrderVO.getRoomId()));
 
                     Map<String, String> map = hotelOrderService.addHotelOrder(hotelOrder, linkUserList);
-                    DtoUtil.returnSuccess();
                     dto = DtoUtil.returnSuccess("生成订单成功", map);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -349,7 +349,7 @@ public class HotelOrderController {
     @ResponseBody
     public Dto<RoomStoreVO> getPreOrderInfo(@RequestBody ValidateRoomStoreVO validateRoomStoreVO, HttpServletRequest request) {
         String token  = request.getHeader("token");
-        User currentUser = validationToken.getCurrentUser(token);
+         User currentUser = validationToken.getCurrentUser(token);
         Hotel hotel = null;
         HotelRoom room = null;
         RoomStoreVO roomStoreVO = null;
@@ -374,12 +374,7 @@ public class HotelOrderController {
                 roomStoreVO.setHotelId(validateRoomStoreVO.getHotelId());
 
                 //查询房间库存 list
-                Map param = new HashMap();
-                param.put("startTime", validateRoomStoreVO.getCheckInDate());
-                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
-                param.put("roomId", validateRoomStoreVO.getRoomId());
-                param.put("hotelId", validateRoomStoreVO.getHotelId());
-                List<StoreVO> storeVOList = tempStoreService.queryRoomStore(param);
+                List<StoreVO> storeVOList = tempStoreService.validateRoomStore(validateRoomStoreVO);
 
                 roomStoreVO.setCount(1);
                 if (EmptyUtils.isNotEmpty(storeVOList)) {
@@ -421,13 +416,8 @@ public class HotelOrderController {
             } else if (EmptyUtils.isEmpty(validateRoomStoreVO.getRoomId())) {
                 return DtoUtil.returnFail("roomId不能为空", "100516");
             } else {
-                Map param = new HashMap();
-                param.put("startTime", validateRoomStoreVO.getCheckInDate());
-                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
-                param.put("roomId", validateRoomStoreVO.getRoomId());
-                param.put("hotelId", validateRoomStoreVO.getHotelId());
-                param.put("count", validateRoomStoreVO.getCount());
-                boolean flag = tempStoreService.validateRoomStore(param);
+                List<StoreVO> storeVOList= tempStoreService.validateRoomStore(validateRoomStoreVO);
+                boolean flag=storeVOList.size()>0 ? true:false;
                 Map<String, Boolean> map = new HashMap<String, Boolean>();
                 map.put("flag", flag);
                 return DtoUtil.returnSuccess("操作成功", map);
@@ -479,7 +469,7 @@ public class HotelOrderController {
     }
 //
     /***
-     * 10分钟执行一次 刷新已取消订单的状态 不对外公布
+     * 10分钟执行一次 刷新已取消订单的状态
      */
     @Scheduled(cron = "*0 0/10 * * * ?")
     public void flushCancelOrderStatus() {

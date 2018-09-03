@@ -1,11 +1,13 @@
 package cn.itrip.dao.productstore;
 
 import cn.itrip.beans.pojo.ProductStore;
+import org.apache.ibatis.annotations.Param;
 
 public interface ProductStoreMapper {
 
 
-
+Integer selectStoreByProductIdType(@Param("roomId") Long roomId,
+                                   @Param("productType") Integer productType)throws Exception;
 
 
     //以下是自动生成CURD
