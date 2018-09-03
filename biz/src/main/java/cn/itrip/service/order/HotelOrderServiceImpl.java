@@ -66,7 +66,7 @@ public class HotelOrderServiceImpl implements HotelOrderService {
      * 刷新订单状态
      */
     @Override
-    public boolean flushOrderStatus(Integer type)throws Exception {
+    public boolean flushOrderStatus(Integer type) throws Exception {
         Integer flag;
         if (type == 1) {
             flag = hotelOrderMapper.flushCancelOrderStatus();
@@ -81,7 +81,7 @@ public class HotelOrderServiceImpl implements HotelOrderService {
      * 计算订单金额
      */
     @Override
-    public BigDecimal getOrderPayAmount(Integer count, Long roomId)throws Exception {
+    public BigDecimal getOrderPayAmount(Integer count, Long roomId) throws Exception {
         BigDecimal payAmount = null;
         BigDecimal roomPrice = hotelRoomMapper.selectByPrimaryKey(roomId).getRoomPrice();
         payAmount = BigDecimalUtil.OperationASMD(count, roomPrice,
@@ -92,25 +92,24 @@ public class HotelOrderServiceImpl implements HotelOrderService {
 
     /**
      * 生成订单:
-     *需判断订单是否有ID；
+     * 需判断订单是否有ID；
      * 若有 需要先删除之前旅客信息再更新旅客信息
-     *
      */
     @Override
-    public Map<String, String> addHotelOrder(HotelOrder hotelOrder, List<UserLinkUser> linkUserList)throws Exception {
+    public Map<String, String> addHotelOrder(HotelOrder hotelOrder, List<UserLinkUser> linkUserList) throws Exception {
 
         //定义变量map，里面存放订单的id和orderNo返回给前端
         Map<String, String> map = new HashMap<>();
         if (null != hotelOrder) {
-            int flag=0;
+            int flag = 0;
             if (EmptyUtils.isNotEmpty(hotelOrder.getId())) {
                 //删除联系人
                 orderLinkUserMapper.deleteOrderLinkUserByOrderId(hotelOrder.getId());
                 hotelOrder.setModifyDate(new Date());
-                flag=hotelOrderMapper.updateHotelOrder(hotelOrder);
+                flag = hotelOrderMapper.updateHotelOrder(hotelOrder);
             } else {
                 hotelOrder.setCreationDate(new Date());
-                flag=hotelOrderMapper.insertSelective(hotelOrder);
+                flag = hotelOrderMapper.insertSelective(hotelOrder);
             }
             if (flag > 0) {
                 Long orderId = hotelOrder.getId();
@@ -133,9 +132,12 @@ public class HotelOrderServiceImpl implements HotelOrderService {
         }
         return map;
     }
-
+/**
+ * 更改order支付类型，订单状态，并锁定库存
+ *
+ * */
     @Override
-    public Integer modifyHotelOrder(HotelOrder hotelOrder)throws Exception {
+    public Integer modifyHotelOrder(HotelOrder hotelOrder) throws Exception {
         HotelOrder modifyHotelOrder = hotelOrderMapper.selectByPrimaryKey(hotelOrder.getId());
         //更新临时表的库存
         Map<String, Object> roomStoreMap = new HashMap<>();
@@ -143,15 +145,14 @@ public class HotelOrderServiceImpl implements HotelOrderService {
         roomStoreMap.put("endTime", modifyHotelOrder.getCheckOutDate());
         roomStoreMap.put("count", modifyHotelOrder.getCount());
         roomStoreMap.put("roomId", modifyHotelOrder.getRoomId());
-       tempStoreMapper.updateRoomStore(roomStoreMap);
-        return hotelOrderMapper.updateHotelOrder(hotelOrder);
+        tempStoreMapper.updateRoomStore(roomStoreMap);
+        return hotelOrderMapper.updateByPrimaryKeySelective(hotelOrder);
     }
 
     @Override
-    public List<HotelOrder> getHotelOrderListByMap(Map<String, Object> orderParam)throws Exception {
-return hotelOrderMapper.getHotelOrderListByMap(orderParam);
+    public List<HotelOrder> getHotelOrderListByMap(Map<String, Object> orderParam) throws Exception {
+        return hotelOrderMapper.getHotelOrderListByMap(orderParam);
     }
-
 
 
 }
