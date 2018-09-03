@@ -1,9 +1,8 @@
 package cn.itrip.auth.service;
 
+import cn.itrip.beans.dto.Dto;
 import cn.itrip.beans.pojo.User;
-import cn.itrip.common.MD5;
-import cn.itrip.common.RedisAPI;
-import cn.itrip.common.SendMessage;
+import cn.itrip.common.*;
 import cn.itrip.dao.user.UserMapper;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -24,14 +23,6 @@ public class UserServiceImpl implements UserService  {
     private RedisAPI redisAPI;
 
     @Override
-    public boolean deleteByPrimaryKey(Long id)throws Exception {
-        if (userMapper.deleteByPrimaryKey(id) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public boolean add(User record)throws Exception {
         if (userMapper.insert(record) > 0) {
             return true;
@@ -40,45 +31,10 @@ public class UserServiceImpl implements UserService  {
     }
 
     @Override
-    public boolean addSelective(User record) throws Exception{
-        return userMapper.insertSelective(record) > 0;
-    }
-
-    @Override
-    public User findtByPrimaryKey(Long id) throws Exception {
-        return userMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
-    public boolean modifyByPrimaryKeySelective(User record)throws Exception {
-
-        return userMapper.updateByPrimaryKeySelective(record) > 0;
-    }
-
-    @Override
-    public boolean modifyByPrimaryKey(User record)throws Exception {
-
-        return userMapper.updateByPrimaryKeySelective(record) > 0;
-    }
-
-    @Override
     public User findByUserCode(String userCode)throws Exception {
         return userMapper.selectByUserCode(userCode);
     }
 
-    /**
-     * login
-     */
-    @Override
-    public User login(String userCode, String userPassword) throws Exception{
-        User user=userMapper.selectByUserCode(userCode);
-        if(null!=null&&user.getUserPassword().equals(userPassword)) {
-            if (user.getActivated() != 1)
-                throw new Exception("用户未激活");
-            return user;
-        }
-        return null;
-    }
     /**
      * 发送验证邮件
      * @param email
@@ -92,26 +48,13 @@ public class UserServiceImpl implements UserService  {
         return activationCode;
     }
 
-    //判断验证码是否正确的方法
-    public boolean isActivationCodeTrue(String checkActivationCode,User user)throws Exception {
-        if (redisAPI.get("activationCode").equals(checkActivationCode)){//判断验证码是否正确
-            user.setUserType(0);
-            user.setActivated(1);
-            try {
-                add(user);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return true;
-        }else{
-            return false;
-        }
-    }
 
     public void addNewUser(User user,int isEmail) throws Exception {
         user.setUserCode(user.getUserCode());
         user.setUserPassword(MD5.getMd5(user.getUserPassword(),32));
         user.setUserName(user.getUserName());
+        user.setUserType(0);
+        user.setCreationDate(new Date());
         add(user);
         if (isEmail==0){
             redisAPI.set("activationCode",sendActivationMail(user.getUserCode()));
@@ -121,5 +64,29 @@ public class UserServiceImpl implements UserService  {
             SendMessage sendMessage = new SendMessage();
             sendMessage.sendMessage(user.getUserCode(),activationCode);
         }
+    }
+
+    @Override
+    public Integer updateByPrimaryKey(User user) throws Exception {
+
+        return userMapper.updateByPrimaryKey(user);
+    }
+
+    public Dto ckAcCode(String code,
+                        String userCode){
+        if (code.equals(redisAPI.get("activationCode"))){
+            try {
+                User user = findByUserCode(userCode);
+                user.setFlatID(user.getId());
+                user.setActivated(1);
+                updateByPrimaryKey(user);
+                redisAPI.delete("activationCode");
+                return DtoUtil.returnSuccess();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return DtoUtil.returnFail("失败",ErrorCode.AUTH_ACTIVATE_FAILED);
+            }
+        }
+        return DtoUtil.returnFail("失败",ErrorCode.AUTH_ACTIVATE_FAILED);
     }
 }
