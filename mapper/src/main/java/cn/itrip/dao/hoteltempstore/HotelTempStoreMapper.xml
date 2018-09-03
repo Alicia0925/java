@@ -16,16 +16,16 @@
     id, hotelId, roomId, recordDate, store, creationDate, createdBy, modifyDate, modifiedBy
   </sql>
 
-<!--&lt;!&ndash;库存刷新:调用存储过程&ndash;&gt;-->
-  <!--<update id="flushStore" statementType="CALLABLE" parameterType="map">-->
-    <!--{call pre_flush_store(-->
-    <!--#{startTime},-->
-    <!--#{endTime},-->
-    <!--#{roomId},-->
-    <!--#{hotelId})-->
-    <!--}-->
+<!--库存刷新:调用存储过程-->
+  <update id="flushStore" statementType="CALLABLE" parameterType="map">
+    {call pre_flush_store(
+    #{startTime},
+    #{endTime},
+    #{roomId},
+    #{hotelId})
+    }
 
-  <!--</update>-->
+  </update>
 
   <!--根据roomId和记录时间查询库存记录数-->
 

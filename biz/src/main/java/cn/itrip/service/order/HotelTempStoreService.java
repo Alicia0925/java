@@ -39,5 +39,5 @@ public interface HotelTempStoreService {
 
 
 
-     void flushStore(ValidateRoomStoreVO validateRoomStoreVO)throws Exception;
+//     void flushStore(ValidateRoomStoreVO validateRoomStoreVO)throws Exception;
 }

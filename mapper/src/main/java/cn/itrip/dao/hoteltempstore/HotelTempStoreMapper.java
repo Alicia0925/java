@@ -18,7 +18,7 @@ public interface HotelTempStoreMapper {
     /**
      * 刷新库存
      */
-//    void flushStore(Map<String, Object> param) throws Exception;
+    void flushStore(Map<String, Object> param) throws Exception;
 
    Integer getCountByRoomIdAndRecordTime(@Param("roomId") Long roomId,
                                          @Param("tempTime") Date tempTime)throws Exception;

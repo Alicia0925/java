@@ -349,7 +349,7 @@ public class HotelOrderController {
     @ResponseBody
     public Dto<RoomStoreVO> getPreOrderInfo(@RequestBody ValidateRoomStoreVO validateRoomStoreVO, HttpServletRequest request) {
         String token  = request.getHeader("token");
-         User currentUser = validationToken.getCurrentUser(token);
+        User currentUser = validationToken.getCurrentUser(token);
         Hotel hotel = null;
         HotelRoom room = null;
         RoomStoreVO roomStoreVO = null;
@@ -374,7 +374,12 @@ public class HotelOrderController {
                 roomStoreVO.setHotelId(validateRoomStoreVO.getHotelId());
 
                 //查询房间库存 list
-                List<StoreVO> storeVOList = tempStoreService.validateRoomStore(validateRoomStoreVO);
+                Map param = new HashMap();
+                param.put("startTime", validateRoomStoreVO.getCheckInDate());
+                param.put("endTime", validateRoomStoreVO.getCheckOutDate());
+                param.put("roomId", validateRoomStoreVO.getRoomId());
+                param.put("hotelId", validateRoomStoreVO.getHotelId());
+                List<StoreVO> storeVOList = tempStoreService.queryRoomStore(param);
 
                 roomStoreVO.setCount(1);
                 if (EmptyUtils.isNotEmpty(storeVOList)) {

@@ -17,8 +17,8 @@ import java.util.Map;
 public class HotelTempStoreServiceImpl implements HotelTempStoreService {
     @Resource
     private HotelTempStoreMapper hotelTempStoreMapper;
-    @Resource
-    private ProductStoreMapper productStoreMapper;
+//    @Resource
+//    private ProductStoreMapper productStoreMapper;
 
     /***
      * 库存list
@@ -31,6 +31,7 @@ public class HotelTempStoreServiceImpl implements HotelTempStoreService {
      */
     @Override
     public List<StoreVO> queryRoomStore(Map<String, Object> param) throws Exception {
+        hotelTempStoreMapper.flushStore(param);
         return hotelTempStoreMapper.queryRoomStore(param);
     }
 
@@ -47,14 +48,15 @@ public class HotelTempStoreServiceImpl implements HotelTempStoreService {
      */
     @Override
     public List<StoreVO> validateRoomStore(ValidateRoomStoreVO validateRoomStoreVO) throws Exception {
-        Integer count = validateRoomStoreVO.getCount();
-        //刷新库存
-       flushStore(validateRoomStoreVO);
-        //查询库存
         Map<String,Object> param=new HashMap<>();
         param.put("roomId", validateRoomStoreVO.getRoomId());
         param.put("startTime",validateRoomStoreVO.getCheckInDate());
         param.put("endTime",validateRoomStoreVO.getCheckOutDate());
+        param.put("hotelId",validateRoomStoreVO.getHotelId());
+        Integer count = validateRoomStoreVO.getCount();
+        //刷新库存
+        hotelTempStoreMapper.flushStore(param);
+        //查询库存
         List<StoreVO> storeVOList = hotelTempStoreMapper.queryRoomStore(param);
         if (EmptyUtils.isEmpty(storeVOList)) {
             return null;
@@ -90,34 +92,34 @@ public class HotelTempStoreServiceImpl implements HotelTempStoreService {
      * roomId
      * hotelId
      */
-    @Override
-    public void flushStore(ValidateRoomStoreVO vStoreVO) throws Exception {
-        Date startTime = vStoreVO.getCheckInDate();
-        Date endTime = vStoreVO.getCheckOutDate();
-        Long roomId = vStoreVO.getRoomId();
-        Long hotelId = vStoreVO.getHotelId();
-        Date tempTime = null;
-        Integer store1 = null;
-        Integer count1 = null;
-        tempTime = startTime;
-        Long ms = tempTime.getTime();
-
-        while (ms <= endTime.getTime()) {
-            count1 = hotelTempStoreMapper.getCountByRoomIdAndRecordTime(roomId, tempTime);
-
-            if (count1 == 0) {
-                store1 = productStoreMapper.selectStoreByProductIdType(roomId, 1);
-                Map<String, Object> param = new HashMap<>();
-                param.put("hotelId1", hotelId);
-                param.put("roomId1", roomId);
-                param.put("tempTime", tempTime);
-                param.put("store1", store1);
-                hotelTempStoreMapper.addTempStore(param);
-            }
-            ms = tempTime.getTime() + 1000 * 60 * 60*24;
-
-        }
-
-
-    }
+//    @Override
+//    public void flushStore(ValidateRoomStoreVO vStoreVO) throws Exception {
+//        Date startTime = vStoreVO.getCheckInDate();
+//        Date endTime = vStoreVO.getCheckOutDate();
+//        Long roomId = vStoreVO.getRoomId();
+//        Long hotelId = vStoreVO.getHotelId();
+//        Date tempTime = null;
+//        Integer store1 = null;
+//        Integer count1 = null;
+//        tempTime = startTime;
+//        Long ms = tempTime.getTime();
+//
+//        while (ms <= endTime.getTime()) {
+//            count1 = hotelTempStoreMapper.getCountByRoomIdAndRecordTime(roomId, tempTime);
+//
+//            if (count1 == 0) {
+//                store1 = productStoreMapper.selectStoreByProductIdType(roomId, 1);
+//                Map<String, Object> param = new HashMap<>();
+//                param.put("hotelId1", hotelId);
+//                param.put("roomId1", roomId);
+//                param.put("tempTime", tempTime);
+//                param.put("store1", store1);
+//                hotelTempStoreMapper.addTempStore(param);
+//            }
+//            ms = tempTime.getTime() + 1000 * 60 * 60*24;
+//
+//        }
+//
+//
+//    }
 }

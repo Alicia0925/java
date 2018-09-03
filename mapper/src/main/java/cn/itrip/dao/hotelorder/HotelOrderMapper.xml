@@ -214,12 +214,10 @@
       #{modifyDate,jdbcType=TIMESTAMP}, #{modifiedBy,jdbcType=BIGINT}, #{specialRequirement,jdbcType=LONGVARCHAR}
       )
   </insert>
-    <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.HotelOrder">
+    <insert id="insertSelective" parameterType="cn.itrip.beans.pojo.HotelOrder" keyProperty="id" useGeneratedKeys="true">
         insert into itrip_hotel_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
+
             <if test="userId != null">
                 userId,
             </if>
@@ -300,9 +298,7 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=BIGINT},
-            </if>
+
             <if test="userId != null">
                 #{userId,jdbcType=BIGINT},
             </if>
