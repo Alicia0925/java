@@ -31,7 +31,7 @@ import com.alipay.api.domain.AlipayTradeWapPayModel;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 
-import cn.itrip.beans.pojo.HotelOrder;
+
 import cn.itrip.common.EmptyUtils;
 import cn.itrip.trade.config.AlipayConfig;
 import cn.itrip.trade.service.OrderService;
@@ -289,7 +289,7 @@ public class AliPaymentController {
 			boolean verify_result = AlipaySignature.rsaCheckV1(params, alipayConfig.getAlipayPublicKey(), alipayConfig.getCharset(), "RSA2");
 			
 			if(verify_result){//验证成功				
-				String id=orderService.loadItripHotelOrder(out_trade_no).getId().toString();
+				String id=orderService.loadHotelOrder(out_trade_no).getId().toString();
 				//提示支付成功
 				response.sendRedirect(
 						String.format(alipayConfig.getPaymentSuccessUrl(), out_trade_no,id));
