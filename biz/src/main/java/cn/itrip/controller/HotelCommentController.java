@@ -13,6 +13,7 @@ import cn.itrip.service.hotel.HotelService;
 import cn.itrip.service.hotelcomment.HotelCommentService;
 import cn.itrip.service.image.ImageService;
 import cn.itrip.service.labeldic.LabelDicService;
+import cn.itrip.service.order.HotelOrderService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.stereotype.Controller;
@@ -64,6 +65,8 @@ public class HotelCommentController {
 
     @Resource
     private ImageService imageService;
+    @Resource
+    private HotelOrderService hotelOrderService;
     private SFTPUtils sftpUtils = SFTPUtils.getInstance();
 
 
@@ -125,7 +128,7 @@ public class HotelCommentController {
      * 100005 : 新增评论，订单ID不能为空
      * 100000 : token失效，请重登录
      */
-    @RequestMapping(value = "/add", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public Dto addComment(@RequestBody AddCommentVO addCommentVO, HttpServletRequest request) {
         String token = request.getHeader("token");
@@ -155,6 +158,7 @@ public class HotelCommentController {
             comment.setProductType(addCommentVO.getProductType());
             List<Image> images = new ArrayList<>();
             try {
+                    hotelCommentService.addHotelComment(comment);
                 if (addCommentVO.getIsHavingImg() == 1) {
                     Image[] img = addCommentVO.getImages();
                     for (int i = 0; i < img.length; i++) {
@@ -162,12 +166,13 @@ public class HotelCommentController {
                         img[i].setType("2");
                         img[i].setCreatedBy(currentUser.getId());
                         img[i].setCreationDate(comment.getCreationDate());
+                        img[i].setTargetId(comment.getId());
                         images.add(img[i]);
                     }
 
-                    hotelCommentService.addHotelComment(comment);
                     imageService.addImgs(images);
 
+                    hotelOrderService.modifyOrderStatus(addCommentVO.getOrderId(),currentUser.getId());
                     return DtoUtil.returnSuccess("新增评论成功");
                 }
 

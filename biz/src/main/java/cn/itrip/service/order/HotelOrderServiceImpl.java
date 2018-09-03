@@ -154,5 +154,11 @@ public class HotelOrderServiceImpl implements HotelOrderService {
         return hotelOrderMapper.getHotelOrderListByMap(orderParam);
     }
 
+    @Override
+    public boolean modifyOrderStatus(Long id,Long modifyBy)throws Exception {
+
+        return hotelOrderMapper.updateHotelOrderStatus(id,modifyBy)>0;
+    }
+
 
 }

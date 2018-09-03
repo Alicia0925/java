@@ -54,4 +54,6 @@ public interface HotelOrderService {
     Integer modifyHotelOrder(HotelOrder hotelOrder)throws Exception;
 
     List<HotelOrder> getHotelOrderListByMap(Map<String,Object> orderParam)throws Exception;
+
+    boolean modifyOrderStatus(Long id,Long modifyBy)throws Exception;
 }
