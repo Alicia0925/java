@@ -19,9 +19,7 @@ public class HotelOrderVO implements Serializable {
     private String orderNo;         //订单号
     private Integer orderType;      //订单类型
     private String linkUserName;//旅客的姓名，多个旅客的姓名之间用逗号隔开
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date creationDate;//预定时间
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date checkInDate;       //入住时间（行程/有效日期）
     private BigDecimal payAmount;   //订单金额
     private Integer orderStatus;    //订单状态（0：待支付 1:已取消 2:支付成功 3:已消费）

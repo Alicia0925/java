@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -156,6 +157,9 @@ public class HotelCommentController {
             comment.setTripMode(addCommentVO.getHotelId());
             comment.setProductId(addCommentVO.getProductId());
             comment.setProductType(addCommentVO.getProductType());
+           Integer totalScore=addCommentVO.getPositionScore()+addCommentVO.getFacilitiesScore()+addCommentVO.getHygieneScore()+addCommentVO.getServiceScore();
+//            DecimalFormat df = new DecimalFormat("#.0");
+           comment.setScore((totalScore/4));
             List<Image> images = new ArrayList<>();
             try {
                     hotelCommentService.addHotelComment(comment);

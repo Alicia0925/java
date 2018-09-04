@@ -121,9 +121,6 @@ public class SearchOrderVO implements Serializable {
     }
 
     public void setPageSize(Integer pageSize) {
-        if(pageSize<1||pageSize==null){
-            pageSize=10;
-        }
         this.pageSize = pageSize;
     }
 
@@ -133,9 +130,6 @@ public class SearchOrderVO implements Serializable {
     }
 
     public void setPageNo(Integer pageNo) {
-        if(pageNo<1||pageNo==null){
-            pageNo=1;
-        }
         this.pageNo = pageNo;
     }
 }
