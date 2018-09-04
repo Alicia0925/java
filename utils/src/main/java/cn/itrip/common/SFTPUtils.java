@@ -25,7 +25,7 @@ public class SFTPUtils {
 
 //    private static final Logger LOG = org.apache.logging.log4j.LogManager.getLogger(SFTPUtils.class);
 
-    private static final String host = "192.168.12.105";
+    private static final String host = "192.168.12.112";
     private static final int port = 22;
     private static final String username = "root";
     private static final String password = "123456";

@@ -134,7 +134,9 @@ public class HotelCommentController {
     public Dto addComment(@RequestBody AddCommentVO addCommentVO, HttpServletRequest request) {
         String token = request.getHeader("token");
         User currentUser = validationToken.getCurrentUser(token);
-        if (null != currentUser && null == addCommentVO) {
+        if(null==currentUser){
+            return DtoUtil.returnFail("token失效，请重登录", "100000");
+        }else if (null != currentUser && null == addCommentVO) {
             return DtoUtil.returnFail("不能提交空，请填写评论信息", "100004");
         } else if (null != currentUser && null != addCommentVO) {
             if (addCommentVO.getOrderId() == null || addCommentVO.getOrderId() == 0) {
@@ -186,7 +188,8 @@ public class HotelCommentController {
             }
 
         }
-        return DtoUtil.returnFail("token失效，请重登录", "100000");
+        return DtoUtil.returnFail("新增评论失败", "100003");
+
 
 
     }
@@ -246,11 +249,11 @@ public class HotelCommentController {
                                     String suffixString = myFileName.substring(file.getOriginalFilename().indexOf("."));
                                     String fileName = currentUser.getId() + "-" + System.currentTimeMillis() + "-" + ((int) (Math.random() * 10000000)) + suffixString;
                                     //定义上传路径
-                                    String path = (systemConfig.getLocalUploadPath()) + File.separator + fileName;
-                                    File localFile = new File(path);
+                                    String path = request.getSession().getServletContext().getRealPath("statics"+File.separator+"upload");
+                                    File localFile = new File(path,fileName);
                                     file.transferTo(localFile);
 
-                                    sftpUtils.upload(systemConfig.getFileUploadPathString(), path);
+                                    sftpUtils.upload(systemConfig.getFileUploadPathString(), path+"/"+fileName);
                                     dataList.add(systemConfig.getVisitImgUrlString() + fileName);
                                 }
                             }

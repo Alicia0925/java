@@ -187,7 +187,7 @@ public class HotelController {
 
     /**
      * 追加评论 获取酒店图片
-     * <p>
+     *
      * 错误码：
      * 100212：获取酒店图片失败
      * 100213：酒店id不能为空
@@ -199,13 +199,13 @@ public class HotelController {
             List<Image> list = null;
             try {
                 list = imageService.getImgListByConditions(targetId, "0");
-                return DtoUtil.returnSuccess("获取评论图片成功", list);
+                return DtoUtil.returnSuccess("获取酒店图片成功", list);
             } catch (Exception e1) {
                 e1.printStackTrace();
-                return DtoUtil.returnFail("获取评论图片失败", "100212");
+                return DtoUtil.returnFail("获取酒店图片失败", "100212");
             }
         } else {
-            return DtoUtil.returnFail("评论id不能为空", "100213");
+            return DtoUtil.returnFail("酒店id不能为空", "100213");
         }
 
 

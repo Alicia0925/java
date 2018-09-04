@@ -63,7 +63,7 @@ public class HotelOrderController {
         String token = request.getHeader("token");
         User currentUser = validationToken.getCurrentUser(token);
         Dto dto = null;
-        if (null != currentUser&&searchOrderVO.getPageNo()!=null &&searchOrderVO.getPageNo()>=1) {
+        if (null != currentUser) {
             searchOrderVO.setUserId(currentUser.getId());
             if(EmptyUtils.isEmpty(searchOrderVO.getPageNo())){
                 searchOrderVO.setPageNo(Constants.CURRENT_PAGE);
