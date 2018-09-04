@@ -23,6 +23,7 @@
     isBook, isCancel, isTimelyResponse, creationDate, createdBy, modifyDate, modifiedBy
   </sql>
 
+    <!--通过条件查询酒店房间列表-->
     <select id="selectHotelRoomListByQuery" resultType="cn.itrip.beans.pojo.HotelRoom">
         SELECT
         <include refid="Base_Column_List"/>

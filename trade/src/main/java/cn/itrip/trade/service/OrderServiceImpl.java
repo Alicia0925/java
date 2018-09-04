@@ -29,7 +29,6 @@ import cn.itrip.common.SystemConfig;
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
 
-	private Logger logger=Logger.getLogger(OrderServiceImpl.class);
 	@Resource
 	private HotelOrderMapper hotelOrderMapper;
 	@Resource
@@ -39,22 +38,20 @@ public class OrderServiceImpl implements OrderService {
 	
 	@Override
 	public HotelOrder loadHotelOrder(String orderNo) throws Exception {
-		// TODO Auto-generated method stub
-		logger.debug("加载订单："+orderNo);
 		Map<String, Object> param=new HashMap();
 		param.put("orderNo", orderNo);
 		List<HotelOrder> orders=hotelOrderMapper.getHotelOrderListByMap(param);
 		if(orders.size()==1){
 			return orders.get(0);
-		}else
+		}else{
 			return null;
+		}
+
 	}
 
 	@Override
 	public void paySuccess(String orderNo, int payType,String tradeNo) throws Exception {
-		// TODO Auto-generated method stub
 		//更新订单状态、支付宝交易号
-		logger.debug("订单支付成功："+orderNo);
 		HotelOrder hotelOrder=this.loadHotelOrder(orderNo);
 		hotelOrder.setOrderStatus(2);//支付成功
 		hotelOrder.setPayType(payType);
@@ -72,8 +69,6 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public void payFailed(String orderNo, int payType,String tradeNo) throws Exception {
-		// TODO Auto-generated method stub
-		logger.debug("订单支付失败："+orderNo);
 		HotelOrder hotelOrder=this.loadHotelOrder(orderNo);
 		hotelOrder.setOrderStatus(1);//支付状态：已取消
 		hotelOrder.setPayType(payType);
@@ -83,7 +78,6 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public boolean processed(String orderNo) throws Exception {
-		// TODO Auto-generated method stub
 		HotelOrder itripHotelOrder=this.loadHotelOrder(orderNo);
 		return itripHotelOrder.getOrderStatus().equals(2)&&!EmptyUtils.isEmpty(itripHotelOrder.getTradeNo());
 	}
@@ -124,7 +118,6 @@ public class OrderServiceImpl implements OrderService {
             connection.connect();           
             System.out.println(connection.getContentLength());
         } catch (Exception e) {
-            logger.error("发送GET请求出现异常！" + e);            
             e.printStackTrace();
         }
     }

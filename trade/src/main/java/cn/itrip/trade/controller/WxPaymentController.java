@@ -34,7 +34,6 @@ import java.util.Map;
 @RequestMapping("/api/wxpay/")
 public class WxPaymentController {
     //**根据订单号生成二维码**//
-    private Logger logger = Logger.getLogger(WxPaymentController.class);
 
     @Autowired
     private OrderService orderService;
@@ -54,7 +53,7 @@ public class WxPaymentController {
         HashMap<String, Object> result = new HashMap<String, Object>();
         WXPayRequest wxPayRequest = new WXPayRequest(this.wxPayConfig);
         try {
-//            order = orderService.loadItripHotelOrder(orderNo);
+            order = orderService.loadHotelOrder(orderNo);
             if (order == null || order.getOrderStatus() != 0) {
                 return DtoUtil.returnFail("订单状态异常", "110001");
             }
@@ -74,7 +73,6 @@ public class WxPaymentController {
                 result.put("codeUrl", r.get("code_url"));
                 return DtoUtil.returnDataSuccess(result);
             } else {
-                logger.info(r.get("return_msg"));
                 return DtoUtil.returnFail("订单支付异常", "110002");
             }
         } catch (Exception e) {
@@ -98,7 +96,7 @@ public class WxPaymentController {
     public Dto<HotelOrder> queryOrderIsSuccess(@PathVariable String orderNo) {
         HotelOrder order = null;
         try {
-//            order = orderService.loadItripHotelOrder(orderNo);
+            order = orderService.loadHotelOrder(orderNo);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,28 +121,22 @@ public class WxPaymentController {
             in.close();
             inputStream.close();
             params = WXPayUtil.xmlToMap(sb.toString());
-            logger.info("1.notify-params>>>>>>>>>>>:" + params);
             boolean flag = wxPayRequest.isResponseSignatureValid(params);
-            logger.info("2.notify-flag:" + flag);
             if (flag) {
                 String returnCode = params.get("return_code");
-                logger.info("3.returnCode:" + returnCode);
                 if (returnCode.equals("SUCCESS")) {
                     String transactionId = params.get("transaction_id");
                     String outTradeNo = params.get("out_trade_no");
                     if (!orderService.processed(outTradeNo)) {
                         orderService.paySuccess(outTradeNo, 2, transactionId);
                     }
-                    logger.info("4.订单：" + outTradeNo + " 交易完成" + ">>>" + transactionId);
                 } else {
                     result.put("return_code", "FAIL");
                     result.put("return_msg", "支付失败");
-                    logger.info("");
                 }
             } else {
                 result.put("return_code", "FAIL");
                 result.put("return_msg", "签名失败");
-                logger.info("签名验证失败>>>>>>>>>>>>");
             }
         } catch (Exception e) {
             e.printStackTrace();

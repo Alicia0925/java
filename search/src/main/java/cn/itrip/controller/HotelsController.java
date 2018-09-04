@@ -40,11 +40,9 @@ public class HotelsController {
     @ResponseBody
     public Dto<Page<HotelVO>> searchHotelsPage(@RequestBody SearchHotelVO vo) {
         Page page = null;
-
         if (EmptyUtils.isEmpty(vo) || EmptyUtils.isEmpty(vo.getDestination())) {
             return DtoUtil.returnFail("目的地不能为空", ErrorCode.SEARCH_UNKNOWN_DESTINATION);
         }
-
         try {
             page = searchSolrHotelService.searchHotelPage(vo, vo.getPageNo(), vo.getPageSize());
         } catch (Exception e) {

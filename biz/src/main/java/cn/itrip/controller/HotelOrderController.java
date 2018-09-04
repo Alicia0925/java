@@ -65,6 +65,9 @@ public class HotelOrderController {
         Dto dto = null;
         if (null != currentUser) {
             searchOrderVO.setUserId(currentUser.getId());
+            if(EmptyUtils.isEmpty(searchOrderVO.getPageNo())){
+                searchOrderVO.setPageNo(Constants.CURRENT_PAGE);
+            }
             searchOrderVO.setOffset((searchOrderVO.getPageNo() - 1) * searchOrderVO.getPageSize());
             try {
                 Page page = hotelOrderService.getPageByMap(searchOrderVO);
@@ -82,7 +85,6 @@ public class HotelOrderController {
 
     /**
      * 根据订单ID查看个人订单详情:
-     *
      * 错误码:
      * 100525 : 请传递参数：orderId
      * 100526 : 没有相关订单信息
